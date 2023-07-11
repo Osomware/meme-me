@@ -1,0 +1,49 @@
+name: Prebuild check and build
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-frontend:
+    name: Build frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repo
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.16.0
+
+      - name: Install modules
+        run: cd client && npm ci
+
+      - name: Run ESLint and Prettier
+        run: cd client && npm run check-format && npm run check-lint
+
+      - name: Build NextJS project
+        run: cd client && npm run build
+
+  build-backend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repo
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-dotnet@v1
+        with:
+          node-version: 18.16.0
+
+      - name: Install modules
+        run: cd api && npm install && npm ci
+
+      - name: Run Lint and Prettier
+        run: cd api && npm run format && npm run lint
+
+      - name: Build NestJS project
+        run: cd api && npm run build
