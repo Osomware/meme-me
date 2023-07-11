@@ -1,9 +1,11 @@
+import React from 'react'
 import Image from 'next/image'
+import type { NextPage } from 'next'
 import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+const Index: NextPage = (): JSX.Element => {
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
@@ -116,3 +118,5 @@ export default function Home() {
     </main>
   )
 }
+
+export default Index
