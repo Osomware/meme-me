@@ -9,8 +9,8 @@ const SignIn: NextPage = (): JSX.Element => {
   const { handleAuthSubmit } = useAuth()
 
   return (
-    <AuthLayout metaTitle="Sign in">
-      <AuthForm isSignInPage actions={{ handleAuthSubmit }} />
+    <AuthLayout metaTitle="Sign up">
+      <AuthForm actions={{ handleAuthSubmit }} />
     </AuthLayout>
   )
 }

@@ -4,7 +4,7 @@ export const SignUpSchema = yup.object().shape({
   name: yup.string().required().label('Name'),
   username: yup.string().required().label('Username'),
   email: yup.string().email().required().label('Email'),
-  password: yup.string().required().label('password')
+  password: yup.string().required().label('Password')
 })
 
 export const SignInSchema = SignUpSchema.omit(['name', 'username'])
