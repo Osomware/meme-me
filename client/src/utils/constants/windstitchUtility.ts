@@ -6,7 +6,7 @@ export const rounded = {
   lg: 'rounded-lg',
   xl: 'rounded-xl',
   full: 'rounded-full'
-}
+} as const
 
 export const scale = {
   '100': 'active:scale-100',
@@ -14,7 +14,7 @@ export const scale = {
   '90': 'active:scale-90',
   '75': 'active:scale-75',
   '50': 'active:scale-50'
-}
+} as const
 
 export const shadow = {
   shadow: 'shadow',
@@ -25,4 +25,4 @@ export const shadow = {
   '2xl': 'shadow-2xl',
   inner: 'shadow-inner',
   none: 'shadow-none'
-}
+} as const

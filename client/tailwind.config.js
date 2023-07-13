@@ -43,9 +43,9 @@ module.exports = {
       },
       boxShadow: {
         'default-primary': '-30px 26px 29px 6px rgba(164, 182, 225, 0.15)',
-        'sm-primary': '-30px 26px 29px -19px rgba(164, 182, 225, 0.15)'
+        'sm-primary': '-15px 13px 14px 4px rgba(164, 182, 225, 0.15)'
       }
     }
   },
-  plugins: [require('@tailwindcss/forms')]
+  plugins: [require('@tailwindcss/forms'), require('tailwind-scrollbar')({ nocompatible: true })]
 }
