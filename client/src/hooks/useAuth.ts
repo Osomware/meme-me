@@ -1,16 +1,15 @@
+import { SubmitHandler } from 'react-hook-form'
+
+import { SignInFormValues, SignUpFormValues } from '~/utils/yup-schema'
+
 type AuthReturn = {
-  handleSignIn: () => void
-  handleSignUp: () => void
+  handleAuthSubmit: SubmitHandler<SignInFormValues | SignUpFormValues>
   handleSignOut: () => void
 }
 
 const useAuth = (): AuthReturn => {
-  const handleSignIn = (): void => {
-    alert('Sign In')
-  }
-
-  const handleSignUp = (): void => {
-    alert('Sign Up')
+  const handleAuthSubmit: SubmitHandler<SignInFormValues | SignUpFormValues> = (data): void => {
+    alert(JSON.stringify(data, null, 2))
   }
 
   const handleSignOut = (): void => {
@@ -18,8 +17,7 @@ const useAuth = (): AuthReturn => {
   }
 
   return {
-    handleSignIn,
-    handleSignUp,
+    handleAuthSubmit,
     handleSignOut
   }
 }

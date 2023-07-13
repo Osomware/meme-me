@@ -2,9 +2,9 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import React, { FC } from 'react'
 import isEmpty from 'lodash/isEmpty'
-import { useForm } from 'react-hook-form'
-import { Lock, Mail } from 'react-feather'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { AtSign, Lock, Mail, User } from 'react-feather'
 
 import Input from '~/components/atoms/Input'
 import Button from '~/components/atoms/Buttons/ButtonAction'
@@ -14,7 +14,7 @@ import { SignInFormValues, SignInSchema, SignUpFormValues, SignUpSchema } from '
 export type AuthFormProps = {
   isSignInPage?: boolean
   actions: {
-    handleAuthSubmit: () => void
+    handleAuthSubmit: SubmitHandler<SignUpFormValues | SignInFormValues>
   }
 }
 
@@ -28,9 +28,9 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<SignInFormValues | SignUpFormValues>({
+  } = useForm<SignUpFormValues>({
     mode: 'onTouched',
-    resolver: yupResolver(isSignInPage ? SignInSchema : SignUpSchema)
+    resolver: yupResolver(isSignInPage ? SignInSchema : SignUpSchema) as any
   })
 
   return (
@@ -40,11 +40,70 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
       className="flex flex-col space-y-6"
     >
       <div className="space-y-5">
+        {!isSignInPage && (
+          <>
+            {/* Name Field */}
+            <section className="flex flex-col space-y-1">
+              <div className="group relative">
+                <div className="inset-y-0 flex items-center left-4 absolute">
+                  <User
+                    className={clsx(
+                      'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
+                      !isEmpty(errors?.name) ? 'text-rose-500 group-focus-within:text-rose-500' : ''
+                    )}
+                  />
+                </div>
+                <Input
+                  type="text"
+                  color="primary"
+                  {...register('name')}
+                  placeholder="Name"
+                  className="pl-12"
+                  isError={!isEmpty(errors?.name)}
+                />
+              </div>
+              {!isEmpty(errors?.name) && (
+                <FormErrorMessage>{errors?.name.message}</FormErrorMessage>
+              )}
+            </section>
+            {/* Username Field */}
+            <section className="flex flex-col space-y-1">
+              <div className="group relative">
+                <div className="inset-y-0 flex items-center left-4 absolute">
+                  <AtSign
+                    className={clsx(
+                      'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
+                      !isEmpty(errors?.username)
+                        ? 'text-rose-500 group-focus-within:text-rose-500'
+                        : ''
+                    )}
+                  />
+                </div>
+                <Input
+                  type="text"
+                  color="primary"
+                  {...register('username')}
+                  placeholder="Username"
+                  className="pl-12"
+                  isError={!isEmpty(errors?.username)}
+                />
+              </div>
+              {!isEmpty(errors?.username) && (
+                <FormErrorMessage>{errors?.username.message}</FormErrorMessage>
+              )}
+            </section>
+          </>
+        )}
         {/* Email Field */}
         <section className="flex flex-col space-y-1">
           <div className="group relative">
             <div className="inset-y-0 flex items-center left-4 absolute">
-              <Mail className="w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary" />
+              <Mail
+                className={clsx(
+                  'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
+                  !isEmpty(errors.email) ? 'text-rose-500 group-focus-within:text-rose-500' : ''
+                )}
+              />
             </div>
             <Input
               type="text"
@@ -52,6 +111,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
               {...register('email')}
               placeholder="Email"
               className="pl-12"
+              isError={!isEmpty(errors.email)}
             />
           </div>
           {!isEmpty(errors.email) && <FormErrorMessage>{errors?.email.message}</FormErrorMessage>}
@@ -60,7 +120,12 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
         <section className="flex flex-col space-y-1">
           <div className="group relative">
             <div className="inset-y-0 flex items-center left-4 absolute">
-              <Lock className="w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary" />
+              <Lock
+                className={clsx(
+                  'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
+                  !isEmpty(errors.password) ? 'text-rose-500 group-focus-within:text-rose-500' : ''
+                )}
+              />
             </div>
             <Input
               type="password"
@@ -68,6 +133,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
               {...register('password')}
               placeholder="Password"
               className="pl-12"
+              isError={!isEmpty(errors.password)}
             />
           </div>
           {!isEmpty(errors.password) && (
@@ -94,7 +160,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
         </Link>
       </div>
       <Button type="submit" variant="primary" className="w-full py-2.5 text-sm">
-        Sign In
+        {isSignInPage ? 'Sign In' : 'Sign Up'}
       </Button>
     </form>
   )

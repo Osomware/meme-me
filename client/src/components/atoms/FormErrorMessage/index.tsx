@@ -8,5 +8,5 @@ export type FormErrorMessageProps = {
 
 export const FormErrorMessage: FC<FormErrorMessageProps> = (props): JSX.Element => {
   const { children, className } = props
-  return <p className={clsx('text-xs text-left block text-rose-600', className)}>{children}</p>
+  return <p className={clsx('text-[10px] text-left block text-rose-600', className)}>{children}</p>
 }

@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
 import { Carousel } from 'react-responsive-carousel'
 
@@ -17,6 +18,9 @@ export type AuthLayoutProps = {
 }
 
 const AuthLayout: FC<AuthLayoutProps> = ({ children, metaTitle }): JSX.Element => {
+  const router = useRouter()
+  const isLoginPage = router.pathname === '/sign-in'
+
   // SCREEN SIZE CONDITION HOOKS
   const isMediumScreen = useScreenCondition('(max-width: 768px)')
 
@@ -66,9 +70,13 @@ const AuthLayout: FC<AuthLayoutProps> = ({ children, metaTitle }): JSX.Element =
               <div className="space-y-6">
                 <LogoWitTitle className="w-52 -mx-9 -my-4" />
                 <div className="space-y-2">
-                  <h2 className="font-bold text-2xl text-secondary">Log in to your Account</h2>
+                  <h2 className="font-bold text-2xl text-secondary">
+                    {isLoginPage ? 'Log in to your Account' : 'Sign up for new Account'}
+                  </h2>
                   <p className="text-secondary-200 text-sm font-medium">
-                    Welcome back! Select method to log in:
+                    {isLoginPage
+                      ? 'Welcome back! Select method to log in:'
+                      : 'Select method to Sign Up'}
                   </p>
                 </div>
               </div>
@@ -113,9 +121,12 @@ const AuthLayout: FC<AuthLayoutProps> = ({ children, metaTitle }): JSX.Element =
 
               {/* Question */}
               <div className="text-center text-sm font-medium text-secondary-200 space-x-2">
-                <span>Don&apos;t have an account?</span>
-                <Link href="#" className="text-fancyBlue hover:underline outline-primary">
-                  Create Account
+                <span>{isLoginPage ? "Don't have an account?" : 'Already have an account?'}</span>
+                <Link
+                  href={isLoginPage ? '/sign-up' : '/sign-in'}
+                  className="text-fancyBlue hover:underline outline-primary"
+                >
+                  {isLoginPage ? 'Create Account' : 'Sign in'}
                 </Link>
               </div>
             </div>
