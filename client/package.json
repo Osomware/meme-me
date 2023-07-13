@@ -13,18 +13,27 @@
     "check-all": "npm run check-format && npm run check-lint && npm run check-types && npm run build"
   },
   "dependencies": {
-    "@types/node": "20.4.1",
-    "@types/react": "18.2.14",
-    "@types/react-dom": "18.2.6",
+    "@hookform/resolvers": "^3.1.1",
     "autoprefixer": "10.4.14",
+    "clsx": "^1.2.1",
     "eslint-config-next": "13.4.9",
+    "lodash": "^4.17.21",
     "next": "13.4.9",
     "postcss": "8.4.25",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.3.2"
+    "react-feather": "^2.0.10",
+    "react-hook-form": "^7.45.1",
+    "react-responsive-carousel": "^3.2.23",
+    "tailwindcss": "3.3.2",
+    "windstitch": "^0.3.0"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@types/lodash": "^4.14.195",
+    "@types/node": "20.4.1",
+    "@types/react": "18.2.14",
+    "@types/react-dom": "18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
@@ -35,6 +44,7 @@
     "eslint-plugin-react": "^7.32.2",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.3.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "yup": "^1.2.0"
   }
 }
