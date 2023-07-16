@@ -15,7 +15,9 @@ const Button = w.button(
           'text-white bg-primary hover:bg-primary-hover focus:outline-none',
           'focus:ring-4 focus:ring-primary-100 font-medium'
         ),
-        'primary-outline': clsx(),
+        'primary-outline': clsx(
+          'text-secondary border stroke-1 bg-transparent focus:ring-2 focus:ring-primary'
+        ),
         secondary: clsx(),
         'secondary-outline': clsx()
       },
