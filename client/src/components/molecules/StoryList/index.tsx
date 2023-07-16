@@ -1,11 +1,14 @@
 import clsx from 'clsx'
 import React, { FC } from 'react'
+import dynamic from 'next/dynamic'
 import { Plus } from 'react-feather'
-import ReactNiceAvatar, { genConfig } from 'react-nice-avatar'
+import { genConfig } from 'react-nice-avatar'
 
 import { dummyUserStories } from '~/utils/constants/dummyUserStories'
 
 type StoryListProps = Record<string, unknown>
+
+const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
 
 const StoryList: FC<StoryListProps> = (): JSX.Element => {
   const config = {
