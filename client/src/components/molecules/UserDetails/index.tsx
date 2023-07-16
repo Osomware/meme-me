@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import React, { FC } from 'react'
-import ReactNiceAvatar, { AvatarFullConfig, genConfig } from 'react-nice-avatar'
+import dynamic from 'next/dynamic'
+import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 
 import { DetaulAvatar } from '~/utils/constants/defaultAvatarStyle'
 
@@ -12,6 +13,8 @@ type UserDetailsProps = {
   username: string
   size?: Size
 }
+
+const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
 
 const UserDetails: FC<UserDetailsProps> = ({ avatar, name, username, size }): JSX.Element => {
   const myConfig = genConfig(avatar as AvatarFullConfig)

@@ -1,16 +1,19 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import React, { FC } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { ChevronDown } from 'react-feather'
+import { genConfig } from 'react-nice-avatar'
 import { Disclosure } from '@headlessui/react'
-import ReactNiceAvatar, { genConfig } from 'react-nice-avatar'
 
 import LogoIcon from '~/utils/icons/LogoIcon'
 import LogoWitTitle from '~/utils/icons/LogoWithTitle'
 import { sidebarMenus } from '~/utils/constants/sidebarMenu'
 import UserDetails from '~/components/molecules/UserDetails'
 import { defaultAvatarStyle } from '~/utils/constants/defaultAvatarStyle'
+
+const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
 
 export type SidebarProps = Record<string, unknown>
 
