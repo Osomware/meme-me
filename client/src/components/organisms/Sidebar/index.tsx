@@ -34,7 +34,7 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
       {/* Logo */}
       <Link href="/" className="outline-primary">
         <LogoWitTitle className="scale-90 hidden md:block" />
-        <LogoIcon className="w-24 h-24 -ml-7 mt-4 block md:hidden" />
+        <LogoIcon className="w-24 h-24 -mx-8 mt-4 block md:hidden" />
       </Link>
       <nav>
         <h1 className="mt-8 px-8 font-extrabold text-secondary hidden md:block">Menu</h1>

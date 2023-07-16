@@ -16,10 +16,14 @@ const Button = w.button(
           'focus:ring-4 focus:ring-primary-100 font-medium'
         ),
         'primary-outline': clsx(
-          'text-secondary border stroke-1 bg-transparent focus:ring-2 focus:ring-primary'
+          'text-primary bg-background hover:bg-primary-100/20 focus:outline-none',
+          'focus:ring-4 focus:ring-primary-100 font-semibold border border-primary-200'
         ),
         secondary: clsx(),
-        'secondary-outline': clsx()
+        'secondary-outline': clsx(
+          'text-secondary border stroke-1 bg-transparent focus:ring-4 focus:ring-primary-100',
+          'focus:border focus:border-secondary-100'
+        )
       },
       rounded,
       shadow
