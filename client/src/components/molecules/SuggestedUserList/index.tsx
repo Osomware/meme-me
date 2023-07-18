@@ -24,9 +24,9 @@ const SuggestedUserList: FC<SuggestedUserListProps> = (): JSX.Element => {
             <Button
               type="button"
               variant={item.isFollowed ? 'secondary-outline' : 'primary'}
-              className="text-xs py-1.5 font-semibold w-[74px]"
+              className="text-xs py-1.5 font-semibold w-[76px]"
             >
-              {item.isFollowed ? 'Followed' : 'Follow'}
+              {item.isFollowed ? 'Following' : 'Follow'}
             </Button>
           </li>
         ))}
