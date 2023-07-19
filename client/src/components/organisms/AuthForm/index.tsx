@@ -59,7 +59,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
                   {...register('name')}
                   placeholder="Name"
                   className="pl-12"
-                  isError={!isEmpty(errors?.name)}
+                  iserror={!isEmpty(errors?.name)}
                 />
               </div>
               {!isEmpty(errors?.name) && (
@@ -85,7 +85,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
                   {...register('username')}
                   placeholder="Username"
                   className="pl-12"
-                  isError={!isEmpty(errors?.username)}
+                  iserror={!isEmpty(errors?.username)}
                 />
               </div>
               {!isEmpty(errors?.username) && (
@@ -111,7 +111,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
               {...register('email')}
               placeholder="Email"
               className="pl-12"
-              isError={!isEmpty(errors.email)}
+              iserror={!isEmpty(errors.email)}
             />
           </div>
           {!isEmpty(errors.email) && <FormErrorMessage>{errors?.email.message}</FormErrorMessage>}
@@ -133,7 +133,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
               {...register('password')}
               placeholder="Password"
               className="pl-12"
-              isError={!isEmpty(errors.password)}
+              iserror={!isEmpty(errors.password)}
             />
           </div>
           {!isEmpty(errors.password) && (

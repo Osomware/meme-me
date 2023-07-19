@@ -22,7 +22,7 @@ const Button = w.button(
         secondary: clsx(),
         'secondary-outline': clsx(
           'text-secondary border stroke-1 bg-transparent focus:ring-4 focus:ring-primary-100',
-          'focus:border focus:border-secondary-100'
+          'focus:border focus:border-secondary-100 focus:outline-none'
         )
       },
       rounded,

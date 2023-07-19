@@ -4,7 +4,7 @@ import { FieldError } from 'react-hook-form'
 
 import { rounded } from '~/utils/constants/windstitchUtility'
 
-const isError = (value: boolean | FieldError | undefined): string => {
+const iserror = (value: boolean | FieldError | undefined): string => {
   const val = value as boolean
   return val
     ? clsx('border-rose-500 ring-rose-500 focus:border-rose-500', 'focus:ring-rose-500 bg-rose-50')
@@ -26,12 +26,12 @@ const Input = w.input(
           'focus:border-primary'
         )
       },
-      isError,
+      iserror,
       rounded
     },
     defaultVariants: {
       rounded: 'default',
-      isError: false,
+      iserror: false,
       color: 'primary'
     }
   }

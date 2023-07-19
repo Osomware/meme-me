@@ -1,10 +1,11 @@
 import React from 'react'
 import type { NextPage } from 'next'
 
-import UserPost from '~/components/organisms/UserPost'
+import PostList from '~/components/molecules/PostList'
 import StoryList from '~/components/molecules/StoryList'
 import HomeLayout from '~/components/templates/HomeLayout'
 import useScreenCondition from '~/hooks/useScreenCondition'
+import { dummyPosts } from '~/utils/constants/dummyUserPost'
 import FeedFilterTab from '~/components/molecules/FeedFilterTab'
 import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
 
@@ -24,7 +25,7 @@ const Index: NextPage = (): JSX.Element => {
         </div>
 
         {/* User Post */}
-        <UserPost />
+        <PostList posts={dummyPosts} />
       </article>
       {!isMaxWidth && (
         <aside className="border-l border-stroke-3 h-full w-80 shrink-0 sticky top-0 mx-1">
