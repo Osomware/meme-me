@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  # NestJS Service
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: meme-me-nest-docker-postgres
+    ports:
+      - 3030:3030
+    env_file:
+      - .env.api
+    volumes:
+      - ./api:/usr/src/app/api
+    depends_on:
+      - db
+    environment:
+      - PORT=3030
+    networks:
+      - meme-me
+
+  # NextJS Service
+  client:
+    build:
+      context: ./client
+    container_name: meme-me-next-docker
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.client
+    networks:
+      - meme-me
+    depends_on:
+      - api
+    volumes:
+      - ./client:/usr/src/app/client
+      - /usr/src/app/client/node_modules
+      - /usr/src/app/client/.next
+
+  # Database Postgres Connection
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
+    container_name: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Postgres Admin
+  dbadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: nest-pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin4
+    ports:
+      - 5050:80
+    depends_on:
+      - db
+
+networks:
+  meme-me:
+    driver: bridge

@@ -28,11 +28,23 @@ Project is created with:
 - Graphql
 - Postgres
 
-## Setup
+## Manual Setup
 
-To run this project, install it locally using npm:
+1. git clone `git@github.com:Osomware/meme-me.git`
+2. cd meme-me
+3. cd client
+4. npm install
+5. cp .env.example .env.local
+6. Go to the client folder and set the `NEXT_PUBLIC_BACKEND_URL` variable in `.env` with the api endpoint
+7. cd ../api
+8. create a database connection in your postgres
 
-```
-$ cd client && npm install && npm run dev
-$ cd api && npm install && npm run start:dev
-```
+## Docker Setup
+
+1. git clone `git@github.com:Osomware/meme-me.git`
+2. cd meme-me
+3. cp .env.api.example .env.api
+4. cp .env.client.example .env.client
+5. cp .env.db.example .env.db
+6. `docker compose build` or `docker compose up --build` (this will automatically build and run the containers)
+7. `docker compose up` (To stop docker containers, run: `docker compose down`)
