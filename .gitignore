@@ -1,0 +1,9 @@
+**/data
+**/log
+**/secrets
+**/certbot
+**/pgdata
+
+.env.client
+.env.api
+.env.db
