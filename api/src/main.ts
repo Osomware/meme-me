@@ -1,9 +1,23 @@
 import { NestFactory } from '@nestjs/core'
+import { ValidationError } from 'class-validator'
+import { BadRequestException, ValidationPipe } from '@nestjs/common'
 
 import { AppModule } from './app.module'
 
-async function bootstrap() {
+const bootstrap = async (): Promise<void> => {
   const app = await NestFactory.create(AppModule)
-  await app.listen(3000)
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: (validationErrors: ValidationError[] = []): any => {
+        return new BadRequestException(
+          validationErrors.map((error) => ({
+            field: error.property,
+            error: Object.values(error.constraints).join(', ')
+          }))
+        )
+      }
+    })
+  )
+  await app.listen(3030)
 }
 bootstrap()
