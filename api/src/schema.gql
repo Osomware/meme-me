@@ -9,12 +9,18 @@ type Auth {
 
 type Mutation {
   removeAuth(id: Int!): Auth!
+  signin(signInInput: SignInInput!): SignResponse!
   signup(signupInput: SignUpInput!): SignResponse!
   updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
 }
 
 type Query {
   auth(id: Int!): Auth!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
 }
 
 type SignResponse {

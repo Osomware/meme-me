@@ -4,6 +4,7 @@ import { SignUpReturnType } from './types'
 import { AuthService } from './auth.service'
 import { Auth } from './entities/auth.entity'
 import { SignUpInput } from './dto/signup-input'
+import { SignInInput } from './dto/signin-input'
 import { SignResponse } from './dto/sign-response'
 import { UpdateAuthInput } from './dto/update-auth.input'
 
@@ -16,9 +17,9 @@ export class AuthResolver {
     return this.authService.signup(signupInput)
   }
 
-  @Query(() => [Auth], { name: 'auth' })
-  findAll(): string {
-    return this.authService.findAll()
+  @Mutation(() => SignResponse)
+  signin(@Args('signInInput') signInInput: SignInInput): SignUpReturnType {
+    return this.authService.signin(signInInput)
   }
 
   @Query(() => Auth, { name: 'auth' })
