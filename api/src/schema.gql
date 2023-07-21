@@ -7,8 +7,12 @@ type Auth {
   exampleField: Int!
 }
 
+type LogoutResponse {
+  loggedOut: Boolean!
+}
+
 type Mutation {
-  removeAuth(id: Int!): Auth!
+  logout(id: Int!): LogoutResponse!
   signin(signInInput: SignInInput!): SignResponse!
   signup(signupInput: SignUpInput!): SignResponse!
   updateAuth(updateAuthInput: UpdateAuthInput!): Auth!

@@ -1,12 +1,12 @@
 import * as argon from 'argon2'
 import { JwtService } from '@nestjs/jwt'
-import { ForbiddenException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { ForbiddenException, Injectable } from '@nestjs/common'
 
 import { SignUpInput } from './dto/signup-input'
 import { SignInInput } from './dto/signin-input'
-import { SignUpReturnType, Token } from './types'
 import { PrismaService } from '~/prisma/prisma.service'
+import { LogoutReturnType, SignUpReturnType, Token } from './types'
 
 @Injectable()
 export class AuthService {
@@ -63,10 +63,6 @@ export class AuthService {
     return `This action updates a #${id} auth`
   }
 
-  remove(id: number): string {
-    return `This action removes a #${id} auth`
-  }
-
   async createToken(userId: number, email: string): Promise<Token> {
     const accessToken = this.jwtService.sign(
       {
@@ -106,5 +102,17 @@ export class AuthService {
         refreshToken: hashedRefreshToken
       }
     })
+  }
+
+  async logout(userId: number): LogoutReturnType {
+    await this.prisma.user.updateMany({
+      where: { id: userId, refreshToken: { not: null } },
+      data: {
+        refreshToken: null
+      }
+    })
+    return {
+      loggedOut: true
+    }
   }
 }

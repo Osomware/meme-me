@@ -11,3 +11,5 @@ export type UserToken = {
 } & Token
 
 export type SignUpReturnType = Promise<Prisma.Prisma__UserClient<UserToken, never>>
+
+export type LogoutReturnType = Promise<{ loggedOut: boolean }>
