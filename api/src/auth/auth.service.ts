@@ -1,9 +1,10 @@
 import * as argon from 'argon2'
 import { JwtService } from '@nestjs/jwt'
-import { Injectable } from '@nestjs/common'
+import { ForbiddenException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { SignUpInput } from './dto/signup-input'
+import { SignInInput } from './dto/signin-input'
 import { SignUpReturnType, Token } from './types'
 import { PrismaService } from '~/prisma/prisma.service'
 
@@ -31,8 +32,27 @@ export class AuthService {
     return { accessToken, refreshToken, user }
   }
 
-  findAll(): string {
-    return `This action returns all auth`
+  async signin(signInInput: SignInInput): SignUpReturnType {
+    const user = await this.prisma.user.findUnique({ where: { email: signInInput.email } })
+
+    if (!user) {
+      throw new ForbiddenException('Email does not exist.')
+    }
+
+    const doPasswordMatch = await argon.verify(user.password, signInInput.password)
+
+    if (!doPasswordMatch) {
+      throw new ForbiddenException('Invalid password')
+    }
+
+    const { accessToken, refreshToken } = await this.createToken(user.id, user.email)
+    await this.updateRefreshToken(user.id, refreshToken)
+
+    return {
+      accessToken,
+      refreshToken,
+      user
+    }
   }
 
   findOne(id: number): string {
