@@ -2,24 +2,24 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Auth {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 type LogoutResponse {
   loggedOut: Boolean!
 }
 
 type Mutation {
+  getNewTokens: NewTokensResonse!
   logout(id: Int!): LogoutResponse!
   signin(signInInput: SignInInput!): SignResponse!
   signup(signupInput: SignUpInput!): SignResponse!
-  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
+}
+
+type NewTokensResonse {
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Query {
-  auth(id: Int!): Auth!
+  findOne(id: Int!): User!
 }
 
 input SignInInput {
@@ -38,14 +38,6 @@ input SignUpInput {
   name: String!
   password: String!
   username: String!
-}
-
-input UpdateAuthInput {
-  email: String
-  id: Int!
-  name: String
-  password: String
-  username: String
 }
 
 type User {
