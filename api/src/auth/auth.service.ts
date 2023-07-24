@@ -3,10 +3,11 @@ import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 
+import { User } from '~/user/user.entity'
 import { SignUpInput } from './dto/signup-input'
 import { SignInInput } from './dto/signin-input'
 import { PrismaService } from '~/prisma/prisma.service'
-import { LogoutReturnType, SignUpReturnType, Token } from './types'
+import { LogoutReturnType, SignReturnType, Token } from './types'
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
     private configService: ConfigService
   ) {}
 
-  async signup(signupInput: SignUpInput): SignUpReturnType {
+  async signup(signupInput: SignUpInput): SignReturnType {
     const hashedPassword = await argon.hash(signupInput.password)
     const user = await this.prisma.user.create({
       data: {
@@ -32,7 +33,7 @@ export class AuthService {
     return { accessToken, refreshToken, user }
   }
 
-  async signin(signInInput: SignInInput): SignUpReturnType {
+  async signin(signInInput: SignInInput): SignReturnType {
     const user = await this.prisma.user.findUnique({ where: { email: signInInput.email } })
 
     if (!user) {
@@ -55,14 +56,6 @@ export class AuthService {
     }
   }
 
-  findOne(id: number): string {
-    return `This action returns a #${id} auth`
-  }
-
-  update(id: number): string {
-    return `This action updates a #${id} auth`
-  }
-
   async createToken(userId: number, email: string): Promise<Token> {
     const accessToken = this.jwtService.sign(
       {
@@ -70,7 +63,7 @@ export class AuthService {
         email
       },
       {
-        expiresIn: '10s',
+        expiresIn: '1h',
         secret: this.configService.get('ACCESS_TOKEN_SECRET')
       }
     )
@@ -113,6 +106,37 @@ export class AuthService {
     })
     return {
       loggedOut: true
+    }
+  }
+
+  async findOne(id: number): Promise<User> {
+    return await this.prisma.user.findUnique({
+      where: { id }
+    })
+  }
+
+  async getNewTokens(userId: number, rt: string): SignReturnType {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }
+    })
+
+    if (!user) {
+      throw new ForbiddenException('Access Denied')
+    }
+
+    const doRefreshTokensMatch = await argon.verify(user.refreshToken, rt)
+
+    if (!doRefreshTokensMatch) {
+      throw new ForbiddenException('Access Denied')
+    }
+
+    const { accessToken, refreshToken } = await this.createToken(user.id, user.email)
+    await this.updateRefreshToken(user.id, refreshToken)
+
+    return {
+      accessToken,
+      refreshToken,
+      user
     }
   }
 }

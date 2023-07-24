@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core'
 import { ValidationError } from 'class-validator'
+import { NestExpressApplication } from '@nestjs/platform-express'
 import { BadRequestException, ValidationPipe } from '@nestjs/common'
 
 import { AppModule } from './app.module'
 
 const bootstrap = async (): Promise<void> => {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create<NestExpressApplication>(AppModule)
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (validationErrors: ValidationError[] = []): any => {
