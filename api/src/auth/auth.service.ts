@@ -1,13 +1,15 @@
 import * as argon from 'argon2'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
 
 import { User } from '~/user/user.entity'
 import { SignUpInput } from './dto/signup-input'
 import { SignInInput } from './dto/signin-input'
 import { PrismaService } from '~/prisma/prisma.service'
 import { LogoutReturnType, SignReturnType, Token } from './types'
+
+type FieldValues = 'email' | 'username'
 
 @Injectable()
 export class AuthService {
@@ -17,7 +19,31 @@ export class AuthService {
     private configService: ConfigService
   ) {}
 
+  // This will check if the field had a unique value in the database
+  async isFieldUnique(fieldName: FieldValues, value: string): Promise<boolean> {
+    const where: any = {}
+    where[fieldName] = value
+    const fieldExists = await this.prisma.user.findUnique({
+      where,
+      select: {
+        id: true
+      }
+    })
+    return !fieldExists
+  }
+
   async signup(signupInput: SignUpInput): SignReturnType {
+    const isEmailUnique = await this.isFieldUnique('email', signupInput.email)
+    const isUsernameUnique = await this.isFieldUnique('username', signupInput.username)
+
+    if (!isEmailUnique) {
+      throw new ConflictException('The provided email address is already registerd.')
+    }
+
+    if (!isUsernameUnique) {
+      throw new ConflictException('The provided username is already taken.')
+    }
+
     const hashedPassword = await argon.hash(signupInput.password)
     const user = await this.prisma.user.create({
       data: {

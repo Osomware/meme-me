@@ -19,6 +19,10 @@ const bootstrap = async (): Promise<void> => {
       }
     })
   )
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+  })
   await app.listen(3030)
 }
 bootstrap()
