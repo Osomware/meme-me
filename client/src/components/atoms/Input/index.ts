@@ -22,7 +22,7 @@ const Input = w.input(
       color: {
         primary: clsx(
           'bg-section-2 border border-stroke-1 focus:bg-white focus:ring-primary',
-          'placeholder:text-secondary-200 placeholder:text-sm text-secondary',
+          'placeholder:text-secondary-200 text-secondary placeholder:font-normal',
           'focus:border-primary'
         )
       },

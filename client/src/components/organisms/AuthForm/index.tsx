@@ -1,168 +1,123 @@
-import clsx from 'clsx'
 import Link from 'next/link'
-import React, { FC } from 'react'
-import isEmpty from 'lodash/isEmpty'
+import { isEmpty } from 'lodash'
+import { PulseLoader } from 'react-spinners'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import React, { FC, useEffect, useState } from 'react'
 import { AtSign, Lock, Mail, User } from 'react-feather'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
-import Input from '~/components/atoms/Input'
+import useAuth from '~/hooks/useAuth'
+import Alert from '~/components/atoms/Alert'
+import FormInput from '~/components/molecules/FormInput'
 import Button from '~/components/atoms/Buttons/ButtonAction'
-import { FormErrorMessage } from '~/components/atoms/FormErrorMessage'
-import { SignInFormValues, SignInSchema, SignUpFormValues, SignUpSchema } from '~/utils/yup-schema'
+import FormCheckbox from '~/components/molecules/FormCheckbox'
+import { SignInSchema, SignUpFormValues, SignUpSchema } from '~/utils/yup-schema'
 
 export type AuthFormProps = {
   isSignInPage?: boolean
-  actions: {
-    handleAuthSubmit: SubmitHandler<SignUpFormValues | SignInFormValues>
-  }
 }
 
 const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
   const isSignInPage = props.isSignInPage === true
-  const {
-    actions: { handleAuthSubmit }
-  } = props
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<SignUpFormValues>({
+  // States
+  const [errorMessage, setErrorMessage] = useState<string>('')
+
+  // Auth Hooks
+  const { handleSignUpMutation } = useAuth()
+  const signUpAction = handleSignUpMutation()
+  const { isLoading: isLoadingSignUp, isSuccess: isSuccessSignUp } = signUpAction
+
+  const methods = useForm<SignUpFormValues>({
     mode: 'onTouched',
     resolver: yupResolver(isSignInPage ? SignInSchema : SignUpSchema) as any
   })
 
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = methods
+
+  const handleAuthSubmit: SubmitHandler<SignUpFormValues> = async (data): Promise<void> => {
+    try {
+      if (isSignInPage) {
+        alert(JSON.stringify(data, null, 2))
+      } else {
+        await signUpAction.mutateAsync({
+          name: data.name,
+          email: data.email,
+          username: data.username,
+          password: data.password
+        })
+      }
+    } catch (error: any) {
+      error?.response?.errors?.forEach((err: any) => {
+        setErrorMessage(err?.message)
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (isSuccessSignUp) {
+      reset()
+      setErrorMessage('')
+    }
+  }, [isSuccessSignUp])
+
   return (
-    <form
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onSubmit={handleSubmit(handleAuthSubmit)}
-      className="flex flex-col space-y-6"
-    >
-      <div className="space-y-5">
-        {!isSignInPage && (
-          <>
-            {/* Name Field */}
-            <section className="flex flex-col space-y-1">
-              <div className="group relative">
-                <div className="inset-y-0 flex items-center left-4 absolute">
-                  <User
-                    className={clsx(
-                      'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
-                      !isEmpty(errors?.name) ? 'text-rose-500 group-focus-within:text-rose-500' : ''
-                    )}
-                  />
-                </div>
-                <Input
-                  type="text"
-                  color="primary"
-                  {...register('name')}
-                  placeholder="Name"
-                  className="pl-12"
-                  iserror={!isEmpty(errors?.name)}
-                />
-              </div>
-              {!isEmpty(errors?.name) && (
-                <FormErrorMessage>{errors?.name.message}</FormErrorMessage>
-              )}
-            </section>
-            {/* Username Field */}
-            <section className="flex flex-col space-y-1">
-              <div className="group relative">
-                <div className="inset-y-0 flex items-center left-4 absolute">
-                  <AtSign
-                    className={clsx(
-                      'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
-                      !isEmpty(errors?.username)
-                        ? 'text-rose-500 group-focus-within:text-rose-500'
-                        : ''
-                    )}
-                  />
-                </div>
-                <Input
-                  type="text"
-                  color="primary"
-                  {...register('username')}
-                  placeholder="Username"
-                  className="pl-12"
-                  iserror={!isEmpty(errors?.username)}
-                />
-              </div>
-              {!isEmpty(errors?.username) && (
-                <FormErrorMessage>{errors?.username.message}</FormErrorMessage>
-              )}
-            </section>
-          </>
-        )}
-        {/* Email Field */}
-        <section className="flex flex-col space-y-1">
-          <div className="group relative">
-            <div className="inset-y-0 flex items-center left-4 absolute">
-              <Mail
-                className={clsx(
-                  'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
-                  !isEmpty(errors.email) ? 'text-rose-500 group-focus-within:text-rose-500' : ''
-                )}
-              />
-            </div>
-            <Input
-              type="text"
-              color="primary"
-              {...register('email')}
-              placeholder="Email"
-              className="pl-12"
-              iserror={!isEmpty(errors.email)}
-            />
-          </div>
-          {!isEmpty(errors.email) && <FormErrorMessage>{errors?.email.message}</FormErrorMessage>}
-        </section>
-        {/* Password Field */}
-        <section className="flex flex-col space-y-1">
-          <div className="group relative">
-            <div className="inset-y-0 flex items-center left-4 absolute">
-              <Lock
-                className={clsx(
-                  'w-5 h-5 stroke-1 text-secondary-100 group-focus-within:text-primary',
-                  !isEmpty(errors.password) ? 'text-rose-500 group-focus-within:text-rose-500' : ''
-                )}
-              />
-            </div>
-            <Input
-              type="password"
-              color="primary"
-              {...register('password')}
-              placeholder="Password"
-              className="pl-12"
-              iserror={!isEmpty(errors.password)}
-            />
-          </div>
-          {!isEmpty(errors.password) && (
-            <FormErrorMessage>{errors?.password.message}</FormErrorMessage>
+    <FormProvider {...methods}>
+      {!isEmpty(errorMessage) && (
+        <div className="pb-4">
+          <Alert type="error" message={errorMessage} />
+        </div>
+      )}
+      <form
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onSubmit={handleSubmit(handleAuthSubmit)}
+        className="flex flex-col space-y-6"
+      >
+        <div className="space-y-5">
+          {!isSignInPage && (
+            <>
+              {/* Name Field */}
+              <FormInput type="text" name="name" label="Name" icon={User} />
+              {/* Username Field */}
+              <FormInput type="text" name="username" label="Username" icon={AtSign} />
+            </>
           )}
-        </section>
-      </div>
-      <div className="flex items-center justify-between text-sm">
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            className={clsx(
-              'rounded text-primary focus:ring-primary',
-              'bg-white border-secondary-100'
-            )}
-          />
-          <p className="text-secondary-200 select-none">Remember me</p>
-        </label>
-        <Link
-          href="#"
-          className="font-medium select-none text-fancyBlue hover:underline outline-primary"
+          {/* Email Field */}
+          <FormInput type="email" name="email" label="Email" icon={Mail} />
+          {/* Password Field */}
+          <FormInput type="password" name="password" label="Password" icon={Lock} />
+        </div>
+        {isSignInPage && (
+          <div className="flex items-center justify-between text-sm">
+            <FormCheckbox />
+            <Link
+              href="#"
+              className="font-medium select-none text-fancyBlue hover:underline outline-primary"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+        )}
+        <Button
+          type="submit"
+          variant="primary"
+          className="w-full py-2.5 text-sm"
+          disabled={isSubmitting || isLoadingSignUp}
         >
-          Forgot Password?
-        </Link>
-      </div>
-      <Button type="submit" variant="primary" className="w-full py-2.5 text-sm">
-        {isSignInPage ? 'Sign In' : 'Sign Up'}
-      </Button>
-    </form>
+          {isSubmitting || isLoadingSignUp ? (
+            <PulseLoader color="#e6d7ff" size={8} />
+          ) : isSignInPage ? (
+            'Sign In'
+          ) : (
+            'Sign Up'
+          )}
+        </Button>
+      </form>
+    </FormProvider>
   )
 }
 
