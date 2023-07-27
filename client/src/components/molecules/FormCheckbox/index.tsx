@@ -9,6 +9,7 @@ const FormCheckbox: FC<FormCheckboxProps> = ({ ...rest }): JSX.Element => {
       <input
         type="checkbox"
         {...rest}
+        defaultChecked
         className={clsx('rounded text-primary focus:ring-primary', 'bg-white border-secondary-100')}
       />
       <p className="text-secondary-200 select-none">Remember me</p>

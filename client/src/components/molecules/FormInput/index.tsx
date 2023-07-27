@@ -40,7 +40,7 @@ const FormInput: React.FC<FormInputProps> = (props): JSX.Element => {
           color="primary"
           className="pl-12 text-sm py-2.5 font-medium"
           {...register(name)}
-          disabled={isSubmitting || isSubmitting}
+          disabled={isSubmitting}
           placeholder={capitalize(label)}
           iserror={!isEmpty(errors[name])}
         />
