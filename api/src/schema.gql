@@ -44,5 +44,6 @@ type User {
   email: String!
   id: Int!
   name: String!
+  role: String!
   username: String!
 }

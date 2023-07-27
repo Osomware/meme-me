@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { isEmpty } from 'lodash'
-import { PulseLoader } from 'react-spinners'
 import { yupResolver } from '@hookform/resolvers/yup'
 import React, { FC, useEffect, useState } from 'react'
 import { AtSign, Lock, Mail, User } from 'react-feather'
@@ -9,8 +8,8 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import useAuth from '~/hooks/useAuth'
 import Alert from '~/components/atoms/Alert'
 import FormInput from '~/components/molecules/FormInput'
-import Button from '~/components/atoms/Buttons/ButtonAction'
 import FormCheckbox from '~/components/molecules/FormCheckbox'
+import LoadingButton from '~/components/atoms/Buttons/LoadingButton'
 import { SignInSchema, SignUpFormValues, SignUpSchema } from '~/utils/yup-schema'
 
 export type AuthFormProps = {
@@ -119,20 +118,9 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
             </Link>
           </div>
         )}
-        <Button
-          type="submit"
-          variant="primary"
-          className="w-full py-2.5 text-sm"
-          disabled={isSubmitting || isLoadingSignUp || isLoadingSignIn}
-        >
-          {isSubmitting || isLoadingSignUp ? (
-            <PulseLoader color="#e6d7ff" size={8} />
-          ) : isSignInPage ? (
-            'Sign In'
-          ) : (
-            'Sign Up'
-          )}
-        </Button>
+        <LoadingButton isLoading={isSubmitting || isLoadingSignUp || isLoadingSignIn}>
+          {isSignInPage ? 'Sign In' : 'Sign Up'}
+        </LoadingButton>
       </form>
     </FormProvider>
   )

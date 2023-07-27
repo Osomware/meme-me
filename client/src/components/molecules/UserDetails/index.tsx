@@ -8,7 +8,7 @@ import { DetaulAvatar } from '~/utils/constants/defaultAvatarStyle'
 type Size = 'xs' | 'sm' | 'base'
 
 type UserDetailsProps = {
-  avatar: DetaulAvatar
+  avatar: DetaulAvatar | string
   name: string
   username: string
   size?: Size
