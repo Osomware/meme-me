@@ -14,3 +14,18 @@ export const SIGN_UP_MUTATION = gql`
     }
   }
 `
+
+export const SIGN_IN_MUTATION = gql`
+  mutation Signin($input: SignInInput!) {
+    signin(signInInput: $input) {
+      accessToken
+      refreshToken
+      user {
+        id
+        email
+        name
+        username
+      }
+    }
+  }
+`

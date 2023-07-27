@@ -24,9 +24,11 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<string>('')
 
   // Auth Hooks
-  const { handleSignUpMutation } = useAuth()
+  const { handleSignInMutation, handleSignUpMutation } = useAuth()
   const signUpAction = handleSignUpMutation()
+  const signInAction = handleSignInMutation()
   const { isLoading: isLoadingSignUp, isSuccess: isSuccessSignUp } = signUpAction
+  const { isLoading: isLoadingSignIn, isSuccess: isSuccessSignIn } = signInAction
 
   const methods = useForm<SignUpFormValues>({
     mode: 'onTouched',
@@ -42,7 +44,10 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
   const handleAuthSubmit: SubmitHandler<SignUpFormValues> = async (data): Promise<void> => {
     try {
       if (isSignInPage) {
-        alert(JSON.stringify(data, null, 2))
+        await signInAction.mutateAsync({
+          email: data.email,
+          password: data.password
+        })
       } else {
         await signUpAction.mutateAsync({
           name: data.name,
@@ -59,11 +64,11 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
   }
 
   useEffect(() => {
-    if (isSuccessSignUp) {
+    if (isSuccessSignUp || isSuccessSignIn) {
       reset()
       setErrorMessage('')
     }
-  }, [isSuccessSignUp])
+  }, [isSuccessSignUp, isSuccessSignIn])
 
   return (
     <FormProvider {...methods}>
@@ -81,19 +86,31 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
           {!isSignInPage && (
             <>
               {/* Name Field */}
-              <FormInput type="text" name="name" label="Name" icon={User} />
+              <FormInput type="text" name="name" label="Name" icon={User} disabled={isSubmitting} />
               {/* Username Field */}
-              <FormInput type="text" name="username" label="Username" icon={AtSign} />
+              <FormInput
+                type="text"
+                name="username"
+                label="Username"
+                icon={AtSign}
+                disabled={isSubmitting}
+              />
             </>
           )}
           {/* Email Field */}
-          <FormInput type="email" name="email" label="Email" icon={Mail} />
+          <FormInput type="email" name="email" label="Email" icon={Mail} disabled={isSubmitting} />
           {/* Password Field */}
-          <FormInput type="password" name="password" label="Password" icon={Lock} />
+          <FormInput
+            type="password"
+            name="password"
+            label="Password"
+            icon={Lock}
+            disabled={isSubmitting}
+          />
         </div>
         {isSignInPage && (
           <div className="flex items-center justify-between text-sm">
-            <FormCheckbox />
+            <FormCheckbox disabled={isSubmitting} />
             <Link
               href="#"
               className="font-medium select-none text-fancyBlue hover:underline outline-primary"
@@ -106,7 +123,7 @@ const AuthForm: FC<AuthFormProps> = (props): JSX.Element => {
           type="submit"
           variant="primary"
           className="w-full py-2.5 text-sm"
-          disabled={isSubmitting || isLoadingSignUp}
+          disabled={isSubmitting || isLoadingSignUp || isLoadingSignIn}
         >
           {isSubmitting || isLoadingSignUp ? (
             <PulseLoader color="#e6d7ff" size={8} />

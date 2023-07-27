@@ -1,15 +1,6 @@
-import { Field, InputType } from '@nestjs/graphql'
-import { IsNotEmpty, IsString, IsEmail } from 'class-validator'
+import { InputType, PickType } from '@nestjs/graphql'
+
+import { SignUpInput } from './signup-input'
 
 @InputType()
-export class SignInInput {
-  @IsNotEmpty()
-  @IsEmail()
-  @Field()
-  email: string
-
-  @IsNotEmpty()
-  @IsString()
-  @Field()
-  password: string
-}
+export class SignInInput extends PickType(SignUpInput, ['email', 'password'] as const) {}

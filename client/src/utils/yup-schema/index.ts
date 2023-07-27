@@ -14,7 +14,10 @@ export const SignUpSchema = yup.object().shape({
     .matches(/[0-9]/, 'Password must contain at least one number')
 })
 
-export const SignInSchema = SignUpSchema.omit(['name', 'username'])
+export const SignInSchema = yup.object().shape({
+  email: yup.string().email().required().label('Email'),
+  password: yup.string().required().label('Password')
+})
 
 export type SignUpFormValues = yup.InferType<typeof SignUpSchema>
 export type SignInFormValues = yup.InferType<typeof SignInSchema>
