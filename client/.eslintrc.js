@@ -3,12 +3,7 @@ module.exports = {
     browser: true,
     es2021: true
   },
-  extends: [
-    'plugin:react/recommended',
-    'standard-with-typescript',
-    'prettier',
-    'plugin:@tanstack/eslint-plugin-query/recommended'
-  ],
+  extends: ['plugin:react/recommended', 'standard-with-typescript', 'prettier'],
   parser: '@typescript-eslint/parser',
   overrides: [],
   parserOptions: {

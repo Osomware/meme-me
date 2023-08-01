@@ -10,6 +10,7 @@ export const SIGN_UP_MUTATION = gql`
         name
         email
         username
+        role
       }
     }
   }
@@ -25,7 +26,16 @@ export const SIGN_IN_MUTATION = gql`
         email
         name
         username
+        role
       }
+    }
+  }
+`
+
+export const SIGN_OUT_MUTATION = gql`
+  mutation Logout($logoutId: Int!) {
+    logout(id: $logoutId) {
+      loggedOut
     }
   }
 `

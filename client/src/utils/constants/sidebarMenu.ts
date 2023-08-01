@@ -15,7 +15,7 @@ export const sidebarMenus: ISidebar[] = [
   {
     Icon: People,
     name: 'Profile',
-    href: '/profile'
+    href: ''
   },
   {
     Icon: BookmarkOne,
