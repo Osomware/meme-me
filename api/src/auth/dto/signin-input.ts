@@ -1,6 +1,6 @@
 import { InputType, PickType } from '@nestjs/graphql'
 
-import { SignUpInput } from './signup-input'
+import { UserCreateInput } from '~/@generated/user/user-create.input'
 
 @InputType()
-export class SignInInput extends PickType(SignUpInput, ['email', 'password'] as const) {}
+export class SignInInput extends PickType(UserCreateInput, ['email', 'password'] as const) {}

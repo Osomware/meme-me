@@ -4,7 +4,6 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
 import { User } from '~/user/user.entity'
 import { AuthService } from './auth.service'
 import { Auth } from './entities/auth.entity'
-import { SignUpInput } from './dto/signup-input'
 import { SignInInput } from './dto/signin-input'
 import { SignResponse } from './dto/sign-response'
 import { LogoutResponse } from './dto/logout-response'
@@ -14,6 +13,7 @@ import { NewTokensResonse } from './dto/new-tokens-reponse'
 import { RefreshTokenGuard } from './guards/refreshToken.guard'
 import { CurrentUser } from './decorators/currentUser.decorator'
 import { CurrentUserId } from './decorators/currentUserId.decotrator'
+import { UserCreateInput } from '~/@generated/user/user-create.input'
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -21,7 +21,7 @@ export class AuthResolver {
 
   @Public()
   @Mutation(() => SignResponse)
-  signup(@Args('signupInput') signupInput: SignUpInput): SignReturnType {
+  signup(@Args('signupInput') signupInput: UserCreateInput): SignReturnType {
     return this.authService.signup(signupInput)
   }
 
