@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type LogoutResponse {
   loggedOut: Boolean!
 }
@@ -10,7 +15,7 @@ type Mutation {
   getNewTokens: NewTokensResonse!
   logout(id: Int!): LogoutResponse!
   signin(signInInput: SignInInput!): SignResponse!
-  signup(signupInput: SignUpInput!): SignResponse!
+  signup(signupInput: UserCreateInput!): SignResponse!
 }
 
 type NewTokensResonse {
@@ -20,6 +25,11 @@ type NewTokensResonse {
 
 type Query {
   findOne(id: Int!): User!
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 input SignInInput {
@@ -33,17 +43,21 @@ type SignResponse {
   user: User!
 }
 
-input SignUpInput {
-  email: String!
-  name: String!
-  password: String!
-  username: String!
-}
-
 type User {
   email: String!
   id: Int!
   name: String!
   role: String!
+  username: String!
+}
+
+input UserCreateInput {
+  createdAt: DateTime
+  email: String!
+  name: String!
+  password: String!
+  refreshToken: String
+  role: Role
+  updatedAt: DateTime
   username: String!
 }

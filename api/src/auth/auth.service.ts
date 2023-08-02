@@ -4,10 +4,10 @@ import { ConfigService } from '@nestjs/config'
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
 
 import { User } from '~/user/user.entity'
-import { SignUpInput } from './dto/signup-input'
 import { SignInInput } from './dto/signin-input'
 import { PrismaService } from '~/prisma/prisma.service'
 import { LogoutReturnType, SignReturnType, Token } from './types'
+import { UserCreateInput } from '~/@generated/user/user-create.input'
 
 type FieldValues = 'email' | 'username'
 
@@ -32,7 +32,7 @@ export class AuthService {
     return !fieldExists
   }
 
-  async signup(signupInput: SignUpInput): SignReturnType {
+  async signup(signupInput: UserCreateInput): SignReturnType {
     const isEmailUnique = await this.isFieldUnique('email', signupInput.email)
     const isUsernameUnique = await this.isFieldUnique('username', signupInput.username)
 
