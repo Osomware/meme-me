@@ -10,7 +10,7 @@ import { ChevronDown, ChevronLeft, MapPin, Smile } from 'react-feather'
 
 import Carousel from './../Carousel'
 import { useStore } from '~/utils/zustand'
-import { useZustand } from '~/hooks/zustandHooks'
+import { useZustand } from '~/hooks/useZustand'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import DialogTemplate from '~/components/templates/DialogTemplate'
 import UploadPhotoVideoIcon from '~/utils/icons/UploadPhotoVideoIcon'
@@ -74,7 +74,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
         closeModal
       }}
       className={clsx(
-        'w-ful font-normal text-secondary rounded-[20px]',
+        'w-ful font-normal text-secondary !rounded-[20px]',
         !isEmpty(isFileExist) ? 'max-w-[710px]' : 'max-w-xl'
       )}
     >
@@ -126,7 +126,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                 type="button"
                 variant="primary"
                 onClick={() => document.getElementById('file-upload')?.click()}
-                className="mt-4 text-base font-light px-3 py-1"
+                className="mt-4 text-base !font-light px-3 py-1"
               >
                 Select from computer
               </Button>
@@ -236,7 +236,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                               </Switch>
                             </div>
                           </Switch.Group>
-                          <p className="mt-2 text-secondary-200 text-xs">
+                          <p className="mt-2 text-secondary-200 text-xs font-light">
                             Only you will see the total number of likes and views on this post. You
                             change this alter by going to the ... menu at the top of the post. To
                             hide like counts on other’s post, go to your account settings.
@@ -268,7 +268,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                               </Switch>
                             </div>
                           </Switch.Group>
-                          <p className="mt-2 text-secondary-200 text-xs">
+                          <p className="mt-2 text-secondary-200 text-xs font-light">
                             You can change this later by going to the ... menu at the top of your
                             post.
                           </p>

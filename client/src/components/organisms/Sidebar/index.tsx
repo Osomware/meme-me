@@ -12,12 +12,12 @@ import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 import MenuOptions from './MenuOptions'
 import { useStore } from '~/utils/zustand'
 import LogoIcon from '~/utils/icons/LogoIcon'
-import { useZustand } from '~/hooks/zustandHooks'
+import { useZustand } from '~/hooks/useZustand'
+import UploadPostModal from './../UploadPostModal'
 import LogoWitTitle from '~/utils/icons/LogoWithTitle'
 import UserDetails from '~/components/molecules/UserDetails'
 import { ISidebar, sidebarMenus } from '~/utils/constants/sidebarMenu'
 import { defaultAvatarStyle } from '~/utils/constants/defaultAvatarStyle'
-import UploadPostModal from '../UploadPostModal'
 
 const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
 
@@ -33,7 +33,7 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
 
   const myConfig = genConfig(defaultAvatarStyle as AvatarFullConfig)
 
-  const isActiveRoute = (route: string): boolean => router.asPath === route
+  const isActiveRoute = (route: string): boolean => router.asPath.includes(route)
 
   const handleOpenUploadModal = (): void => {
     setIsUploadModal(!isUploadModal)

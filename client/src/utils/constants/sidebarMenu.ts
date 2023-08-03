@@ -5,7 +5,7 @@ export const sidebarMenus: ISidebar[] = [
   {
     Icon: HomeTwo,
     name: 'Home',
-    href: '/'
+    href: '/home'
   },
   {
     Icon: Wechat,
