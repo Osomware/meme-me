@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import { Popover } from '@headlessui/react'
 import { deleteCookie } from 'cookies-next'
+import Spinner from '~/utils/icons/Spinner'
 import { HamburgerButton } from '@icon-park/react'
 import { AlertOctagon, Clock, Moon, Settings } from 'react-feather'
 
@@ -106,7 +107,7 @@ const MenuOptions: FC<MenuOptionsProps> = (): JSX.Element => {
                             'outline-primary hover:text-secondary'
                           )}
                         >
-                          Logout
+                          {store.isAuthenticated ? 'Logout' : <Spinner width={5} height={5} />}
                         </button>
                       </div>
                     </div>

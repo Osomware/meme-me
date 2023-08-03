@@ -1,7 +1,8 @@
 import clsx from 'clsx'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { isEmpty } from 'lodash'
+import dynamic from 'next/dynamic'
+import { Add } from '@icon-park/react'
 import { useRouter } from 'next/router'
 import { ChevronDown } from 'react-feather'
 import { Disclosure } from '@headlessui/react'
@@ -16,6 +17,7 @@ import LogoWitTitle from '~/utils/icons/LogoWithTitle'
 import UserDetails from '~/components/molecules/UserDetails'
 import { ISidebar, sidebarMenus } from '~/utils/constants/sidebarMenu'
 import { defaultAvatarStyle } from '~/utils/constants/defaultAvatarStyle'
+import UploadPostModal from '../UploadPostModal'
 
 const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
 
@@ -25,12 +27,17 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
   const router = useRouter()
 
   const [sidebarLinks, setSidebarLinks] = useState<ISidebar[]>(sidebarMenus)
+  const [isUploadModal, setIsUploadModal] = useState<boolean>(false)
 
   const store = useZustand(useStore, (state) => state)
 
   const myConfig = genConfig(defaultAvatarStyle as AvatarFullConfig)
 
   const isActiveRoute = (route: string): boolean => router.asPath === route
+
+  const handleOpenUploadModal = (): void => {
+    setIsUploadModal(!isUploadModal)
+  }
 
   useEffect(() => {
     const updatedSidebarLinks = sidebarLinks.map((link) => {
@@ -87,6 +94,34 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
               </li>
             )
           })}
+          <li className="px-3">
+            <button
+              type="button"
+              onClick={handleOpenUploadModal}
+              className={clsx(
+                'group w-full inline-flex items-center space-x-4 py-1.5 md:py-2',
+                'transition ease-in-out duration-75 outline-primary',
+                'px-1.5 md:px-6 hover:bg-background rounded-lg',
+                'text-secondary-100',
+                isUploadModal ? '!text-primary' : 'hover:text-secondary-300'
+              )}
+            >
+              <Add
+                size={28}
+                theme={isUploadModal ? 'filled' : 'outline'}
+                className="group-hover:scale-105"
+              />
+              <span className="font-bold hidden md:block">Create</span>
+            </button>
+
+            {/* Open Upload Modal */}
+            <UploadPostModal
+              {...{
+                isOpen: isUploadModal,
+                closeModal: handleOpenUploadModal
+              }}
+            />
+          </li>
         </ul>
       </nav>
       <div className="mt-6 flex flex-col items-start md:items-start">
