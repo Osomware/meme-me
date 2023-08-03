@@ -1,15 +1,18 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import Image from 'next/image'
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Remind, UploadOne } from '@icon-park/react'
 
+import UploadPostModal from './../UploadPostModal'
 import SearchField from '~/components/molecules/SearchField'
 import SuggestedUserList from '~/components/molecules/SuggestedUserList'
 
 type SuggestionRightBarProps = Record<string, unknown>
 
 const SuggestionRightBar: FC<SuggestionRightBarProps> = (): JSX.Element => {
+  const [isUploadModal, setIsUploadModal] = useState<boolean>(false)
+
   const businessLinks = [
     { label: 'About', href: '#' },
     { label: 'Help', href: '#' },
@@ -17,6 +20,10 @@ const SuggestionRightBar: FC<SuggestionRightBarProps> = (): JSX.Element => {
     { label: 'Popular', href: '#' },
     { label: 'Language', href: '#' }
   ]
+
+  const handleOpenUploadModal = (): void => {
+    setIsUploadModal(!isUploadModal)
+  }
 
   return (
     <div className="flex flex-col overflow-y-auto custom-scrollbar h-full">
@@ -40,6 +47,8 @@ const SuggestionRightBar: FC<SuggestionRightBarProps> = (): JSX.Element => {
           </button>
           {/* Upload Button */}
           <button
+            type="button"
+            onClick={handleOpenUploadModal}
             className={clsx(
               'bg-fancyBlue text-white p-4 rounded-full',
               'transition ease-in-out duration-200 focus:ring-2',
@@ -48,6 +57,14 @@ const SuggestionRightBar: FC<SuggestionRightBarProps> = (): JSX.Element => {
           >
             <UploadOne size={20} theme="filled" />
           </button>
+
+          {/* Open Upload Modal */}
+          <UploadPostModal
+            {...{
+              isOpen: isUploadModal,
+              closeModal: handleOpenUploadModal
+            }}
+          />
         </header>
         {/* Suggested User List */}
         <main>
