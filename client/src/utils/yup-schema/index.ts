@@ -36,7 +36,7 @@ export const UserPostSchema = yup.object().shape({
       )
       .required('Files are required')
   ),
-  captions: yup.string().required('Captions are required'),
+  captions: yup.string(),
   location: yup.string()
 })
 

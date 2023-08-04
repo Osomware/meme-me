@@ -14,7 +14,7 @@ const HomeLayout: FC<HomeLayoutProps> = ({ children, metaTitle, className }): JS
   return (
     <>
       <Head>
-        <title>{`Meme me - ${metaTitle}`}</title>
+        <title>{`${metaTitle} • Meme me`}</title>
       </Head>
       <div className="min-h-screen h-screen bg-background flex overflow-hidden">
         {/* Sidebar */}

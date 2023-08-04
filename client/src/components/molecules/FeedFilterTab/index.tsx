@@ -23,7 +23,7 @@ const FeedFilterTab: FC<Props> = (): JSX.Element => {
         route.query = { filter: 'popular' }
         break
       default:
-        route.pathname = '/'
+        route.pathname = '/home'
         break
     }
 

@@ -5,7 +5,7 @@ import { useMutation, UseMutationResult } from '@tanstack/react-query'
 
 import { useStore } from '~/utils/zustand'
 import { gqlClient } from '~/lib/gqlClient'
-import { useZustand } from './zustandHooks'
+import { useZustand } from './useZustand'
 import { IUser } from '~/utils/interface/User'
 import { SignInFormValues, SignUpFormValues } from '~/utils/yup-schema'
 import { SIGN_IN_MUTATION, SIGN_OUT_MUTATION, SIGN_UP_MUTATION } from '~/graphql/mutations/auth'

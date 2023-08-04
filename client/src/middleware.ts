@@ -8,7 +8,7 @@ export const middleware = (request: NextRequest): NextResponse<unknown> | undefi
 
   const isPublicPath = path === '/sign-in' || path === '/sign-up'
   const isProtectedPath =
-    path === '/' ||
+    path === '/home' ||
     path === '/messages' ||
     path.includes('/@') ||
     path === '/saved-post' ||
@@ -17,12 +17,20 @@ export const middleware = (request: NextRequest): NextResponse<unknown> | undefi
   // Check if the path contains a username followed by a valid identifier (e.g., /username, /username/123, etc.)
   const isValidUsernamePath = /^\/@[\w-]+(\/\d+)?$/.test(path)
 
+  if (isEmpty(accessToken) && path === '/') {
+    return NextResponse.redirect(frontendURL + '/sign-in')
+  }
+
+  if (!isEmpty(accessToken) && path === '/') {
+    return NextResponse.redirect(frontendURL + '/home')
+  }
+
   if (isEmpty(accessToken) && isProtectedPath) {
     return NextResponse.redirect(frontendURL + '/sign-in')
   }
 
   if (!isEmpty(accessToken) && isPublicPath) {
-    return NextResponse.redirect(frontendURL)
+    return NextResponse.redirect(frontendURL + '/home')
   }
 
   // If the path is not valid and does not match the valid username pattern, return a 404 response.
@@ -38,6 +46,7 @@ export const config = {
   ],
   matcher: [
     '/',
+    '/home',
     '/messages/:id*',
     '/:username',
     '/:username/:id',

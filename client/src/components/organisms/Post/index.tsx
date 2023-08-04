@@ -55,7 +55,7 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
     <main className="py-6 flex items-start justify-between">
       <section className="flex flex-col sm:flex-row items-start gap-y-2 gap-x-3">
         {/* User Avatar */}
-        <Link href={`/${user.username}`} className="outline-primary">
+        <Link href={`/@${user.username}`} className="outline-primary">
           <ReactNiceAvatar
             className={clsx(
               'border-[3px] border-white rounded-full outline-4',
@@ -67,7 +67,7 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
         <div className="relative w-full max-w-lg flex flex-col space-y-1">
           {/* User Information */}
           <Link
-            href={`/${user.username}`}
+            href={`/@${user.username}`}
             className="group leading-none inline-flex items-center gap-x-2 text-secondary outline-primary"
           >
             <h2 className={clsx('font-bold group-hover:underline')}>{user.username}</h2>

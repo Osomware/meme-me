@@ -9,7 +9,7 @@ import { dummyPosts } from '~/utils/constants/dummyUserPost'
 import FeedFilterTab from '~/components/molecules/FeedFilterTab'
 import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
 
-const Index: NextPage = (): JSX.Element => {
+const Home: NextPage = (): JSX.Element => {
   // SCREEN SIZE CONDITION HOOKS
   const isMaxWidth = useScreenCondition('(max-width: 1380px)')
 
@@ -36,4 +36,4 @@ const Index: NextPage = (): JSX.Element => {
   )
 }
 
-export default Index
+export default Home
