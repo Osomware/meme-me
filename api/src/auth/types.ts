@@ -1,5 +1,4 @@
 import { Prisma, User } from '@prisma/client'
-import { GetResult } from '@prisma/client/runtime/library'
 
 export type Token = {
   accessToken: string
@@ -7,7 +6,7 @@ export type Token = {
 }
 
 export type UserToken = {
-  user: GetResult<User, never>
+  user: User
 } & Token
 
 export type SignReturnType = Promise<Prisma.Prisma__UserClient<UserToken, never>>

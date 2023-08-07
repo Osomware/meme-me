@@ -8,6 +8,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 
 import { AuthModule } from '~/auth/auth.module'
 import { UserModule } from '~/user/user.module'
+import { PostModule } from './post/post.module'
 import { PrismaService } from '~/prisma/prisma.service'
 import { AccessTokenGuard } from '~/auth/guards/accessToken.guard'
 
@@ -22,7 +23,8 @@ import { AccessTokenGuard } from '~/auth/guards/accessToken.guard'
       plugins: [ApolloServerPluginLandingPageLocalDefault()]
     }),
     AuthModule,
-    UserModule
+    UserModule,
+    PostModule
   ],
   controllers: [],
   providers: [PrismaService, { provide: APP_GUARD, useClass: AccessTokenGuard }]

@@ -15,5 +15,5 @@ export const createRandomUser = (): User => ({
 })
 
 export const newUsers: User[] = faker.helpers.multiple(createRandomUser, {
-  count: 10
+  count: 5
 })

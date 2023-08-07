@@ -7,15 +7,102 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input EnumRoleFilter {
+  equals: Role
+  in: [Role!]
+  not: NestedEnumRoleFilter
+  notIn: [Role!]
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
 type LogoutResponse {
   loggedOut: Boolean!
 }
 
 type Mutation {
+  createPost(createPostInput: PostCreateWithoutUserInput!): Post!
   getNewTokens: NewTokensResonse!
   logout(id: Int!): LogoutResponse!
   signin(signInInput: SignInInput!): SignResponse!
   signup(signupInput: UserCreateInput!): SignResponse!
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedEnumRoleFilter {
+  equals: Role
+  in: [Role!]
+  not: NestedEnumRoleFilter
+  notIn: [Role!]
+}
+
+input NestedIntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
+input NestedStringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
 }
 
 type NewTokensResonse {
@@ -23,8 +110,101 @@ type NewTokensResonse {
   refreshToken: String!
 }
 
+enum NullsOrder {
+  first
+  last
+}
+
+type Post {
+  createdAt: DateTime
+  id: ID!
+  mediaUrls: [String!]
+  title: String
+  updatedAt: DateTime
+  user: User
+  userId: Int
+}
+
+input PostCreateManyUserInput {
+  createdAt: DateTime
+  id: Int
+  mediaUrls: PostCreatemediaUrlsInput
+  title: String
+  updatedAt: DateTime
+}
+
+input PostCreateManyUserInputEnvelope {
+  data: [PostCreateManyUserInput!]!
+  skipDuplicates: Boolean
+}
+
+input PostCreateNestedManyWithoutUserInput {
+  connect: [PostWhereUniqueInput!]
+  connectOrCreate: [PostCreateOrConnectWithoutUserInput!]
+  create: [PostCreateWithoutUserInput!]
+  createMany: PostCreateManyUserInputEnvelope
+}
+
+input PostCreateOrConnectWithoutUserInput {
+  create: PostCreateWithoutUserInput!
+  where: PostWhereUniqueInput!
+}
+
+input PostCreateWithoutUserInput {
+  createdAt: DateTime
+  mediaUrls: PostCreatemediaUrlsInput
+  title: String
+  updatedAt: DateTime
+}
+
+input PostCreatemediaUrlsInput {
+  set: [String!]!
+}
+
+input PostListRelationFilter {
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
+}
+
+input PostOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  mediaUrls: StringNullableListFilter
+  title: StringNullableFilter
+  updatedAt: DateTimeFilter
+  user: UserRelationFilter
+  userId: IntFilter
+}
+
+input PostWhereUniqueInput {
+  AND: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  createdAt: DateTimeFilter
+  id: Int
+  mediaUrls: StringNullableListFilter
+  title: StringNullableFilter
+  updatedAt: DateTimeFilter
+  user: UserRelationFilter
+  userId: IntFilter
+}
+
 type Query {
-  findOne(id: Int!): User!
+  findOneUser(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): User!
+  post(id: Int!): Post!
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 enum Role {
@@ -43,6 +223,54 @@ type SignResponse {
   user: User!
 }
 
+enum SortOrder {
+  asc
+  desc
+}
+
+input SortOrderInput {
+  nulls: NullsOrder
+  sort: SortOrder!
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  mode: QueryMode
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableListFilter {
+  equals: [String!]
+  has: String
+  hasEvery: [String!]
+  hasSome: [String!]
+  isEmpty: Boolean
+}
+
 type User {
   email: String!
   id: Int!
@@ -56,8 +284,71 @@ input UserCreateInput {
   email: String!
   name: String!
   password: String!
+  posts: PostCreateNestedManyWithoutUserInput
   refreshToken: String
   role: Role
   updatedAt: DateTime
   username: String!
+}
+
+input UserOrderByWithRelationInput {
+  createdAt: SortOrder
+  email: SortOrder
+  id: SortOrder
+  name: SortOrder
+  password: SortOrder
+  posts: PostOrderByRelationAggregateInput
+  refreshToken: SortOrderInput
+  role: SortOrder
+  updatedAt: SortOrder
+  username: SortOrder
+}
+
+input UserRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
+enum UserScalarFieldEnum {
+  createdAt
+  email
+  id
+  name
+  password
+  refreshToken
+  role
+  updatedAt
+  username
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  createdAt: DateTimeFilter
+  email: StringFilter
+  id: IntFilter
+  name: StringFilter
+  password: StringFilter
+  posts: PostListRelationFilter
+  refreshToken: StringNullableFilter
+  role: EnumRoleFilter
+  updatedAt: DateTimeFilter
+  username: StringFilter
+}
+
+input UserWhereUniqueInput {
+  AND: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  createdAt: DateTimeFilter
+  email: String
+  id: Int
+  name: StringFilter
+  password: StringFilter
+  posts: PostListRelationFilter
+  refreshToken: StringNullableFilter
+  role: EnumRoleFilter
+  updatedAt: DateTimeFilter
+  username: String
 }
