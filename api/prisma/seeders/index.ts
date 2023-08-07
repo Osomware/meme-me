@@ -1,18 +1,38 @@
 import { PrismaClient } from '@prisma/client'
 
-import { newUsers } from './users'
+import { newUsers, User } from './users'
+import { newPosts, Post } from './posts'
 
 const prisma = new PrismaClient()
 
 const seed = async (): Promise<void> => {
-  await prisma.user.createMany({
-    data: newUsers
-  })
+  await Promise.all(
+    newUsers.map(async (user: User) => {
+      await prisma.user.create({
+        data: {
+          ...user,
+          posts: {
+            createMany: {
+              data: newPosts.map((post: Post) => ({
+                ...post
+              }))
+            }
+          }
+        },
+        include: {
+          posts: true
+        }
+      })
+    })
+  )
 }
 
 ;(async () => {
   await seed()
   console.info('Success: Created New Seeder')
-})().catch((error) => {
-  console.error('Error in IIFE:', error)
+  await prisma.$disconnect()
+})().catch(async (e) => {
+  console.error('Error in IIFE:', e)
+  await prisma.$disconnect()
+  process.exit(1)
 })
