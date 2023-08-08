@@ -1,4 +1,5 @@
 @import url('./tailwind.css');
+@import url('@uploadthing/react/styles.css');
 @import url('react-responsive-modal/styles.css');
 @import url('react-responsive-carousel/lib/styles/carousel.min.css');
 

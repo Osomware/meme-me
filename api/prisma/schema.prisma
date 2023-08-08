@@ -39,11 +39,13 @@ enum Role {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  mediaUrls String[]
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id                 Int      @id @default(autoincrement())
+  title              String?
+  mediaUrls          String[]
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId             Int
+  isHideLikeAndCount Boolean  @default(false)
+  isTurnOffComment   Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now())
 }

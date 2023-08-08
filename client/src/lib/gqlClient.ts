@@ -18,7 +18,8 @@ export const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, {
       headers: {
         ...request.headers,
         accessToken: accessToken as string,
-        refreshToken: refreshToken as string
+        refreshToken: refreshToken as string,
+        authorization: `Bearer ${accessToken as string}`
       }
     }
   },
@@ -29,8 +30,5 @@ export const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, {
       deleteCookie('refreshToken')
       document.location.href = '/sign-in'
     }
-  },
-  headers: {
-    Authorization: `Bearer ${getCookie('accessToken') as string}`
   }
 })
