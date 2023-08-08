@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { isEmpty } from 'lodash'
 import dynamic from 'next/dynamic'
+import toast from 'react-hot-toast'
 import { yupResolver } from '@hookform/resolvers/yup'
 import React, { FC, ReactNode, useState } from 'react'
 import { Disclosure, Switch } from '@headlessui/react'
@@ -9,11 +10,12 @@ import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 import { ChevronDown, ChevronLeft, MapPin, Smile } from 'react-feather'
 
 import Carousel from './../Carousel'
+import usePost from '~/hooks/usePost'
 import { useStore } from '~/utils/zustand'
+import Spinner from '~/utils/icons/Spinner'
 import { useZustand } from '~/hooks/useZustand'
-import Button from '~/components/atoms/Buttons/ButtonAction'
+import { UploadDropzone } from '~/utils/uploadthing'
 import DialogTemplate from '~/components/templates/DialogTemplate'
-import UploadPhotoVideoIcon from '~/utils/icons/UploadPhotoVideoIcon'
 import { UserPostFormValues, UserPostSchema } from '~/utils/yup-schema'
 
 const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
@@ -31,40 +33,52 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
   const [isHideCountPostAndLike, setIsHideCountPostAndLike] = useState<boolean>(false)
   const [isTurnOffComment, setTurnOffComment] = useState<boolean>(false)
 
-  const { reset, watch, register, setValue, handleSubmit } = useForm({
+  const { handlePostMutation } = usePost()
+  const postMutation = handlePostMutation()
+
+  const {
+    reset,
+    watch,
+    register,
+    setValue,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = useForm({
     mode: 'onTouched',
     resolver: yupResolver(UserPostSchema)
   })
 
-  const isFileExist = watch('files')
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const files = e.target.files
-    const fileArray = files !== null ? Array.from(files) : []
-    setValue('files', fileArray)
-
-    const urls = fileArray.map((file) => URL.createObjectURL(file))
-    setFileUrls(urls)
-  }
+  const isFileExist = watch('mediaUrls')
 
   const handleReset = (): void => {
     setFileUrls([])
     reset({
-      files: undefined,
+      mediaUrls: undefined,
       captions: '',
       location: ''
     })
   }
 
   const handleSubmitPost: SubmitHandler<UserPostFormValues> = async (data): Promise<void> => {
-    const payload = {
-      ...data,
-      isHideCountPostAndLike,
-      isTurnOffComment
-    }
-    alert(JSON.stringify(payload, null, 2))
-    handleReset()
-    closeModal()
+    await postMutation.mutateAsync(
+      {
+        title: data.captions ?? '',
+        mediaUrls: {
+          set: data.mediaUrls as string[]
+        },
+        isHideLikeAndCount: isHideCountPostAndLike,
+        isTurnOffComment
+      },
+      {
+        onSettled() {
+          handleReset()
+          closeModal()
+        },
+        onError: (error: any) => {
+          toast.error(error?.message)
+        }
+      }
+    )
   }
 
   return (
@@ -94,9 +108,12 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
           {!isEmpty(isFileExist) ? (
             <button
               type="submit"
-              className="outline-primary p-0.5 text-primary hover:text-primary-200 text-sm"
+              className={clsx(
+                'outline-primary p-0.5 text-primary hover:text-primary-200 text-sm',
+                isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
+              )}
             >
-              Share
+              {isSubmitting ? <Spinner width={5} height={5} /> : 'Share'}
             </button>
           ) : (
             <span></span>
@@ -108,28 +125,20 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
             isEmpty(isFileExist) && 'flex place-content-center'
           )}
         >
-          {/* Upload Videos/Photos */}
+          {/* Upload Videos/Photos  */}
           {isEmpty(isFileExist) && (
-            <section className="flex items-center justify-center flex-col">
-              <UploadPhotoVideoIcon className="text-secondary w-40 h-36" />
-              <h1 className="text-xl">Drag photos and videos here</h1>
-              <input
-                type="file"
-                id="file-upload"
-                name="file-upload"
-                accept="image/*, video/*"
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-                multiple={true}
+            <section className="flex items-center justify-center flex-col mb-10">
+              <UploadDropzone
+                endpoint="mediaPost"
+                onClientUploadComplete={(res) => {
+                  const mediaUrls = res?.map((file) => file.fileUrl)
+                  setValue('mediaUrls', mediaUrls)
+                  setFileUrls(mediaUrls ?? [])
+                }}
+                onUploadError={(error: Error) => {
+                  toast.error(`Error: ${error.message}`)
+                }}
               />
-              <Button
-                type="button"
-                variant="primary"
-                onClick={() => document.getElementById('file-upload')?.click()}
-                className="mt-4 text-base !font-light px-3 py-1"
-              >
-                Select from computer
-              </Button>
             </section>
           )}
           {!isEmpty(isFileExist) && (
@@ -176,8 +185,10 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                     maxLength={200}
                     className={clsx(
                       'w-full min-h-[15vh] focus:outline-none border-0 focus:ring-0 p-0 resize-none',
-                      'custom-scrollbar text-sm placeholder:text-secondary-100 text-secondary'
+                      'custom-scrollbar text-sm placeholder:text-secondary-100 text-secondary',
+                      isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
                     )}
+                    disabled={isSubmitting}
                   ></textarea>
                   <div className="flex items-center justify-between text-secondary-200">
                     <button type="button" className="outline-none hover:text-secondary-300">
@@ -193,8 +204,10 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                     placeholder="Add location"
                     className={clsx(
                       'w-full p-0 m-0 border-0 text-sm focus:outline-none focus:bottom-0 focus:ring-0',
-                      ' placeholder:text-secondary-200 text-secondary'
+                      'placeholder:text-secondary-200 text-secondary',
+                      isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
                     )}
+                    disabled={isSubmitting}
                   />
                   <MapPin className="w-6 h-6 stroke-1" />
                 </section>

@@ -1,5 +1,4 @@
 import * as yup from 'yup'
-import { isEmpty } from 'lodash'
 
 export const SignUpSchema = yup.object().shape({
   name: yup.string().required().min(3).label('Name'),
@@ -23,19 +22,7 @@ export type SignUpFormValues = yup.InferType<typeof SignUpSchema>
 export type SignInFormValues = yup.InferType<typeof SignInSchema>
 
 export const UserPostSchema = yup.object().shape({
-  files: yup.array().of(
-    yup
-      .mixed()
-      .test(
-        'fileType',
-        'Only images and videos are allowed',
-        (value) =>
-          !isEmpty(value) ||
-          (value instanceof File &&
-            ['image/jpeg', 'image/png', 'video/mp4', 'video/quicktime'].includes(value.type))
-      )
-      .required('Files are required')
-  ),
+  mediaUrls: yup.array().of(yup.string().url().required('Media URL is required')),
   captions: yup.string(),
   location: yup.string()
 })

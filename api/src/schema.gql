@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -46,6 +51,11 @@ type Mutation {
   logout(id: Int!): LogoutResponse!
   signin(signInInput: SignInInput!): SignResponse!
   signup(signupInput: UserCreateInput!): SignResponse!
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
 }
 
 input NestedDateTimeFilter {
@@ -128,6 +138,8 @@ type Post {
 input PostCreateManyUserInput {
   createdAt: DateTime
   id: Int
+  isHideLikeAndCount: Boolean
+  isTurnOffComment: Boolean
   mediaUrls: PostCreatemediaUrlsInput
   title: String
   updatedAt: DateTime
@@ -152,6 +164,8 @@ input PostCreateOrConnectWithoutUserInput {
 
 input PostCreateWithoutUserInput {
   createdAt: DateTime
+  isHideLikeAndCount: Boolean
+  isTurnOffComment: Boolean
   mediaUrls: PostCreatemediaUrlsInput
   title: String
   updatedAt: DateTime
@@ -177,6 +191,8 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   createdAt: DateTimeFilter
   id: IntFilter
+  isHideLikeAndCount: BoolFilter
+  isTurnOffComment: BoolFilter
   mediaUrls: StringNullableListFilter
   title: StringNullableFilter
   updatedAt: DateTimeFilter
@@ -190,6 +206,8 @@ input PostWhereUniqueInput {
   OR: [PostWhereInput!]
   createdAt: DateTimeFilter
   id: Int
+  isHideLikeAndCount: BoolFilter
+  isTurnOffComment: BoolFilter
   mediaUrls: StringNullableListFilter
   title: StringNullableFilter
   updatedAt: DateTimeFilter

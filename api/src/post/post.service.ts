@@ -25,6 +25,8 @@ export class PostService {
         mediaUrls: true,
         createdAt: true,
         updatedAt: true,
+        isHideLikeAndCount: true,
+        isTurnOffComment: true,
         user: true
       }
     })
