@@ -23,7 +23,7 @@ export type SignInFormValues = yup.InferType<typeof SignInSchema>
 
 export const UserPostSchema = yup.object().shape({
   mediaUrls: yup.array().of(yup.string().url().required('Media URL is required')),
-  captions: yup.string(),
+  captions: yup.string().max(200),
   location: yup.string()
 })
 
