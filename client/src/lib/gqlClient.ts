@@ -1,13 +1,9 @@
+import toast from 'react-hot-toast'
 import { GraphQLClient } from 'graphql-request'
 import { deleteCookie, getCookie } from 'cookies-next'
+import { GraphQLClientResponse } from 'graphql-request/build/esm/types'
 
 const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_BACKEND_URL as string
-
-type Response = {
-  response: {
-    status: number
-  }
-}
 
 export const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, {
   requestMiddleware: (request) => {
@@ -23,12 +19,21 @@ export const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, {
       }
     }
   },
-  responseMiddleware: (response) => {
-    const resultResponse: Response = JSON.parse(JSON.stringify(response))
-    if (response instanceof Error && resultResponse.response.status === 401) {
-      deleteCookie('accessToken')
-      deleteCookie('refreshToken')
-      document.location.href = '/sign-in'
+  responseMiddleware: (response: GraphQLClientResponse<unknown> | Error) => {
+    if (response instanceof Error) {
+      const match = response?.message.match(/Unauthorized/g)
+      if (match !== null) {
+        handleUnauthorizedError()
+      }
     }
   }
 })
+
+export const handleUnauthorizedError = (): void => {
+  try {
+    deleteCookie('accessToken')
+    deleteCookie('refreshToken')
+    toast.error('You are unauthorized, Please login again!')
+    document.location.href = '/sign-in'
+  } catch {}
+}
