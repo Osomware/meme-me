@@ -73,9 +73,6 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
         onSettled() {
           handleReset()
           closeModal()
-        },
-        onError: (error: any) => {
-          toast.error(error?.message)
         }
       }
     )

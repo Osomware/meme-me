@@ -48,9 +48,7 @@ const usePost = (): ReturnType => {
         void router.push(`/@${username}/posts/${postId}`)
         toast.success('Successfully Posted!')
       },
-      onError: (error: Error) => {
-        toast.success(error.message)
-      }
+      onError: () => {}
     })
 
   return {
