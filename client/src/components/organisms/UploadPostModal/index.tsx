@@ -4,10 +4,12 @@ import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import { Disclosure } from '@headlessui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import React, { FC, ReactNode, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { FileWithPath, useDropzone } from 'react-dropzone'
 import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 import { ChevronDown, ChevronLeft, MapPin } from 'react-feather'
+import { generateClientDropzoneAccept } from 'uploadthing/client'
+import React, { FC, ReactNode, useCallback, useState } from 'react'
 
 import Carousel from './../Carousel'
 import usePost from '~/hooks/usePost'
@@ -15,8 +17,10 @@ import { useStore } from '~/utils/zustand'
 import Spinner from '~/utils/icons/Spinner'
 import { Emoji } from '~/utils/types/emoji'
 import { useZustand } from '~/hooks/useZustand'
-import { UploadDropzone } from '~/utils/uploadthing'
+import { useUploadThing } from '~/utils/uploadthing'
+import Button from '~/components/atoms/Buttons/ButtonAction'
 import DialogTemplate from '~/components/templates/DialogTemplate'
+import UploadPhotoVideoIcon from '~/utils/icons/UploadPhotoVideoIcon'
 import { UserPostFormValues, UserPostSchema } from '~/utils/yup-schema'
 import EmojiPopoverPicker from '~/components/molecules/EmojiPopoverPicker'
 import SwitchGroupTemplate from '~/components/templates/SwitchGroupTemplate'
@@ -27,18 +31,19 @@ export type UploadPostModalProps = {
   isOpen: boolean
   closeModal: () => void
 }
-
 const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.Element => {
+  // * CURRENT USER HOOKS
   const user = useZustand(useStore, (state) => state.user)
+  // * AVATAR CONFIG
   const myConfig = genConfig(user?.email as AvatarFullConfig)
 
+  // * USE STATES
+  const [files, setFiles] = useState<File[]>([])
   const [fileUrls, setFileUrls] = useState<string[]>([])
   const [isHideCountPostAndLike, setIsHideCountPostAndLike] = useState<boolean>(false)
   const [isTurnOffComment, setTurnOffComment] = useState<boolean>(false)
 
-  const { handlePostMutation } = usePost()
-  const postMutation = handlePostMutation()
-
+  // * REACT HOOK FORM
   const {
     reset,
     watch,
@@ -51,17 +56,40 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
     resolver: yupResolver(UserPostSchema)
   })
 
-  const handleEmojiSelect = (emoji: Emoji): void => {
-    const captions = watch('captions')
-    if (captions !== undefined) {
-      setValue('captions', captions + emoji.native)
-    }
-  }
+  const isFileExist = files
 
-  const isFileExist = watch('mediaUrls')
+  // * USE POST HOOK
+  const { handlePostMutation } = usePost()
+  const postMutation = handlePostMutation()
 
+  // * UPLOAD THING HOOKS
+  const { startUpload } = useUploadThing('mediaPost', {
+    onClientUploadComplete: (res) => {
+      const mediaUrls = res?.map((file) => file.fileUrl)
+      setValue('mediaUrls', mediaUrls)
+    },
+    onUploadError: () => {}
+  })
+
+  // * UPLOAD THING ONDROP
+  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+    setFiles(acceptedFiles) // * USE TO PREPARE TO UPLOAD IN `UPLOADTHING`
+
+    // * USE TO PARTIALLY DISPLAY THE IMAGE/VIDEOS
+    const urls = acceptedFiles.map((file) => URL.createObjectURL(file))
+    setFileUrls(urls)
+  }, [])
+
+  const fileTypes = ['image', 'video']
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: !isEmpty(fileTypes) ? generateClientDropzoneAccept(fileTypes) : undefined
+  })
+
+  // * HANDLE TO RESET THE POST
   const handleReset = (): void => {
     setFileUrls([])
+    setFiles([])
     reset({
       mediaUrls: undefined,
       captions: '',
@@ -70,22 +98,46 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
   }
 
   const handleSubmitPost: SubmitHandler<UserPostFormValues> = async (data): Promise<void> => {
-    await postMutation.mutateAsync(
-      {
-        title: data.captions ?? '',
-        mediaUrls: {
-          set: data.mediaUrls as string[]
+    const uploads = await startUpload(files)
+    if (!isEmpty(uploads)) {
+      await postMutation.mutateAsync(
+        {
+          title: data.captions ?? '',
+          mediaUrls: {
+            set: data?.mediaUrls ?? []
+          },
+          isHideLikeAndCount: isHideCountPostAndLike,
+          isTurnOffComment
         },
-        isHideLikeAndCount: isHideCountPostAndLike,
-        isTurnOffComment
-      },
-      {
-        onSettled() {
-          handleReset()
-          closeModal()
+        {
+          onSettled() {
+            handleReset()
+            closeModal()
+          }
         }
-      }
-    )
+      )
+    } else {
+      toast.error('Something went wrong!')
+    }
+    reset()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const files = e.target.files
+    const fileArray = files !== null ? Array.from(files) : []
+    setFiles(fileArray) // * USE TO PREPARE TO UPLOAD IN `UPLOADTHING`
+
+    // * USE TO PARTIALLY DISPLAY THE IMAGE/VIDEOS
+    const urls = fileArray.map((file) => URL.createObjectURL(file))
+    setFileUrls(urls)
+  }
+
+  // * THIS WILL AUTOMATICALLY ADD THE VALUE WITH EMOJI
+  const handleEmojiSelect = (emoji: Emoji): void => {
+    const captions = watch('captions')
+    if (captions !== undefined) {
+      setValue('captions', captions + emoji.native)
+    }
   }
 
   return (
@@ -105,7 +157,12 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
       >
         <header className="flex items-center justify-between py-2.5 px-3 border-b border-stroke-3">
           {!isEmpty(isFileExist) ? (
-            <button type="button" onClick={handleReset} className="rounded-full outline-primary">
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={handleReset}
+              className="rounded-full outline-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <ChevronLeft />
             </button>
           ) : (
@@ -134,18 +191,32 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
         >
           {/* Upload Videos/Photos  */}
           {isEmpty(isFileExist) && (
-            <section className="flex items-center justify-center flex-col mb-10">
-              <UploadDropzone
-                endpoint="mediaPost"
-                onClientUploadComplete={(res) => {
-                  const mediaUrls = res?.map((file) => file.fileUrl)
-                  setValue('mediaUrls', mediaUrls)
-                  setFileUrls(mediaUrls ?? [])
-                }}
-                onUploadError={(error: Error) => {
-                  toast.error(`Error: ${error.message}`)
-                }}
+            <section className="flex items-center justify-center flex-col">
+              <div
+                {...getRootProps()}
+                className="flex items-center flex-col p-4 border border-dashed border-secondary-100 rounded-lg"
+              >
+                <input {...getInputProps()} className="hidden" />
+                <UploadPhotoVideoIcon className="text-secondary w-40 h-36" />
+                <h1 className="text-xl">Drag photos and videos here</h1>
+              </div>
+              <input
+                type="file"
+                id="file-upload"
+                name="file-upload"
+                accept="image/*, video/*"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+                multiple={true}
               />
+              <Button
+                type="button"
+                variant="primary"
+                onClick={() => document.getElementById('file-upload')?.click()}
+                className="mt-4 text-base !font-light px-3 py-1"
+              >
+                Select from computer
+              </Button>
             </section>
           )}
           {!isEmpty(isFileExist) && (
