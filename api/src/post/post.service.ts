@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { Post } from '~/@generated/post/post.model'
 import { PrismaService } from '~/prisma/prisma.service'
+import { FindManyPostArgs } from '~/@generated/post/find-many-post.args'
 import { PostCreateWithoutUserInput } from '~/@generated/post/post-create-without-user.input'
 
 @Injectable()
@@ -32,8 +33,8 @@ export class PostService {
     })
   }
 
-  findAll(): string {
-    return `This action returns all post`
+  async findAll(args: FindManyPostArgs): Promise<Post[]> {
+    return await this.prisma.post.findMany(args)
   }
 
   findOne(id: number): string {

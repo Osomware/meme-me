@@ -21,30 +21,30 @@ export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
-  @Mutation(() => SignResponse)
+  @Mutation(() => SignResponse, { name: 'signup' })
   signup(@Args('signupInput') signupInput: UserCreateInput): SignReturnType {
     return this.authService.signup(signupInput)
   }
 
   @Public()
-  @Mutation(() => SignResponse)
+  @Mutation(() => SignResponse, { name: 'signin' })
   signin(@Args('signInInput') signInInput: SignInInput): SignReturnType {
     return this.authService.signin(signInInput)
   }
 
-  @Mutation(() => LogoutResponse)
+  @Mutation(() => LogoutResponse, { name: 'logout' })
   logout(@Args('id', { type: () => Int }) id: number): LogoutReturnType {
     return this.authService.logout(id)
   }
 
-  @Query(() => User)
-  findOneUser(@Args() args: FindFirstUserArgs): Promise<User> {
-    return this.authService.findOneUser(args)
+  @Query(() => User, { name: 'findOneUser' })
+  findOne(@Args() args: FindFirstUserArgs): Promise<User> {
+    return this.authService.findOne(args)
   }
 
   @Public()
   @UseGuards(RefreshTokenGuard)
-  @Mutation(() => NewTokensResonse)
+  @Mutation(() => NewTokensResonse, { name: 'getNewTokens' })
   getNewTokens(
     @CurrentUserId() userId: number,
     @CurrentUser('refreshToken') refreshToken: string

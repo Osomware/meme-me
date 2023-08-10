@@ -185,6 +185,29 @@ input PostOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input PostOrderByWithRelationInput {
+  createdAt: SortOrder
+  id: SortOrder
+  isHideLikeAndCount: SortOrder
+  isTurnOffComment: SortOrder
+  mediaUrls: SortOrder
+  title: SortOrderInput
+  updatedAt: SortOrder
+  user: UserOrderByWithRelationInput
+  userId: SortOrder
+}
+
+enum PostScalarFieldEnum {
+  createdAt
+  id
+  isHideLikeAndCount
+  isTurnOffComment
+  mediaUrls
+  title
+  updatedAt
+  userId
+}
+
 input PostWhereInput {
   AND: [PostWhereInput!]
   NOT: [PostWhereInput!]
@@ -216,8 +239,9 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  findAllPost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
+  findOnePost(id: Int!): Post!
   findOneUser(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): User!
-  post(id: Int!): Post!
 }
 
 enum QueryMode {
