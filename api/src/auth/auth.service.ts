@@ -136,7 +136,7 @@ export class AuthService {
     }
   }
 
-  async findOneUser(args: FindFirstUserArgs): Promise<User> {
+  async findOne(args: FindFirstUserArgs): Promise<User> {
     const user = await this.prisma.user.findFirst(args)
 
     if (!user) {
