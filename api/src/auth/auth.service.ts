@@ -8,7 +8,7 @@ import { SignInInput } from './dto/signin-input'
 import { PrismaService } from '~/prisma/prisma.service'
 import { LogoutReturnType, SignReturnType, Token } from './types'
 import { UserCreateInput } from '~/@generated/user/user-create.input'
-import { FindFirstUserArgs } from '~/@generated/user/find-first-user.args'
+import { FindFirstUserOrThrowArgs } from '~/@generated/user/find-first-user-or-throw.args'
 
 type FieldValues = 'email' | 'username'
 
@@ -136,14 +136,8 @@ export class AuthService {
     }
   }
 
-  async findOne(args: FindFirstUserArgs): Promise<User> {
-    const user = await this.prisma.user.findFirst(args)
-
-    if (!user) {
-      throw new ForbiddenException('User does not exist')
-    }
-
-    return user
+  async findOne(args: FindFirstUserOrThrowArgs): Promise<User> {
+    return await this.prisma.user.findFirstOrThrow(args)
   }
 
   async getNewTokens(userId: number, rt: string): SignReturnType {
