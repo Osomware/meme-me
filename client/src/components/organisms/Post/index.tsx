@@ -9,9 +9,9 @@ import React, { Dispatch, FC, useEffect } from 'react'
 import { AvatarConfig, genConfig } from 'react-nice-avatar'
 
 import Carousel from './../Carousel'
+import { IPost } from '~/utils/interface/Post'
 import { Reaction } from '~/utils/types/reaction'
 import MessageIcon from '~/utils/icons/MessageIcon'
-import { IPost } from '~/utils/constants/dummyUserPost'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import ReactionButton from '~/components/molecules/ReactionButton'
 import { convertHashtagsToLinks } from '~/helpers/convertHastagsToLinks'
@@ -27,12 +27,33 @@ type PostProps = {
 
 const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element => {
   // Destructured Props
-  const { id, content, isFollowed, reactions, title, user } = post
+  const { id, mediaUrls, title, user } = post
+
+  const isFollowed = false
+
+  const reactions = [
+    {
+      type: 'heart',
+      count: '2.6M'
+    },
+    {
+      type: 'comment',
+      count: '16.4K'
+    },
+    {
+      type: 'bookmark',
+      count: '448.3K'
+    },
+    {
+      type: 'share',
+      count: '14.1K'
+    }
+  ]
 
   const router = useRouter()
   const postId = router.query?.postId
 
-  const myConfig = genConfig(user.avatar as AvatarConfig)
+  const myConfig = genConfig(user?.email as AvatarConfig)
 
   const handleViewCommentModal = (): void => {
     void router.replace(
@@ -55,7 +76,7 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
     <main className="py-6 flex items-start justify-between">
       <section className="flex flex-col sm:flex-row items-start gap-y-2 gap-x-3">
         {/* User Avatar */}
-        <Link href={`/@${user.username}`} className="outline-primary">
+        <Link href={`/@${user?.username}`} className="outline-primary">
           <ReactNiceAvatar
             className={clsx(
               'border-[3px] border-white rounded-full outline-4',
@@ -67,19 +88,19 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
         <div className="relative w-full max-w-lg flex flex-col space-y-1">
           {/* User Information */}
           <Link
-            href={`/@${user.username}`}
+            href={`/@${user?.username}`}
             className="group leading-none inline-flex items-center gap-x-2 text-secondary outline-primary"
           >
-            <h2 className={clsx('font-bold group-hover:underline')}>{user.username}</h2>
-            <span className={clsx('text-sm')}>{user.name}</span>
+            <h2 className="font-bold group-hover:underline">{user?.username}</h2>
+            <span className="text-sm">{user?.name}</span>
           </Link>
           {/* User Post */}
           <div className="flex flex-col space-y-1.5">
             {convertHashtagsToLinks(title)}
-            <div className="relative shrink-0 max-w-xs w-full ">
+            <div className="relative shrink-0 max-w-xs w-[320px]">
               <div className="h-[470px] border-4 border-white shadow overflow-hidden rounded-2xl bg-black">
                 <Carousel>
-                  {content.map((asset, idx) => {
+                  {mediaUrls.map((asset, idx) => {
                     if (asset.endsWith('.mp4')) {
                       return (
                         <video key={idx} src={asset} autoPlay muted loop className="w-full">

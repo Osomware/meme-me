@@ -17,7 +17,7 @@ type ReturnType = {
 const useUser = (): ReturnType => {
   const getCurrentUser = (id: number, isReady?: boolean): UserQueryType =>
     useQuery<Result, Error>({
-      queryKey: ['USER_QUERY'],
+      queryKey: ['user'],
       queryFn: async () => await gqlClient.request(USER_QUERY, { id }),
       select: (data: Result) => data,
       enabled: isReady as boolean
