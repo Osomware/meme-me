@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import React, { FC, useState } from 'react'
 
 import Post from '~/components/organisms/Post'
-import { IPost } from '~/utils/constants/dummyUserPost'
+import { IPost } from '~/utils/interface/Post'
 import PostModal from '~/components/organisms/PostModal'
 
 type PostListProps = {

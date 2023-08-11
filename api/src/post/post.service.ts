@@ -34,7 +34,20 @@ export class PostService {
   }
 
   async findAll(args: FindManyPostArgs): Promise<Post[]> {
-    return await this.prisma.post.findMany(args)
+    return await this.prisma.post.findMany({
+      ...args,
+      select: {
+        id: true,
+        title: true,
+        userId: true,
+        mediaUrls: true,
+        createdAt: true,
+        updatedAt: true,
+        isHideLikeAndCount: true,
+        isTurnOffComment: true,
+        user: true
+      }
+    })
   }
 
   findOne(id: number): string {

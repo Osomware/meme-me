@@ -13,6 +13,12 @@ export class Post {
   @Field(() => [String], { nullable: true })
   mediaUrls?: Array<string>
 
+  @Field(() => Boolean, { nullable: false, defaultValue: false })
+  isHideLikeAndCount!: boolean
+
+  @Field(() => Boolean, { nullable: false, defaultValue: false })
+  isTurnOffComment!: boolean
+
   @Field(() => Int, { nullable: true })
   userId?: number
 

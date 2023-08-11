@@ -27,7 +27,10 @@ const FeedFilterTab: FC<Props> = (): JSX.Element => {
         break
     }
 
-    void router.replace(route)
+    void router.replace(
+      route,
+      route.pathname !== '/home' ? `/home/${route.query?.filter ?? ''}` : route.query?.filter
+    )
   }
 
   const getActiveRoute = (route: Route): string => {
