@@ -14,7 +14,7 @@ import { RefreshTokenGuard } from './guards/refreshToken.guard'
 import { CurrentUser } from './decorators/currentUser.decorator'
 import { CurrentUserId } from './decorators/currentUserId.decotrator'
 import { UserCreateInput } from '~/@generated/user/user-create.input'
-import { FindFirstUserArgs } from '~/@generated/user/find-first-user.args'
+import { FindFirstUserOrThrowArgs } from '~/@generated/user/find-first-user-or-throw.args'
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -38,7 +38,7 @@ export class AuthResolver {
   }
 
   @Query(() => User, { name: 'findOneUser' })
-  findOne(@Args() args: FindFirstUserArgs): Promise<User> {
+  findOne(@Args() args: FindFirstUserOrThrowArgs): Promise<User> {
     return this.authService.findOne(args)
   }
 
