@@ -62,7 +62,7 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
           postId: id
         }
       },
-      `/@${user.username}/posts/${id}`
+      `/@${user?.username}/posts/${id}`
     )
   }
 
@@ -97,8 +97,13 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
           {/* User Post */}
           <div className="flex flex-col space-y-1.5">
             {convertHashtagsToLinks(title)}
-            <div className="relative shrink-0 max-w-xs w-[320px]">
-              <div className="h-[470px] border-4 border-white shadow overflow-hidden rounded-2xl bg-black">
+            <div className="relative shrink-0 max-w-[355px] w-[355px]">
+              <div
+                className={clsx(
+                  'h-[470px] border-4 flex justify-center items-center border-white',
+                  'shadow overflow-hidden rounded-2xl bg-black'
+                )}
+              >
                 <Carousel>
                   {mediaUrls.map((asset, idx) => {
                     if (asset.endsWith('.mp4')) {

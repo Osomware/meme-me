@@ -28,7 +28,7 @@ const Carousel: FC<CarouselProps> = (props): JSX.Element => {
     }
   }, [])
 
-  const isSingleItem = slides.length > 1
+  const isSingleItem = slides?.length > 1
 
   return (
     <div className="group overflow-hidden relative">

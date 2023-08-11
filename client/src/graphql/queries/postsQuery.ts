@@ -19,3 +19,24 @@ export const GET_ALL_POST_QUERY = gql`
     }
   }
 `
+
+export const GET_ONE_POST_QUERY = gql`
+  query GetOneUserPost($where: PostWhereInput) {
+    findOnePost(where: $where) {
+      id
+      title
+      mediaUrls
+      isHideLikeAndCount
+      isTurnOffComment
+      updatedAt
+      createdAt
+      user {
+        email
+        id
+        name
+        role
+        username
+      }
+    }
+  }
+`
