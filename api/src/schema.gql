@@ -30,6 +30,68 @@ input EnumRoleFilter {
   notIn: [Role!]
 }
 
+type Hashtag {
+  _count: HashtagCount!
+  createdAt: DateTime!
+  id: ID!
+  posts: [Post!]
+  tag: String!
+  updatedAt: DateTime!
+}
+
+type HashtagCount {
+  posts: Int!
+}
+
+input HashtagCreateNestedManyWithoutPostsInput {
+  connect: [HashtagWhereUniqueInput!]
+  connectOrCreate: [HashtagCreateOrConnectWithoutPostsInput!]
+  create: [HashtagCreateWithoutPostsInput!]
+}
+
+input HashtagCreateOrConnectWithoutPostsInput {
+  create: HashtagCreateWithoutPostsInput!
+  where: HashtagWhereUniqueInput!
+}
+
+input HashtagCreateWithoutPostsInput {
+  createdAt: DateTime
+  tag: String!
+  updatedAt: DateTime
+}
+
+input HashtagListRelationFilter {
+  every: HashtagWhereInput
+  none: HashtagWhereInput
+  some: HashtagWhereInput
+}
+
+input HashtagOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input HashtagWhereInput {
+  AND: [HashtagWhereInput!]
+  NOT: [HashtagWhereInput!]
+  OR: [HashtagWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  posts: PostListRelationFilter
+  tag: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input HashtagWhereUniqueInput {
+  AND: [HashtagWhereInput!]
+  NOT: [HashtagWhereInput!]
+  OR: [HashtagWhereInput!]
+  createdAt: DateTimeFilter
+  id: Int
+  posts: PostListRelationFilter
+  tag: String
+  updatedAt: DateTimeFilter
+}
+
 input IntFilter {
   equals: Int
   gt: Int
@@ -127,6 +189,7 @@ enum NullsOrder {
 
 type Post {
   createdAt: DateTime
+  hashtags: [Hashtag!]
   id: ID!
   isHideLikeAndCount: Boolean!
   isTurnOffComment: Boolean!
@@ -166,6 +229,7 @@ input PostCreateOrConnectWithoutUserInput {
 
 input PostCreateWithoutUserInput {
   createdAt: DateTime
+  hashtags: HashtagCreateNestedManyWithoutPostsInput
   isHideLikeAndCount: Boolean
   isTurnOffComment: Boolean
   mediaUrls: PostCreatemediaUrlsInput
@@ -189,6 +253,7 @@ input PostOrderByRelationAggregateInput {
 
 input PostOrderByWithRelationInput {
   createdAt: SortOrder
+  hashtags: HashtagOrderByRelationAggregateInput
   id: SortOrder
   isHideLikeAndCount: SortOrder
   isTurnOffComment: SortOrder
@@ -215,6 +280,7 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
   createdAt: DateTimeFilter
+  hashtags: HashtagListRelationFilter
   id: IntFilter
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter
@@ -230,6 +296,7 @@ input PostWhereUniqueInput {
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
   createdAt: DateTimeFilter
+  hashtags: HashtagListRelationFilter
   id: Int
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter

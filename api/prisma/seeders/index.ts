@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 import { newUsers, User } from './users'
 import { newPosts, Post } from './posts'
+import { newHashtags } from './hashtags'
 
 const prisma = new PrismaClient()
 
@@ -25,6 +26,10 @@ const seed = async (): Promise<void> => {
       })
     })
   )
+
+  await prisma.hashtag.createMany({
+    data: newHashtags
+  })
 }
 
 ;(async () => {
