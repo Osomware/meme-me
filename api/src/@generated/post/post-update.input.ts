@@ -5,6 +5,7 @@ import { PostUpdatemediaUrlsInput } from './post-updatemedia-urls.input'
 import { BoolFieldUpdateOperationsInput } from '../prisma/bool-field-update-operations.input'
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input'
 import { UserUpdateOneRequiredWithoutPostsNestedInput } from '../user/user-update-one-required-without-posts-nested.input'
+import { HashtagUpdateManyWithoutPostsNestedInput } from '../hashtag/hashtag-update-many-without-posts-nested.input'
 
 @InputType()
 export class PostUpdateInput {
@@ -28,4 +29,7 @@ export class PostUpdateInput {
 
   @Field(() => UserUpdateOneRequiredWithoutPostsNestedInput, { nullable: true })
   user?: UserUpdateOneRequiredWithoutPostsNestedInput
+
+  @Field(() => HashtagUpdateManyWithoutPostsNestedInput, { nullable: true })
+  hashtags?: HashtagUpdateManyWithoutPostsNestedInput
 }

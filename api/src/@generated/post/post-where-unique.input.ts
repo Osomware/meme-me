@@ -8,6 +8,7 @@ import { IntFilter } from '../prisma/int-filter.input'
 import { BoolFilter } from '../prisma/bool-filter.input'
 import { DateTimeFilter } from '../prisma/date-time-filter.input'
 import { UserRelationFilter } from '../user/user-relation-filter.input'
+import { HashtagListRelationFilter } from '../hashtag/hashtag-list-relation-filter.input'
 
 @InputType()
 export class PostWhereUniqueInput {
@@ -46,4 +47,7 @@ export class PostWhereUniqueInput {
 
   @Field(() => UserRelationFilter, { nullable: true })
   user?: UserRelationFilter
+
+  @Field(() => HashtagListRelationFilter, { nullable: true })
+  hashtags?: HashtagListRelationFilter
 }
