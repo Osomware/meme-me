@@ -16,6 +16,7 @@ import usePost from '~/hooks/usePost'
 import { useStore } from '~/utils/zustand'
 import Spinner from '~/utils/icons/Spinner'
 import { Emoji } from '~/utils/types/emoji'
+import { Montserrat } from 'next/font/google'
 import { useZustand } from '~/hooks/useZustand'
 import { useUploadThing } from '~/utils/uploadthing'
 import Button from '~/components/atoms/Buttons/ButtonAction'
@@ -26,6 +27,8 @@ import EmojiPopoverPicker from '~/components/molecules/EmojiPopoverPicker'
 import SwitchGroupTemplate from '~/components/templates/SwitchGroupTemplate'
 
 const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
+
+const montserrat = Montserrat({ subsets: ['latin'] })
 
 export type UploadPostModalProps = {
   isOpen: boolean
@@ -147,8 +150,9 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
         closeModal
       }}
       className={clsx(
-        'w-ful font-normal text-secondary !rounded-[20px] !overflow-visible',
-        !isEmpty(isFileExist) ? 'max-w-[710px]' : 'max-w-xl'
+        'w-ful font-normal text-secondary !rounded-[20px] !overflow-visible font-sans',
+        !isEmpty(isFileExist) ? 'max-w-[710px]' : 'max-w-xl',
+        montserrat.className
       )}
     >
       <form
@@ -168,12 +172,12 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
           ) : (
             <span></span>
           )}
-          <h1 className="font-semibold text-center">Create new post</h1>
+          <h1 className="font-bold text-center">Create new post</h1>
           {!isEmpty(isFileExist) ? (
             <button
               type="submit"
               className={clsx(
-                'outline-primary p-0.5 text-primary hover:text-primary-200 text-sm',
+                'outline-primary p-0.5 text-primary hover:text-primary-200 text-sm font-semibold',
                 isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
               )}
             >
@@ -198,7 +202,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
               >
                 <input {...getInputProps()} className="hidden" />
                 <UploadPhotoVideoIcon className="text-secondary w-40 h-36" />
-                <h1 className="text-xl">Drag photos and videos here</h1>
+                <h1 className="text-xl font-medium">Drag photos and videos here</h1>
               </div>
               <input
                 type="file"
@@ -213,7 +217,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                 type="button"
                 variant="primary"
                 onClick={() => document.getElementById('file-upload')?.click()}
-                className="mt-4 text-base !font-light px-3 py-1"
+                className="mt-4 text-base !font-medium px-3 py-1"
               >
                 Select from computer
               </Button>
@@ -221,7 +225,12 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
           )}
           {!isEmpty(isFileExist) && (
             <section className="relative h-full flex flex-col-reverse md:flex-row">
-              <div className="min-h-[550px] rounded-bl-2xl h-full w-full flex justify-center items-center max-w-sm overflow-hidden bg-black">
+              <div
+                className={clsx(
+                  'min-h-[550px] rounded-bl-2xl h-full w-full flex justify-center',
+                  'items-center max-w-sm overflow-hidden bg-black'
+                )}
+              >
                 <Carousel>
                   {
                     fileUrls?.map((asset, idx) => {
@@ -254,7 +263,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                     )}
                     {...myConfig}
                   />
-                  <h2 className="font-medium">{user?.username}</h2>
+                  <h2 className="font-semibold">{user?.username}</h2>
                 </div>
                 <section className="relative mt-2">
                   <textarea
@@ -264,6 +273,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                     className={clsx(
                       'w-full min-h-[15vh] focus:outline-none border-0 focus:ring-0 p-0 resize-none',
                       'custom-scrollbar text-sm placeholder:text-secondary-100 text-secondary',
+                      'font-medium',
                       isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
                     )}
                     disabled={isSubmitting}
@@ -274,7 +284,9 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                         handleEmojiSelect
                       }}
                     />
-                    <span className="text-xs">{`${watch('captions')?.length ?? 0}/200`}</span>
+                    <span className="text-xs font-normal">{`${
+                      watch('captions')?.length ?? 0
+                    }/200`}</span>
                   </div>
                 </section>
                 <section className="mt-3 flex items-center justify-between text-secondary-200 space-x-2">
@@ -284,7 +296,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                     placeholder="Add location"
                     className={clsx(
                       'w-full p-0 m-0 border-0 text-sm focus:outline-none focus:bottom-0 focus:ring-0',
-                      'placeholder:text-secondary-200 text-secondary',
+                      'placeholder:text-secondary-200 text-secondary font-normal',
                       isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
                     )}
                     disabled={isSubmitting}
@@ -295,7 +307,12 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                   {({ open }: { open: boolean }) => (
                     <>
                       <Disclosure.Button className="mt-3 flex w-full py-2 items-center justify-between outline-primary rounded-lg">
-                        <h1 className={clsx('text-secondary text-sm', open ? 'font-semibold' : '')}>
+                        <h1
+                          className={clsx(
+                            'text-secondary text-sm',
+                            open ? 'font-bold' : 'font-medium'
+                          )}
+                        >
                           Advanced settings
                         </h1>
                         <ChevronDown

@@ -17,7 +17,7 @@ const SwitchGroupTemplate: FC<SwitchGroupTemplateProps> = (props): JSX.Element =
     <section>
       <Switch.Group>
         <div className="flex items-center justify-between">
-          <Switch.Label className="mr-2 text-secondary-300">{label}</Switch.Label>
+          <Switch.Label className="mr-2 text-secondary-300 font-medium">{label}</Switch.Label>
           <Switch
             checked={checked}
             onChange={onChange}
@@ -32,13 +32,13 @@ const SwitchGroupTemplate: FC<SwitchGroupTemplateProps> = (props): JSX.Element =
               className={clsx(
                 isActive ? 'translate-x-6' : 'translate-x-1',
                 'inline-block h-4 w-4 transform rounded-full',
-                'bg-white transition-transform'
+                'bg-white transition-transform font-normal'
               )}
             />
           </Switch>
         </div>
       </Switch.Group>
-      <p className="mt-2 text-secondary-200 text-xs font-light">{content}</p>
+      <p className="mt-2 text-secondary-300 text-xs font-normal">{content}</p>
     </section>
   )
 }

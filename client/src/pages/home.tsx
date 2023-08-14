@@ -7,7 +7,7 @@ import StoryList from '~/components/molecules/StoryList'
 import HomeLayout from '~/components/templates/HomeLayout'
 import useScreenCondition from '~/hooks/useScreenCondition'
 import FeedFilterTab from '~/components/molecules/FeedFilterTab'
-import PostSkeletonLoading from '~/components/atoms/PostSkeletonLoading'
+import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoading'
 import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
 
 const Home: NextPage = (): JSX.Element => {
