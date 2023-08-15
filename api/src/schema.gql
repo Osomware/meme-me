@@ -60,9 +60,24 @@ input HashtagCreateWithoutPostHashtagsInput {
   updatedAt: DateTime
 }
 
+input HashtagOrderByWithRelationInput {
+  createdAt: SortOrder
+  id: SortOrder
+  postHashtags: PostHashtagOrderByRelationAggregateInput
+  tag: SortOrder
+  updatedAt: SortOrder
+}
+
 input HashtagRelationFilter {
   is: HashtagWhereInput
   isNot: HashtagWhereInput
+}
+
+enum HashtagScalarFieldEnum {
+  createdAt
+  id
+  tag
+  updatedAt
 }
 
 input HashtagWhereInput {
@@ -236,6 +251,15 @@ input PostCreatemediaUrlsInput {
   set: [String!]!
 }
 
+type PostHashtag {
+  _count: HashtagCount!
+  createdAt: DateTime!
+  id: ID!
+  postHashtags: [PostHashtag!]
+  tag: String!
+  updatedAt: DateTime!
+}
+
 input PostHashtagCreateManyPostInput {
   createdAt: DateTime
   hashtagId: Int!
@@ -383,6 +407,8 @@ type Query {
   findAllPost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
   findOnePost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): Post!
   findOneUser(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): User!
+  getAllPostHashtag(cursor: HashtagWhereUniqueInput, distinct: [HashtagScalarFieldEnum!], orderBy: [HashtagOrderByWithRelationInput!], skip: Int, take: Int, where: HashtagWhereInput): [PostHashtag!]!
+  searchHashtag(query: String!): [PostHashtag!]!
 }
 
 enum QueryMode {
