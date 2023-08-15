@@ -11,6 +11,7 @@ import { UserModule } from '~/user/user.module'
 import { PostModule } from './post/post.module'
 import { PrismaService } from '~/prisma/prisma.service'
 import { AccessTokenGuard } from '~/auth/guards/accessToken.guard'
+import { PostHashtagModule } from './post-hashtag/post-hashtag.module'
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { AccessTokenGuard } from '~/auth/guards/accessToken.guard'
     }),
     AuthModule,
     UserModule,
-    PostModule
+    PostModule,
+    PostHashtagModule
   ],
   controllers: [],
   providers: [PrismaService, { provide: APP_GUARD, useClass: AccessTokenGuard }]
