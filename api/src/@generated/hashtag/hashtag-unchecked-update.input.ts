@@ -3,7 +3,7 @@ import { InputType } from '@nestjs/graphql'
 import { IntFieldUpdateOperationsInput } from '../prisma/int-field-update-operations.input'
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input'
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input'
-import { PostUncheckedUpdateManyWithoutHashtagsNestedInput } from '../post/post-unchecked-update-many-without-hashtags-nested.input'
+import { PostHashtagUncheckedUpdateManyWithoutHashtagNestedInput } from '../post-hashtag/post-hashtag-unchecked-update-many-without-hashtag-nested.input'
 
 @InputType()
 export class HashtagUncheckedUpdateInput {
@@ -19,6 +19,6 @@ export class HashtagUncheckedUpdateInput {
   @Field(() => DateTimeFieldUpdateOperationsInput, { nullable: true })
   updatedAt?: DateTimeFieldUpdateOperationsInput
 
-  @Field(() => PostUncheckedUpdateManyWithoutHashtagsNestedInput, { nullable: true })
-  posts?: PostUncheckedUpdateManyWithoutHashtagsNestedInput
+  @Field(() => PostHashtagUncheckedUpdateManyWithoutHashtagNestedInput, { nullable: true })
+  postHashtags?: PostHashtagUncheckedUpdateManyWithoutHashtagNestedInput
 }

@@ -5,5 +5,5 @@ import { Int } from '@nestjs/graphql'
 @ObjectType()
 export class PostCount {
   @Field(() => Int, { nullable: false })
-  hashtags?: number
+  postHashtags?: number
 }

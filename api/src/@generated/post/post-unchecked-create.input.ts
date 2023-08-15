@@ -2,7 +2,7 @@ import { Field } from '@nestjs/graphql'
 import { InputType } from '@nestjs/graphql'
 import { Int } from '@nestjs/graphql'
 import { PostCreatemediaUrlsInput } from './post-createmedia-urls.input'
-import { HashtagUncheckedCreateNestedManyWithoutPostsInput } from '../hashtag/hashtag-unchecked-create-nested-many-without-posts.input'
+import { PostHashtagUncheckedCreateNestedManyWithoutPostInput } from '../post-hashtag/post-hashtag-unchecked-create-nested-many-without-post.input'
 
 @InputType()
 export class PostUncheckedCreateInput {
@@ -30,6 +30,6 @@ export class PostUncheckedCreateInput {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date | string
 
-  @Field(() => HashtagUncheckedCreateNestedManyWithoutPostsInput, { nullable: true })
-  hashtags?: HashtagUncheckedCreateNestedManyWithoutPostsInput
+  @Field(() => PostHashtagUncheckedCreateNestedManyWithoutPostInput, { nullable: true })
+  postHashtags?: PostHashtagUncheckedCreateNestedManyWithoutPostInput
 }

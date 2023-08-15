@@ -3,7 +3,7 @@ import { ObjectType } from '@nestjs/graphql'
 import { ID } from '@nestjs/graphql'
 import { Int } from '@nestjs/graphql'
 import { User } from '../user/user.model'
-import { Hashtag } from '../hashtag/hashtag.model'
+import { PostHashtag } from '../post-hashtag/post-hashtag.model'
 import { PostCount } from './post-count.output'
 
 @ObjectType()
@@ -35,8 +35,8 @@ export class Post {
   @Field(() => User, { nullable: false })
   user?: User
 
-  @Field(() => [Hashtag], { nullable: true })
-  hashtags?: Array<Hashtag>
+  @Field(() => [PostHashtag], { nullable: true })
+  postHashtags?: Array<PostHashtag>
 
   @Field(() => PostCount, { nullable: false })
   _count?: PostCount

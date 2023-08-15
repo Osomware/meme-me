@@ -3,7 +3,7 @@ import { InputType } from '@nestjs/graphql'
 import { IntFilter } from '../prisma/int-filter.input'
 import { StringFilter } from '../prisma/string-filter.input'
 import { DateTimeFilter } from '../prisma/date-time-filter.input'
-import { PostListRelationFilter } from '../post/post-list-relation-filter.input'
+import { PostHashtagListRelationFilter } from '../post-hashtag/post-hashtag-list-relation-filter.input'
 
 @InputType()
 export class HashtagWhereInput {
@@ -28,6 +28,6 @@ export class HashtagWhereInput {
   @Field(() => DateTimeFilter, { nullable: true })
   updatedAt?: DateTimeFilter
 
-  @Field(() => PostListRelationFilter, { nullable: true })
-  posts?: PostListRelationFilter
+  @Field(() => PostHashtagListRelationFilter, { nullable: true })
+  postHashtags?: PostHashtagListRelationFilter
 }

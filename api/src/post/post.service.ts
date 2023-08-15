@@ -28,7 +28,7 @@ export class PostService {
       },
       include: {
         user: true,
-        hashtags: true
+        postHashtags: true
       }
     })
   }
@@ -38,7 +38,7 @@ export class PostService {
       ...args,
       include: {
         user: true,
-        hashtags: true
+        postHashtags: true
       }
     })
   }
@@ -48,7 +48,7 @@ export class PostService {
       ...args,
       include: {
         user: true,
-        hashtags: true
+        postHashtags: true
       }
     })
   }

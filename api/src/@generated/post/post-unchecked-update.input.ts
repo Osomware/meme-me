@@ -5,7 +5,7 @@ import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-str
 import { PostUpdatemediaUrlsInput } from './post-updatemedia-urls.input'
 import { BoolFieldUpdateOperationsInput } from '../prisma/bool-field-update-operations.input'
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input'
-import { HashtagUncheckedUpdateManyWithoutPostsNestedInput } from '../hashtag/hashtag-unchecked-update-many-without-posts-nested.input'
+import { PostHashtagUncheckedUpdateManyWithoutPostNestedInput } from '../post-hashtag/post-hashtag-unchecked-update-many-without-post-nested.input'
 
 @InputType()
 export class PostUncheckedUpdateInput {
@@ -33,6 +33,6 @@ export class PostUncheckedUpdateInput {
   @Field(() => DateTimeFieldUpdateOperationsInput, { nullable: true })
   updatedAt?: DateTimeFieldUpdateOperationsInput
 
-  @Field(() => HashtagUncheckedUpdateManyWithoutPostsNestedInput, { nullable: true })
-  hashtags?: HashtagUncheckedUpdateManyWithoutPostsNestedInput
+  @Field(() => PostHashtagUncheckedUpdateManyWithoutPostNestedInput, { nullable: true })
+  postHashtags?: PostHashtagUncheckedUpdateManyWithoutPostNestedInput
 }
