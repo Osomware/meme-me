@@ -1,7 +1,7 @@
 import { Field } from '@nestjs/graphql'
 import { InputType } from '@nestjs/graphql'
 import { SortOrder } from '../prisma/sort-order.enum'
-import { PostOrderByRelationAggregateInput } from '../post/post-order-by-relation-aggregate.input'
+import { PostHashtagOrderByRelationAggregateInput } from '../post-hashtag/post-hashtag-order-by-relation-aggregate.input'
 
 @InputType()
 export class HashtagOrderByWithRelationInput {
@@ -17,6 +17,6 @@ export class HashtagOrderByWithRelationInput {
   @Field(() => SortOrder, { nullable: true })
   updatedAt?: keyof typeof SortOrder
 
-  @Field(() => PostOrderByRelationAggregateInput, { nullable: true })
-  posts?: PostOrderByRelationAggregateInput
+  @Field(() => PostHashtagOrderByRelationAggregateInput, { nullable: true })
+  postHashtags?: PostHashtagOrderByRelationAggregateInput
 }

@@ -39,22 +39,34 @@ enum Role {
 }
 
 model Post {
-  id                 Int       @id @default(autoincrement())
+  id                 Int           @id @default(autoincrement())
   title              String?
   mediaUrls          String[]
-  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId             Int
-  isHideLikeAndCount Boolean   @default(false)
-  isTurnOffComment   Boolean   @default(false)
-  hashtags           Hashtag[] @relation("PostHashtags")
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @default(now())
+  isHideLikeAndCount Boolean       @default(false)
+  isTurnOffComment   Boolean       @default(false)
+  postHashtags       PostHashtag[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @default(now())
+}
+
+model PostHashtag {
+  id        Int      @id @default(autoincrement())
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  hashtag   Hashtag  @relation(fields: [hashtagId], references: [id])
+  hashtagId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@unique([postId, hashtagId])
 }
 
 model Hashtag {
-  id        Int      @id @default(autoincrement())
-  tag       String   @unique
-  posts     Post[]   @relation("PostHashtags")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id           Int           @id @default(autoincrement())
+  tag          String        @unique
+  postHashtags PostHashtag[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now())
 }

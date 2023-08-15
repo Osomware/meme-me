@@ -1,7 +1,7 @@
 import { Field } from '@nestjs/graphql'
 import { InputType } from '@nestjs/graphql'
 import { PostCreatemediaUrlsInput } from './post-createmedia-urls.input'
-import { HashtagCreateNestedManyWithoutPostsInput } from '../hashtag/hashtag-create-nested-many-without-posts.input'
+import { PostHashtagCreateNestedManyWithoutPostInput } from '../post-hashtag/post-hashtag-create-nested-many-without-post.input'
 
 @InputType()
 export class PostCreateWithoutUserInput {
@@ -23,6 +23,6 @@ export class PostCreateWithoutUserInput {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date | string
 
-  @Field(() => HashtagCreateNestedManyWithoutPostsInput, { nullable: true })
-  hashtags?: HashtagCreateNestedManyWithoutPostsInput
+  @Field(() => PostHashtagCreateNestedManyWithoutPostInput, { nullable: true })
+  postHashtags?: PostHashtagCreateNestedManyWithoutPostInput
 }

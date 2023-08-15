@@ -40,34 +40,29 @@ type Hashtag {
 }
 
 type HashtagCount {
-  posts: Int!
+  postHashtags: Int!
 }
 
-input HashtagCreateNestedManyWithoutPostsInput {
-  connect: [HashtagWhereUniqueInput!]
-  connectOrCreate: [HashtagCreateOrConnectWithoutPostsInput!]
-  create: [HashtagCreateWithoutPostsInput!]
+input HashtagCreateNestedOneWithoutPostHashtagsInput {
+  connect: HashtagWhereUniqueInput
+  connectOrCreate: HashtagCreateOrConnectWithoutPostHashtagsInput
+  create: HashtagCreateWithoutPostHashtagsInput
 }
 
-input HashtagCreateOrConnectWithoutPostsInput {
-  create: HashtagCreateWithoutPostsInput!
+input HashtagCreateOrConnectWithoutPostHashtagsInput {
+  create: HashtagCreateWithoutPostHashtagsInput!
   where: HashtagWhereUniqueInput!
 }
 
-input HashtagCreateWithoutPostsInput {
+input HashtagCreateWithoutPostHashtagsInput {
   createdAt: DateTime
   tag: String!
   updatedAt: DateTime
 }
 
-input HashtagListRelationFilter {
-  every: HashtagWhereInput
-  none: HashtagWhereInput
-  some: HashtagWhereInput
-}
-
-input HashtagOrderByRelationAggregateInput {
-  _count: SortOrder
+input HashtagRelationFilter {
+  is: HashtagWhereInput
+  isNot: HashtagWhereInput
 }
 
 input HashtagWhereInput {
@@ -76,7 +71,7 @@ input HashtagWhereInput {
   OR: [HashtagWhereInput!]
   createdAt: DateTimeFilter
   id: IntFilter
-  posts: PostListRelationFilter
+  postHashtags: PostHashtagListRelationFilter
   tag: StringFilter
   updatedAt: DateTimeFilter
 }
@@ -87,7 +82,7 @@ input HashtagWhereUniqueInput {
   OR: [HashtagWhereInput!]
   createdAt: DateTimeFilter
   id: Int
-  posts: PostListRelationFilter
+  postHashtags: PostHashtagListRelationFilter
   tag: String
   updatedAt: DateTimeFilter
 }
@@ -229,16 +224,88 @@ input PostCreateOrConnectWithoutUserInput {
 
 input PostCreateWithoutUserInput {
   createdAt: DateTime
-  hashtags: HashtagCreateNestedManyWithoutPostsInput
   isHideLikeAndCount: Boolean
   isTurnOffComment: Boolean
   mediaUrls: PostCreatemediaUrlsInput
+  postHashtags: PostHashtagCreateNestedManyWithoutPostInput
   title: String
   updatedAt: DateTime
 }
 
 input PostCreatemediaUrlsInput {
   set: [String!]!
+}
+
+input PostHashtagCreateManyPostInput {
+  createdAt: DateTime
+  hashtagId: Int!
+  id: Int
+  updatedAt: DateTime
+}
+
+input PostHashtagCreateManyPostInputEnvelope {
+  data: [PostHashtagCreateManyPostInput!]!
+  skipDuplicates: Boolean
+}
+
+input PostHashtagCreateNestedManyWithoutPostInput {
+  connect: [PostHashtagWhereUniqueInput!]
+  connectOrCreate: [PostHashtagCreateOrConnectWithoutPostInput!]
+  create: [PostHashtagCreateWithoutPostInput!]
+  createMany: PostHashtagCreateManyPostInputEnvelope
+}
+
+input PostHashtagCreateOrConnectWithoutPostInput {
+  create: PostHashtagCreateWithoutPostInput!
+  where: PostHashtagWhereUniqueInput!
+}
+
+input PostHashtagCreateWithoutPostInput {
+  createdAt: DateTime
+  hashtag: HashtagCreateNestedOneWithoutPostHashtagsInput!
+  updatedAt: DateTime
+}
+
+input PostHashtagListRelationFilter {
+  every: PostHashtagWhereInput
+  none: PostHashtagWhereInput
+  some: PostHashtagWhereInput
+}
+
+input PostHashtagOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PostHashtagPostIdHashtagIdCompoundUniqueInput {
+  hashtagId: Int!
+  postId: Int!
+}
+
+input PostHashtagWhereInput {
+  AND: [PostHashtagWhereInput!]
+  NOT: [PostHashtagWhereInput!]
+  OR: [PostHashtagWhereInput!]
+  createdAt: DateTimeFilter
+  hashtag: HashtagRelationFilter
+  hashtagId: IntFilter
+  id: IntFilter
+  post: PostRelationFilter
+  postId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input PostHashtagWhereUniqueInput {
+  AND: [PostHashtagWhereInput!]
+  NOT: [PostHashtagWhereInput!]
+  OR: [PostHashtagWhereInput!]
+  createdAt: DateTimeFilter
+  hashtag: HashtagRelationFilter
+  hashtagId: IntFilter
+  id: Int
+  post: PostRelationFilter
+  postId: IntFilter
+  postId_hashtagId: PostHashtagPostIdHashtagIdCompoundUniqueInput
+  updatedAt: DateTimeFilter
 }
 
 input PostListRelationFilter {
@@ -253,15 +320,20 @@ input PostOrderByRelationAggregateInput {
 
 input PostOrderByWithRelationInput {
   createdAt: SortOrder
-  hashtags: HashtagOrderByRelationAggregateInput
   id: SortOrder
   isHideLikeAndCount: SortOrder
   isTurnOffComment: SortOrder
   mediaUrls: SortOrder
+  postHashtags: PostHashtagOrderByRelationAggregateInput
   title: SortOrderInput
   updatedAt: SortOrder
   user: UserOrderByWithRelationInput
   userId: SortOrder
+}
+
+input PostRelationFilter {
+  is: PostWhereInput
+  isNot: PostWhereInput
 }
 
 enum PostScalarFieldEnum {
@@ -280,11 +352,11 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
   createdAt: DateTimeFilter
-  hashtags: HashtagListRelationFilter
   id: IntFilter
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter
   mediaUrls: StringNullableListFilter
+  postHashtags: PostHashtagListRelationFilter
   title: StringNullableFilter
   updatedAt: DateTimeFilter
   user: UserRelationFilter
@@ -296,11 +368,11 @@ input PostWhereUniqueInput {
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
   createdAt: DateTimeFilter
-  hashtags: HashtagListRelationFilter
   id: Int
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter
   mediaUrls: StringNullableListFilter
+  postHashtags: PostHashtagListRelationFilter
   title: StringNullableFilter
   updatedAt: DateTimeFilter
   user: UserRelationFilter

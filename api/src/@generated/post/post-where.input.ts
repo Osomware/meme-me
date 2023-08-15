@@ -6,7 +6,7 @@ import { StringNullableListFilter } from '../prisma/string-nullable-list-filter.
 import { BoolFilter } from '../prisma/bool-filter.input'
 import { DateTimeFilter } from '../prisma/date-time-filter.input'
 import { UserRelationFilter } from '../user/user-relation-filter.input'
-import { HashtagListRelationFilter } from '../hashtag/hashtag-list-relation-filter.input'
+import { PostHashtagListRelationFilter } from '../post-hashtag/post-hashtag-list-relation-filter.input'
 
 @InputType()
 export class PostWhereInput {
@@ -46,6 +46,6 @@ export class PostWhereInput {
   @Field(() => UserRelationFilter, { nullable: true })
   user?: UserRelationFilter
 
-  @Field(() => HashtagListRelationFilter, { nullable: true })
-  hashtags?: HashtagListRelationFilter
+  @Field(() => PostHashtagListRelationFilter, { nullable: true })
+  postHashtags?: PostHashtagListRelationFilter
 }
