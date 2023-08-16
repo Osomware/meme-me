@@ -118,7 +118,17 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
             set: data?.mediaUrls ?? []
           },
           isHideLikeAndCount: isHideCountPostAndLike,
-          isTurnOffComment
+          isTurnOffComment,
+          postHashtags: {
+            create: tags?.map((hashtag) => ({
+              hashtag: {
+                connectOrCreate: {
+                  where: { tag: hashtag.text },
+                  create: { tag: hashtag.text }
+                }
+              }
+            }))
+          }
         },
         {
           onSettled() {
@@ -289,7 +299,8 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                   <div className="flex items-center justify-between text-secondary-200">
                     <EmojiPopoverPicker
                       {...{
-                        handleEmojiSelect
+                        handleEmojiSelect,
+                        isSubmitting
                       }}
                     />
                     <span className="text-xs font-normal">{`${
@@ -346,7 +357,8 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                               'Only you will see the total number of likes and views on this post. You change this alter by going to the ... menu at the top of the post. To hide like counts on other’s post, go to your account settings.',
                             checked: isHideCountPostAndLike,
                             onChange: setIsHideCountPostAndLike,
-                            isActive: isHideCountPostAndLike
+                            isActive: isHideCountPostAndLike,
+                            disabled: isSubmitting
                           }}
                         />
                         <SwitchGroupTemplate
@@ -356,7 +368,8 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                               'You can change this later by going to the ... menu at the top of your post.',
                             checked: isTurnOffComment,
                             onChange: setTurnOffComment,
-                            isActive: isTurnOffComment
+                            isActive: isTurnOffComment,
+                            disabled: isSubmitting
                           }}
                         />
                       </Disclosure.Panel>

@@ -15,10 +15,11 @@ const EmojiPicker = dynamic(async () => await import('@emoji-mart/react'), {
 type Props = {
   handleEmojiSelect: (emoji: Emoji) => void
   panelPosition?: string
+  isSubmitting: boolean
 } & ComponentProps<'div'>
 
 const EmojiPopoverPicker: FC<Props> = (props): JSX.Element => {
-  const { handleEmojiSelect, panelPosition, ...rest } = props
+  const { handleEmojiSelect, panelPosition, isSubmitting, ...rest } = props
 
   return (
     <Popover as="div" className="">
@@ -29,8 +30,10 @@ const EmojiPopoverPicker: FC<Props> = (props): JSX.Element => {
             className={classNames(
               'text-slate-400 outline-none hover:text-slate-500',
               'transition duration-150 ease-in-out',
-              open ? '!text-slate-500' : ''
+              open ? '!text-slate-500' : '',
+              isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
             )}
+            disabled={isSubmitting}
           >
             <WinkingFace theme="outline" size="22" strokeWidth={2} />
           </Popover.Button>
