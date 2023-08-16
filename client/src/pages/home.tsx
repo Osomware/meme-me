@@ -7,8 +7,8 @@ import StoryList from '~/components/molecules/StoryList'
 import HomeLayout from '~/components/templates/HomeLayout'
 import useScreenCondition from '~/hooks/useScreenCondition'
 import FeedFilterTab from '~/components/molecules/FeedFilterTab'
-import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoading'
 import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
+import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoading'
 
 const Home: NextPage = (): JSX.Element => {
   const { getAllPosts } = usePost()
@@ -31,7 +31,15 @@ const Home: NextPage = (): JSX.Element => {
         {isLoadingPosts ? (
           <PostSkeletonLoading />
         ) : (
-          <PostList posts={dataPosts?.findAllPost ?? []} />
+          <>
+            {dataPosts?.findAllPost.length === 0 ? (
+              <div className="mt-3">
+                <p className="py-2 text-center text-sm text-secondary-200">No Post</p>
+              </div>
+            ) : (
+              <PostList posts={dataPosts?.findAllPost ?? []} />
+            )}
+          </>
         )}
       </article>
       {!isMaxWidth && (

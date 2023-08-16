@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { Post } from '~/@generated/post/post.model'
 import { PrismaService } from '~/prisma/prisma.service'
@@ -14,7 +14,7 @@ export class PostService {
     const { mediaUrls } = createPostInput
 
     if (mediaUrls.set.length === 0) {
-      throw new ForbiddenException('Photos/Videos is required field. Pleace re-upload!')
+      throw new NotFoundException('Photos/Videos is required field. Pleace re-upload!')
     }
 
     return await this.prisma.post.create({

@@ -14,11 +14,14 @@ import React, { FC, ReactNode, useCallback, useState } from 'react'
 import Carousel from './../Carousel'
 import usePost from '~/hooks/usePost'
 import { useStore } from '~/utils/zustand'
+import { Tag } from '~/helpers/tagHelpers'
 import Spinner from '~/utils/icons/Spinner'
+import useHashtag from '~/hooks/useHashtag'
 import { Emoji } from '~/utils/types/emoji'
 import { Montserrat } from 'next/font/google'
 import { useZustand } from '~/hooks/useZustand'
 import { useUploadThing } from '~/utils/uploadthing'
+import TagInput from '~/components/molecules/TagInput'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import DialogTemplate from '~/components/templates/DialogTemplate'
 import UploadPhotoVideoIcon from '~/utils/icons/UploadPhotoVideoIcon'
@@ -34,17 +37,22 @@ export type UploadPostModalProps = {
   isOpen: boolean
   closeModal: () => void
 }
+
 const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.Element => {
   // * CURRENT USER HOOKS
   const user = useZustand(useStore, (state) => state.user)
   // * AVATAR CONFIG
   const myConfig = genConfig(user?.email as AvatarFullConfig)
+  // * HASHTAG HOOKS
+  const { getAllHashtags } = useHashtag()
+  const { data: hashtagData } = getAllHashtags(isOpen)
 
   // * USE STATES
   const [files, setFiles] = useState<File[]>([])
   const [fileUrls, setFileUrls] = useState<string[]>([])
   const [isHideCountPostAndLike, setIsHideCountPostAndLike] = useState<boolean>(false)
   const [isTurnOffComment, setTurnOffComment] = useState<boolean>(false)
+  const [tags, setTags] = useState<Tag[]>([])
 
   // * REACT HOOK FORM
   const {
@@ -272,7 +280,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                     maxLength={200}
                     className={clsx(
                       'w-full min-h-[15vh] focus:outline-none border-0 focus:ring-0 p-0 resize-none',
-                      'custom-scrollbar text-sm placeholder:text-secondary-100 text-secondary',
+                      'custom-scrollbar text-sm placeholder:text-secondary-200 text-secondary',
                       'font-medium',
                       isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
                     )}
@@ -289,24 +297,35 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
                     }/200`}</span>
                   </div>
                 </section>
-                <section className="mt-3 flex items-center justify-between text-secondary-200 space-x-2">
+                <section className="relative z-50 mt-2">
+                  <TagInput
+                    {...{
+                      state: {
+                        tags,
+                        setTags
+                      },
+                      data: hashtagData
+                    }}
+                  />
+                </section>
+                <section className="relative mt-2 flex items-center justify-between text-secondary-200 space-x-2">
                   <input
                     type="text"
                     {...register('location')}
                     placeholder="Add location"
                     className={clsx(
-                      'w-full p-0 m-0 border-0 text-sm focus:outline-none focus:bottom-0 focus:ring-0',
+                      'w-full py-2 m-0 border-1 border-[#eee] text-xs focus:outline-none focus:bottom-0 focus:ring-0',
                       'placeholder:text-secondary-200 text-secondary font-normal',
                       isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
                     )}
                     disabled={isSubmitting}
                   />
-                  <MapPin className="w-6 h-6 stroke-1" />
+                  <MapPin className="absolute right-2 w-4 h-4 stroke-1 text-secondary-200" />
                 </section>
                 <Disclosure>
                   {({ open }: { open: boolean }) => (
                     <>
-                      <Disclosure.Button className="mt-3 flex w-full py-2 items-center justify-between outline-primary rounded-lg">
+                      <Disclosure.Button className="mt-2 flex w-full py-2 items-center justify-between outline-primary rounded-lg">
                         <h1
                           className={clsx(
                             'text-secondary text-sm',
