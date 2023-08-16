@@ -8,10 +8,11 @@ export type SwitchGroupTemplateProps = {
   onChange: Dispatch<SetStateAction<boolean>>
   isActive: boolean
   content: string
+  disabled: boolean
 }
 
 const SwitchGroupTemplate: FC<SwitchGroupTemplateProps> = (props): JSX.Element => {
-  const { label, checked, onChange, isActive, content } = props
+  const { label, checked, onChange, isActive, content, disabled } = props
 
   return (
     <section>
@@ -21,11 +22,13 @@ const SwitchGroupTemplate: FC<SwitchGroupTemplateProps> = (props): JSX.Element =
           <Switch
             checked={checked}
             onChange={onChange}
+            disabled={disabled}
             className={clsx(
               isActive ? 'bg-primary' : 'bg-secondary-200',
               'relative inline-flex h-6 w-12 items-center rounded-full transition-colors',
               'focus:outline-none focus:ring-2 shrink-0',
-              'focus:ring-offset-2 focus:ring-primary-200'
+              'focus:ring-offset-2 focus:ring-primary-200',
+              disabled ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
             )}
           >
             <span

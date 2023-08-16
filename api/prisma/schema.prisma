@@ -53,7 +53,7 @@ model Post {
 
 model PostHashtag {
   id        Int      @id @default(autoincrement())
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   postId    Int
   hashtag   Hashtag  @relation(fields: [hashtagId], references: [id])
   hashtagId Int

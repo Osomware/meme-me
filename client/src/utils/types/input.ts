@@ -5,4 +5,18 @@ export type PostRequestInput = {
   }
   isHideLikeAndCount: boolean
   isTurnOffComment: boolean
+  postHashtags: {
+    create: Array<{
+      hashtag: {
+        connectOrCreate: {
+          where: {
+            tag: string
+          }
+          create: {
+            tag: string
+          }
+        }
+      }
+    }>
+  }
 }
