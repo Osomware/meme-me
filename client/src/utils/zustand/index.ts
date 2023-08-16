@@ -27,7 +27,7 @@ export const useStore = create<State & Action>()(
     }),
     {
       name: 'mm-user-info',
-      storage: createJSONStorage(() => sessionStorage)
+      storage: createJSONStorage(() => localStorage)
     }
   )
 )

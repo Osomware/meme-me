@@ -4,6 +4,7 @@ import { useMutation, UseMutationResult, useQuery, UseQueryResult } from '@tanst
 
 import { gqlClient } from '~/lib/gqlClient'
 import { IPost } from '~/utils/interface/Post'
+import { queryClient } from '~/lib/queryClient'
 import { PostRequestInput } from '~/utils/types/input'
 import { CREATE_POST_MUTATION } from '~/graphql/mutations/post'
 import { GET_ALL_POST_QUERY, GET_ONE_POST_QUERY } from '~/graphql/queries/postsQuery'
@@ -57,7 +58,9 @@ const usePost = (): ReturnType => {
         void router.push(`/@${username}/posts/${postId}`)
         toast.success('Successfully Posted!')
       },
-      onError: () => {}
+      onSettled: () => {
+        void queryClient.invalidateQueries({ queryKey: postKeys.all })
+      }
     })
 
   const getAllPosts = (): PostFetchQueryType =>
