@@ -1,5 +1,6 @@
-import React from 'react'
 import type { NextPage } from 'next'
+import Alert from '~/components/atoms/Alert'
+import React, { FC, ReactNode } from 'react'
 
 import usePost from '~/hooks/usePost'
 import PostList from '~/components/molecules/PostList'
@@ -12,11 +13,57 @@ import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoadin
 
 const Home: NextPage = (): JSX.Element => {
   const { getAllPosts } = usePost()
-  const { data: dataPosts, isLoading: isLoadingPosts } = getAllPosts()
+  const { data: dataPosts, isLoading: isLoadingPosts, isError } = getAllPosts()
 
   // SCREEN SIZE CONDITION HOOKS
   const isMaxWidth = useScreenCondition('(max-width: 1380px)')
 
+  if (isLoadingPosts) {
+    return (
+      <PageLayout
+        {...{
+          isMaxWidth
+        }}
+      >
+        <PostSkeletonLoading />
+      </PageLayout>
+    )
+  }
+
+  if (isError) {
+    return (
+      <PageLayout
+        {...{
+          isMaxWidth
+        }}
+      >
+        <div className="py-6">
+          <Alert type="error" message="Something went wrong fetching data" />
+        </div>
+      </PageLayout>
+    )
+  }
+
+  return (
+    <PageLayout
+      {...{
+        isMaxWidth
+      }}
+    >
+      <>
+        {dataPosts?.findAllPost.length === 0 ? (
+          <div className="mt-3">
+            <p className="py-2 text-center text-sm text-secondary-200">No Post</p>
+          </div>
+        ) : (
+          <PostList posts={dataPosts?.findAllPost ?? []} />
+        )}
+      </>
+    </PageLayout>
+  )
+}
+
+const PageLayout: FC<{ children: ReactNode; isMaxWidth: boolean }> = ({ children, isMaxWidth }) => {
   return (
     <HomeLayout metaTitle="Home" className="flex">
       <article className="max-w-3xl w-full mx-auto px-8 py-6">
@@ -27,20 +74,7 @@ const Home: NextPage = (): JSX.Element => {
           <h2 className="text-secondary font-bold">Feeds</h2>
           <FeedFilterTab />
         </div>
-
-        {isLoadingPosts ? (
-          <PostSkeletonLoading />
-        ) : (
-          <>
-            {dataPosts?.findAllPost.length === 0 ? (
-              <div className="mt-3">
-                <p className="py-2 text-center text-sm text-secondary-200">No Post</p>
-              </div>
-            ) : (
-              <PostList posts={dataPosts?.findAllPost ?? []} />
-            )}
-          </>
-        )}
+        {children}
       </article>
       {!isMaxWidth && (
         <aside className="border-l border-stroke-3 h-full w-80 shrink-0 sticky top-0 mx-1">
