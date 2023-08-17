@@ -13,8 +13,8 @@ import { NewTokensResonse } from './dto/new-tokens-reponse'
 import { RefreshTokenGuard } from './guards/refreshToken.guard'
 import { CurrentUser } from './decorators/currentUser.decorator'
 import { CurrentUserId } from './decorators/currentUserId.decotrator'
-import { UserCreateInput } from '~/@generated/user/user-create.input'
-import { FindFirstUserOrThrowArgs } from '~/@generated/user/find-first-user-or-throw.args'
+import { UserCreateInput } from '@generated/user/user-create.input'
+import { FindFirstUserOrThrowArgs } from '@generated/user/find-first-user-or-throw.args'
 
 @Resolver(() => Auth)
 export class AuthResolver {

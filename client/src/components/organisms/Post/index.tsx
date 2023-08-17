@@ -10,6 +10,7 @@ import { AvatarConfig, genConfig } from 'react-nice-avatar'
 
 import Carousel from './../Carousel'
 import { IPost } from '~/utils/interface/Post'
+import Hashtag from '~/components/atoms/Hashtag'
 import { Reaction } from '~/utils/types/reaction'
 import MessageIcon from '~/utils/icons/MessageIcon'
 import Button from '~/components/atoms/Buttons/ButtonAction'
@@ -27,7 +28,7 @@ type PostProps = {
 
 const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element => {
   // Destructured Props
-  const { id, mediaUrls, title, user } = post
+  const { id, mediaUrls, title, user, postHashtags } = post
 
   const isFollowed = false
 
@@ -96,7 +97,12 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
           </Link>
           {/* User Post */}
           <div className="flex flex-col space-y-1.5">
-            {convertHashtagsToLinks(title)}
+            <div className="flex items-center flex-wrap space-x-1">
+              {convertHashtagsToLinks(title)}
+              {postHashtags?.map((item: { hashtag: { tag: string } }, index: number) => (
+                <Hashtag key={index} tag={item.hashtag.tag} />
+              ))}
+            </div>
             <div className="relative shrink-0 max-w-[355px] w-[355px]">
               <div
                 className={clsx(

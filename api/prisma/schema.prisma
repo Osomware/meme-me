@@ -12,7 +12,7 @@ datasource db {
 
 generator nestgraphql {
   provider               = "node node_modules/prisma-nestjs-graphql"
-  output                 = "../src/@generated"
+  output                 = "../@generated"
   fields_Validator_from  = "class-validator"
   fields_Validator_input = true
 }
@@ -65,6 +65,7 @@ model PostHashtag {
 
 model Hashtag {
   id           Int           @id @default(autoincrement())
+  /// @Validator.MinLength(3)
   tag          String        @unique
   postHashtags PostHashtag[]
   createdAt    DateTime      @default(now())

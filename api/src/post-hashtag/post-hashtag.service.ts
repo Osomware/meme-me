@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '~/prisma/prisma.service'
-import { Hashtag } from '~/@generated/hashtag/hashtag.model'
-import { FindManyHashtagArgs } from '~/@generated/hashtag/find-many-hashtag.args'
+import { Hashtag } from '@generated/hashtag/hashtag.model'
+import { FindManyHashtagArgs } from '@generated/hashtag/find-many-hashtag.args'
 
 @Injectable()
 export class PostHashtagService {

@@ -7,8 +7,8 @@ import { User } from '~/user/user.entity'
 import { SignInInput } from './dto/signin-input'
 import { PrismaService } from '~/prisma/prisma.service'
 import { LogoutReturnType, SignReturnType, Token } from './types'
-import { UserCreateInput } from '~/@generated/user/user-create.input'
-import { FindFirstUserOrThrowArgs } from '~/@generated/user/find-first-user-or-throw.args'
+import { UserCreateInput } from '@generated/user/user-create.input'
+import { FindFirstUserOrThrowArgs } from '@generated/user/find-first-user-or-throw.args'
 
 type FieldValues = 'email' | 'username'
 

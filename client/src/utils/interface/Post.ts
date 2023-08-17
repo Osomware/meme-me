@@ -12,4 +12,10 @@ export interface IPost {
     email: string
     username: string
   }
+  postHashtags: {
+    [x: string]: any
+    hashtag: {
+      tag: string
+    }
+  }
 }

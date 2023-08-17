@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 
-import { Post } from '~/@generated/post/post.model'
+import { Post } from '@generated/post/post.model'
 import { PrismaService } from '~/prisma/prisma.service'
-import { FindManyPostArgs } from '~/@generated/post/find-many-post.args'
-import { FindFirstPostOrThrowArgs } from '~/@generated/post/find-first-post-or-throw.args'
-import { PostCreateWithoutUserInput } from '~/@generated/post/post-create-without-user.input'
+import { FindManyPostArgs } from '@generated/post/find-many-post.args'
+import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
+import { PostCreateWithoutUserInput } from '@generated/post/post-create-without-user.input'
 
 @Injectable()
 export class PostService {
@@ -38,7 +38,11 @@ export class PostService {
       ...args,
       include: {
         user: true,
-        postHashtags: true
+        postHashtags: {
+          include: {
+            hashtag: true
+          }
+        }
       }
     })
   }

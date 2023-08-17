@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql'
 
-import { HashtagCount } from '~/@generated/hashtag/hashtag-count.output'
+import { HashtagCount } from '@generated/hashtag/hashtag-count.output'
 
 @ObjectType()
 export class PostHashtag {

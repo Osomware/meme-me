@@ -2,10 +2,10 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql'
 
 import { PostService } from './post.service'
 import { Post } from './entities/post.entity'
-import { FindManyPostArgs } from '~/@generated/post/find-many-post.args'
+import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { CurrentUserId } from '~/auth/decorators/currentUserId.decotrator'
-import { FindFirstPostOrThrowArgs } from '~/@generated/post/find-first-post-or-throw.args'
-import { PostCreateWithoutUserInput } from '~/@generated/post/post-create-without-user.input'
+import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
+import { PostCreateWithoutUserInput } from '@generated/post/post-create-without-user.input'
 
 @Resolver(() => Post)
 export class PostResolver {

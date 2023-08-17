@@ -2,8 +2,8 @@ import { Resolver, Query, Args } from '@nestjs/graphql'
 
 import { PostHashtagService } from './post-hashtag.service'
 import { PostHashtag } from './entities/post-hashtag.entity'
-import { Hashtag } from '~/@generated/hashtag/hashtag.model'
-import { FindManyHashtagArgs } from '~/@generated/hashtag/find-many-hashtag.args'
+import { Hashtag } from '@generated/hashtag/hashtag.model'
+import { FindManyHashtagArgs } from '@generated/hashtag/find-many-hashtag.args'
 
 @Resolver(() => PostHashtag)
 export class PostHashtagResolver {
