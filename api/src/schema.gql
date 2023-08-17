@@ -204,6 +204,7 @@ type Post {
   isHideLikeAndCount: Boolean!
   isTurnOffComment: Boolean!
   mediaUrls: [String!]
+  postHashtags: [PostHashtagEntity!]
   title: String
   updatedAt: DateTime
   user: User
@@ -288,6 +289,15 @@ input PostHashtagCreateWithoutPostInput {
   createdAt: DateTime
   hashtag: HashtagCreateNestedOneWithoutPostHashtagsInput!
   updatedAt: DateTime
+}
+
+type PostHashtagEntity {
+  createdAt: DateTime!
+  hashtag: Hashtag!
+  hashtagId: Int!
+  id: ID!
+  postId: Int!
+  updatedAt: DateTime!
 }
 
 input PostHashtagListRelationFilter {

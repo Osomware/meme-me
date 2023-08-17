@@ -16,6 +16,11 @@ export const GET_ALL_POST_QUERY = gql`
         email
         username
       }
+      postHashtags {
+        hashtag {
+          tag
+        }
+      }
     }
   }
 `
