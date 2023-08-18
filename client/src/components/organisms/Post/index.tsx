@@ -35,19 +35,19 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
   const reactions = [
     {
       type: 'heart',
-      count: '2.6M'
+      count: '0'
     },
     {
       type: 'comment',
-      count: '16.4K'
+      count: '0'
     },
     {
       type: 'bookmark',
-      count: '448.3K'
+      count: '0'
     },
     {
       type: 'share',
-      count: '14.1K'
+      count: '0'
     }
   ]
 
@@ -106,15 +106,22 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
             <div className="relative shrink-0 max-w-[355px] w-[355px]">
               <div
                 className={clsx(
-                  'h-[470px] border-4 flex justify-center items-center border-white',
-                  'shadow overflow-hidden rounded-2xl bg-black'
+                  'h-[470px] border-[5px] flex justify-center items-center border-white',
+                  'shadow overflow-hidden rounded-lg bg-black'
                 )}
               >
                 <Carousel>
                   {mediaUrls.map((asset, idx) => {
                     if (asset.endsWith('.mp4')) {
                       return (
-                        <video key={idx} src={asset} autoPlay muted loop className="w-full">
+                        <video
+                          key={idx}
+                          src={asset}
+                          autoPlay
+                          muted
+                          loop
+                          className="w-full rounded-md"
+                        >
                           Your browser does not support the video tag.
                         </video>
                       )

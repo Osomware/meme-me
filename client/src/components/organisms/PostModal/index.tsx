@@ -12,6 +12,7 @@ import Comment from './../Comment'
 import Carousel from './../Carousel'
 import usePost from '~/hooks/usePost'
 import Input from '~/components/atoms/Input'
+import Hashtag from '~/components/atoms/Hashtag'
 import { Reaction } from '~/utils/types/reaction'
 import Messageicon from '~/utils/icons/MessageIcon'
 import CopyLink from '~/components/molecules/CopyLink'
@@ -36,28 +37,30 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
 
   const { getSinglePost } = usePost()
   const { data: postData, isLoading: isLoadingPost } = getSinglePost(Number(postId))
-  const myConfig = genConfig(postData?.findOnePost?.user?.email as AvatarFullConfig)
+  const userPost = postData?.findOnePost
+  const myConfig = genConfig(userPost?.user?.email as AvatarFullConfig)
 
   const isMediumScreen = useScreenCondition('(max-width: 768px)')
 
   const isFollowed = false
+  const replies = []
 
   const reactions = [
     {
       type: 'heart',
-      count: '2.6M'
+      count: '0'
     },
     {
       type: 'comment',
-      count: '16.4K'
+      count: '0'
     },
     {
       type: 'bookmark',
-      count: '448.3K'
+      count: '0'
     },
     {
       type: 'share',
-      count: '14.1K'
+      count: '0'
     }
   ]
 
@@ -83,7 +86,7 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
             <div className="h-full w-ful flex justify-center items-center max-w-md overflow-hidden bg-black">
               <Carousel>
                 {
-                  postData?.findOnePost?.mediaUrls.map((asset, idx) => {
+                  userPost?.mediaUrls.map((asset, idx) => {
                     if (asset.endsWith('.mp4')) {
                       return (
                         <video key={idx} src={asset} autoPlay muted loop className="w-full">
@@ -122,12 +125,9 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                     {...myConfig}
                   />
                   <div className="leading-none">
-                    <h2 className="line-clamp-1 font-bold text-base">
-                      {postData?.findOnePost?.user.username}
-                    </h2>
+                    <h2 className="line-clamp-1 font-bold text-base">{userPost?.user.username}</h2>
                     <span className="text-xs">
-                      {postData?.findOnePost?.user.name} &bull;{' '}
-                      {moment(postData?.findOnePost?.createdAt).format('MM-DD-YY')}
+                      {userPost?.user.name} &bull; {moment(userPost?.createdAt).format('MM-DD-YY')}
                     </span>
                   </div>
                 </div>
@@ -139,8 +139,13 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                   {isFollowed ? 'Following' : 'Follow'}
                 </Button>
               </div>
-              <div className="py-2">
-                {convertHashtagsToLinks(postData?.findOnePost?.title ?? '')}
+              <div className="flex items-center flex-wrap space-x-1 py-2">
+                {convertHashtagsToLinks(userPost?.title ?? '')}
+                {userPost?.postHashtags?.map(
+                  (item: { hashtag: { tag: string } }, index: number) => (
+                    <Hashtag key={index} tag={item.hashtag.tag} />
+                  )
+                )}
               </div>
               {/* Post Interaction Button */}
               <div className="mt-4 inline-flex items-center gap-x-4">
@@ -182,7 +187,13 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                 ))}
               </div>
               {/* Copy Link Input */}
-              <CopyLink url={`http://localhost:3000${router?.pathname}` ?? ''} />
+              <CopyLink
+                url={
+                  `http://localhost:3000/@${userPost?.user?.username as string}/posts/${
+                    router?.query.postId as string
+                  }` ?? ''
+                }
+              />
             </header>
             <main
               className={clsx(
@@ -190,7 +201,11 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                 'border-stroke-1 custom-scrollbar overflow-y-auto'
               )}
             >
-              <Comment />
+              {replies.length === 0 ? (
+                <p className="text-xs text-center text-secondary-100">No comment</p>
+              ) : (
+                <Comment />
+              )}
             </main>
             <footer className="flex items-center px-4 py-3">
               <div className="relative w-full flex items-center">

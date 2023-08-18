@@ -11,9 +11,7 @@ const CopyLink: FC<CopyLinkProps> = ({ url }): JSX.Element => {
 
   const copyLink = (): void => {
     if (inputRef.current !== null) {
-      inputRef.current.select()
-      inputRef.current.setSelectionRange(0, 99999)
-      document.execCommand('copy')
+      void navigator.clipboard.writeText(inputRef.current.value)
       toast.success('Link copied to clipboard!')
     }
   }
