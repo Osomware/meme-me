@@ -41,6 +41,7 @@
     "react-feather": "^2.0.10",
     "react-hook-form": "^7.45.1",
     "react-hot-toast": "^2.4.1",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-nice-avatar": "^1.4.1",
     "react-responsive-carousel": "^3.2.23",
     "react-responsive-modal": "^6.4.2",

@@ -1,6 +1,13 @@
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
-import { useMutation, UseMutationResult, useQuery, UseQueryResult } from '@tanstack/react-query'
+import {
+  useQuery,
+  useMutation,
+  UseQueryResult,
+  useInfiniteQuery,
+  UseMutationResult,
+  UseInfiniteQueryResult
+} from '@tanstack/react-query'
 
 import { gqlClient } from '~/lib/gqlClient'
 import { IPost } from '~/utils/interface/Post'
@@ -18,18 +25,26 @@ type PostMutationReturnType = UseMutationResult<
 type PostSuccessReponse = {
   createPost: IPost
 }
+type IParams = {
+  nextCursor?: number
+  prevCursor?: number
+}
 type PostFetchResponse = {
-  findAllPost: IPost[]
+  pages: Array<{
+    findAllPost: IPost[]
+  }>
+  pageParams: IParams | null
+  prevOffset: number
 }
 type SinglePostFetchResponse = {
   findOnePost: IPost
 }
 
-type PostFetchQueryType = UseQueryResult<PostFetchResponse, unknown>
+type PostFetchQueryType = UseInfiniteQueryResult<PostFetchResponse, Error>
 type SinglePostFetchQueryType = UseQueryResult<SinglePostFetchResponse, unknown>
 
 type ReturnType = {
-  getAllPosts: () => PostFetchQueryType
+  getInfinitePosts: () => PostFetchQueryType
   getSinglePost: (id: number) => SinglePostFetchQueryType
   handlePostMutation: () => PostMutationReturnType
 }
@@ -46,7 +61,7 @@ const usePost = (): ReturnType => {
   }
 
   const handlePostMutation = (): PostMutationReturnType =>
-    useMutation<PostSuccessReponse, unknown, PostRequestInput, unknown>({
+    useMutation<PostSuccessReponse, Error, PostRequestInput, unknown>({
       mutationFn: async (createPostInput: PostRequestInput) => {
         return await gqlClient.request(CREATE_POST_MUTATION, {
           createPostInput
@@ -60,19 +75,42 @@ const usePost = (): ReturnType => {
       },
       onSettled: () => {
         void queryClient.invalidateQueries({ queryKey: postKeys.all })
+      },
+      onError: async (error: Error) => {
+        const [errorMessage] = error.message.split(/:\s/, 2)
+        toast.error(errorMessage)
       }
     })
 
-  const getAllPosts = (): PostFetchQueryType =>
-    useQuery<PostFetchResponse, Error>({
+  const getInfinitePosts = (): PostFetchQueryType =>
+    useInfiniteQuery<PostFetchResponse, Error>({
       queryKey: postKeys.all,
-      queryFn: async () =>
-        await gqlClient.request(GET_ALL_POST_QUERY, {
+      queryFn: async ({ pageParam }) => {
+        const data: PostFetchResponse = await gqlClient.request(GET_ALL_POST_QUERY, {
+          skip: 0,
+          take: 5,
           orderBy: {
             createdAt: 'desc'
           }
-        }),
-      select: (data: PostFetchResponse) => data
+        })
+
+        console.log(pageParam)
+
+        return {
+          ...data,
+          prevOffset: pageParam
+        }
+      },
+      getNextPageParam: (lastPage) => {
+        if (
+          lastPage?.prevOffset + 5 >
+          lastPage?.pages?.filter((p) => p.findAllPost.length).length
+        ) {
+          return false
+        }
+
+        return lastPage?.prevOffset + 5
+      }
     })
 
   const getSinglePost = (id: number): SinglePostFetchQueryType =>
@@ -91,8 +129,8 @@ const usePost = (): ReturnType => {
     })
 
   return {
-    getAllPosts,
     getSinglePost,
+    getInfinitePosts,
     handlePostMutation
   }
 }

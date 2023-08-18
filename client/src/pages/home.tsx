@@ -1,8 +1,10 @@
 import type { NextPage } from 'next'
 import Alert from '~/components/atoms/Alert'
-import React, { FC, ReactNode } from 'react'
+import React, { FC, ReactNode, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import usePost from '~/hooks/usePost'
+import { IPost } from '~/utils/interface/Post'
 import PostList from '~/components/molecules/PostList'
 import StoryList from '~/components/molecules/StoryList'
 import HomeLayout from '~/components/templates/HomeLayout'
@@ -12,8 +14,20 @@ import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
 import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoading'
 
 const Home: NextPage = (): JSX.Element => {
-  const { getAllPosts } = usePost()
-  const { data: dataPosts, isLoading: isLoadingPosts, isError } = getAllPosts()
+  const { getInfinitePosts } = usePost()
+  const {
+    data: dataPosts,
+    fetchNextPage,
+    hasNextPage,
+    isLoading: isLoadingPosts,
+    isError
+  } = getInfinitePosts()
+
+  const userPosts = dataPosts?.pages.reduce((acc: any, page: any) => {
+    return [...acc, ...page?.findAllPost]
+  }, [])
+
+  // console.log(userPosts)
 
   // SCREEN SIZE CONDITION HOOKS
   const isMaxWidth = useScreenCondition('(max-width: 1380px)')
@@ -50,15 +64,23 @@ const Home: NextPage = (): JSX.Element => {
         isMaxWidth
       }}
     >
-      <>
-        {dataPosts?.findAllPost.length === 0 ? (
+      {/* <pre>{JSON.stringify(userPosts, null, 2)}</pre> */}
+      <InfiniteScroll
+        dataLength={userPosts ? userPosts?.length : 0}
+        next={() => {
+          fetchNextPage()
+        }}
+        hasMore={hasNextPage as boolean}
+        loader={<div className="text-center text-sm text-secondary-200 py-6">Loading...</div>}
+      >
+        {userPosts?.length === 0 ? (
           <div className="mt-3">
             <p className="py-2 text-center text-sm text-secondary-200">No Post</p>
           </div>
         ) : (
-          <PostList posts={dataPosts?.findAllPost ?? []} />
+          <PostList posts={userPosts as any} />
         )}
-      </>
+      </InfiniteScroll>
     </PageLayout>
   )
 }

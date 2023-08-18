@@ -3,6 +3,7 @@ import { ObjectType, Field, Int, ID } from '@nestjs/graphql'
 import { User } from '~/user/user.entity'
 import { Hashtag } from './hashtag.entity'
 import { PostHashtagEntity } from './post.hashtag.entity'
+import { PostCount } from '@generated/post/post-count.output'
 
 @ObjectType()
 export class Post {
@@ -38,4 +39,7 @@ export class Post {
 
   @Field(() => [PostHashtagEntity], { nullable: true })
   postHashtags?: Array<PostHashtagEntity>
+
+  @Field(() => PostCount, { nullable: false })
+  _count?: PostCount
 }

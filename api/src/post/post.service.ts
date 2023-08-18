@@ -42,7 +42,8 @@ export class PostService {
           include: {
             hashtag: true
           }
-        }
+        },
+        _count: true
       }
     })
   }

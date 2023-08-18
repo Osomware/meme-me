@@ -101,6 +101,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
   const handleReset = (): void => {
     setFileUrls([])
     setFiles([])
+    setTags([])
     reset({
       mediaUrls: undefined,
       captions: '',
@@ -131,7 +132,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
           }
         },
         {
-          onSettled() {
+          onSettled: () => {
             handleReset()
             closeModal()
           }

@@ -198,6 +198,7 @@ enum NullsOrder {
 }
 
 type Post {
+  _count: PostCount!
   createdAt: DateTime
   hashtags: [Hashtag!]
   id: ID!
@@ -209,6 +210,10 @@ type Post {
   updatedAt: DateTime
   user: User
   userId: Int
+}
+
+type PostCount {
+  postHashtags: Int!
 }
 
 input PostCreateManyUserInput {
