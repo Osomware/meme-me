@@ -1,13 +1,13 @@
 import { gql } from 'graphql-request'
 
 export const USER_QUERY = gql`
-  query GetCurrentUser($id: Int!) {
-    findOne(id: $id) {
+  query FindOneUser($where: UserWhereInput) {
+    findOneUser(where: $where) {
+      email
       id
       name
-      email
-      username
       role
+      username
     }
   }
 `

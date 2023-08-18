@@ -1,18 +1,22 @@
 import clsx from 'clsx'
+import { isEmpty } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
-import { ArrowLeft, Settings } from 'react-feather'
 import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
+import { ArrowLeft, MoreHorizontal, Settings } from 'react-feather'
 
+import useUser from '~/hooks/useUser'
 import Tab from '~/components/atoms/Tab'
 import { useStore } from '~/utils/zustand'
+import Alert from '~/components/atoms/Alert'
 import { useZustand } from '~/hooks/useZustand'
 import HomeLayout from '~/components/templates/HomeLayout'
 import useScreenCondition from '~/hooks/useScreenCondition'
 import { profileTabs } from '~/utils/constants/profileTabs'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
+import ProfilePageSkeletonLoading from '~/components/atoms/Skeletons/ProfilePageSkeletonLoading'
 
 const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
 
@@ -24,14 +28,53 @@ export type ProfileLayoutProps = {
 const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Element => {
   const router = useRouter()
   const { '@username': username } = router.query
-  const user = useZustand(useStore, (state) => state.user)
-  const myConfig = genConfig(user?.email as AvatarFullConfig)
+  const currentUser = useZustand(useStore, (state) => state.user)
 
-  // SCREEN SIZE CONDITION HOOKS
+  // * USER HOOKS BY USERNAME
+  const { getCurrentUser } = useUser()
+  const {
+    data: userData,
+    isError,
+    isLoading
+  } = getCurrentUser(username?.slice(1) as string, !isEmpty(username?.slice(1)))
+  const userFound = userData?.findOneUser
+  const myConfig = genConfig(userFound?.email as AvatarFullConfig)
+
+  const isCurrentUser = userFound?.id === currentUser?.id
+
+  // * SCREEN SIZE CONDITION HOOKS
   const isMaxWidth = useScreenCondition('(max-width: 1380px)')
 
   const handleGoBackRoute = (): void => {
     router.back()
+  }
+
+  if (isLoading) {
+    return (
+      <HomeLayout
+        {...{
+          metaTitle
+        }}
+        className="flex"
+      >
+        <ProfilePageSkeletonLoading />
+      </HomeLayout>
+    )
+  }
+
+  if (isError) {
+    return (
+      <HomeLayout
+        {...{
+          metaTitle
+        }}
+        className="flex"
+      >
+        <div className="py-6">
+          <Alert type="error" message="Something went wrong fetching data" />
+        </div>
+      </HomeLayout>
+    )
   }
 
   return (
@@ -50,9 +93,9 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
           >
             <ArrowLeft className="stroke-4 w-5 h-5" />
           </button>
-          <h1 className="uppercase font-bold text-sm">{user?.name}</h1>
+          <h1 className="uppercase font-bold text-sm">{userFound?.name}</h1>
         </header>
-        <article className="">
+        <article>
           <section className="max-w-3xl w-full mx-auto px-4 md:px-8 py-6 text-secondary">
             <div className="flex flex-col md:flex-row items-start gap-y-4 gap-x-6 md:gap-x-12">
               <ReactNiceAvatar
@@ -64,18 +107,49 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
               />
               <div className="flex flex-col space-y-3 text-sm">
                 <div className="flex items-center space-x-6">
-                  <h2 className="font-semibold text-base">{user?.username}</h2>
-                  <Button
-                    type="button"
-                    variant="secondary-outline"
-                    rounded="md"
-                    className="font-bold text-sm px-2 py-1"
-                  >
-                    Edit Profile
-                  </Button>
-                  <button type="button">
-                    <Settings className="w-5 h-5" />
-                  </button>
+                  <h2 className="font-semibold text-base">{userFound?.username}</h2>
+                  {isCurrentUser ? (
+                    <>
+                      <Button
+                        type="button"
+                        variant="secondary-outline"
+                        rounded="md"
+                        className="font-bold text-sm px-2 py-1"
+                      >
+                        Edit Profile
+                      </Button>
+                      <button type="button">
+                        <Settings className="w-5 h-5" />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="inline-flex items-center space-x-2">
+                      <Button
+                        type="button"
+                        variant="primary"
+                        rounded="md"
+                        className="font-bold text-sm px-2 py-1"
+                      >
+                        Follow
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary-outline"
+                        rounded="md"
+                        className="font-bold text-sm px-2 py-1"
+                      >
+                        Message
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        rounded="md"
+                        className="font-bold text-sm px-1 py-0.5"
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center space-x-4">
                   <a href="#" className="inline-flex items-center space-x-1 hover:underline">
@@ -83,20 +157,18 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
                     <span>posts</span>
                   </a>
                   <a href="#" className="inline-flex items-center space-x-1 hover:underline">
-                    <h4 className="font-bold">31</h4>
+                    <h4 className="font-bold">0</h4>
                     <span>followers</span>
                   </a>
                   <a href="#" className="inline-flex items-center space-x-1 hover:underline">
-                    <h4 className="font-bold">30</h4>
+                    <h4 className="font-bold">0</h4>
                     <span>following</span>
                   </a>
                 </div>
                 <div className="flex flex-col space-y-0.5">
-                  <h1 className="font-bold uppercase">{user?.name}</h1>
-                  <p className="text-secondary-300">I think therefore I am</p>
-                  <a href="#" className="font-semibold hover:underline text-primary">
-                    joshuagalit.ga
-                  </a>
+                  <h1 className="font-bold uppercase">{userFound?.name}</h1>
+                  <p className="text-secondary-300"></p>
+                  <a href="#" className="font-semibold hover:underline text-primary"></a>
                 </div>
               </div>
             </div>
