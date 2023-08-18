@@ -42,6 +42,11 @@ export const GET_ONE_POST_QUERY = gql`
         role
         username
       }
+      postHashtags {
+        hashtag {
+          tag
+        }
+      }
     }
   }
 `

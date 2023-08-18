@@ -52,7 +52,11 @@ export class PostService {
       ...args,
       include: {
         user: true,
-        postHashtags: true
+        postHashtags: {
+          include: {
+            hashtag: true
+          }
+        }
       }
     })
   }
