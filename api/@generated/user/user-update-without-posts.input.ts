@@ -4,6 +4,8 @@ import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { EnumRoleFieldUpdateOperationsInput } from '../prisma/enum-role-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
+import { FollowUpdateManyWithoutFollowerNestedInput } from '../follow/follow-update-many-without-follower-nested.input';
+import { FollowUpdateManyWithoutFollowingNestedInput } from '../follow/follow-update-many-without-following-nested.input';
 
 @InputType()
 export class UserUpdateWithoutPostsInput {
@@ -31,4 +33,10 @@ export class UserUpdateWithoutPostsInput {
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     updatedAt?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => FollowUpdateManyWithoutFollowerNestedInput, {nullable:true})
+    followers?: FollowUpdateManyWithoutFollowerNestedInput;
+
+    @Field(() => FollowUpdateManyWithoutFollowingNestedInput, {nullable:true})
+    following?: FollowUpdateManyWithoutFollowingNestedInput;
 }

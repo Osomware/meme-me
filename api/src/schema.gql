@@ -30,6 +30,109 @@ input EnumRoleFilter {
   notIn: [Role!]
 }
 
+input FollowCreateManyFollowerInput {
+  createdAt: DateTime
+  followingId: Int!
+  id: Int
+}
+
+input FollowCreateManyFollowerInputEnvelope {
+  data: [FollowCreateManyFollowerInput!]!
+  skipDuplicates: Boolean
+}
+
+input FollowCreateManyFollowingInput {
+  createdAt: DateTime
+  followerId: Int!
+  id: Int
+}
+
+input FollowCreateManyFollowingInputEnvelope {
+  data: [FollowCreateManyFollowingInput!]!
+  skipDuplicates: Boolean
+}
+
+input FollowCreateNestedManyWithoutFollowerInput {
+  connect: [FollowWhereUniqueInput!]
+  connectOrCreate: [FollowCreateOrConnectWithoutFollowerInput!]
+  create: [FollowCreateWithoutFollowerInput!]
+  createMany: FollowCreateManyFollowerInputEnvelope
+}
+
+input FollowCreateNestedManyWithoutFollowingInput {
+  connect: [FollowWhereUniqueInput!]
+  connectOrCreate: [FollowCreateOrConnectWithoutFollowingInput!]
+  create: [FollowCreateWithoutFollowingInput!]
+  createMany: FollowCreateManyFollowingInputEnvelope
+}
+
+input FollowCreateOrConnectWithoutFollowerInput {
+  create: FollowCreateWithoutFollowerInput!
+  where: FollowWhereUniqueInput!
+}
+
+input FollowCreateOrConnectWithoutFollowingInput {
+  create: FollowCreateWithoutFollowingInput!
+  where: FollowWhereUniqueInput!
+}
+
+input FollowCreateWithoutFollowerInput {
+  createdAt: DateTime
+  following: UserCreateNestedOneWithoutFollowingInput!
+}
+
+input FollowCreateWithoutFollowingInput {
+  createdAt: DateTime
+  follower: UserCreateNestedOneWithoutFollowersInput!
+}
+
+input FollowFollowerIdFollowingIdCompoundUniqueInput {
+  followerId: Int!
+  followingId: Int!
+}
+
+input FollowListRelationFilter {
+  every: FollowWhereInput
+  none: FollowWhereInput
+  some: FollowWhereInput
+}
+
+input FollowOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+type FollowUser {
+  createdAt: DateTime!
+  followerId: Int!
+  followingId: Int!
+  id: ID!
+}
+
+input FollowWhereInput {
+  AND: [FollowWhereInput!]
+  NOT: [FollowWhereInput!]
+  OR: [FollowWhereInput!]
+  createdAt: DateTimeFilter
+  follower: UserRelationFilter
+  followerId: IntFilter
+  following: UserRelationFilter
+  followingId: IntFilter
+  id: IntFilter
+}
+
+input FollowWhereUniqueInput {
+  AND: [FollowWhereInput!]
+  NOT: [FollowWhereInput!]
+  OR: [FollowWhereInput!]
+  createdAt: DateTimeFilter
+  follower: UserRelationFilter
+  followerId: IntFilter
+  followerId_followingId: FollowFollowerIdFollowingIdCompoundUniqueInput
+  following: UserRelationFilter
+  followingId: IntFilter
+  id: Int
+}
+
 type Hashtag {
   _count: HashtagCount!
   createdAt: DateTime!
@@ -119,10 +222,12 @@ type LogoutResponse {
 
 type Mutation {
   createPost(createPostInput: PostCreateWithoutUserInput!): Post!
+  followUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
   getNewTokens: NewTokensResonse!
   logout(id: Int!): LogoutResponse!
   signin(signInInput: SignInInput!): SignResponse!
   signup(signupInput: UserCreateInput!): SignResponse!
+  unfollowUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
 }
 
 input NestedBoolFilter {
@@ -490,6 +595,10 @@ input StringNullableListFilter {
   isEmpty: Boolean
 }
 
+input TargetUserIdInput {
+  id: Int!
+}
+
 type User {
   email: String!
   id: Int!
@@ -501,6 +610,56 @@ type User {
 input UserCreateInput {
   createdAt: DateTime
   email: String!
+  followers: FollowCreateNestedManyWithoutFollowerInput
+  following: FollowCreateNestedManyWithoutFollowingInput
+  name: String!
+  password: String!
+  posts: PostCreateNestedManyWithoutUserInput
+  refreshToken: String
+  role: Role
+  updatedAt: DateTime
+  username: String!
+}
+
+input UserCreateNestedOneWithoutFollowersInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutFollowersInput
+  create: UserCreateWithoutFollowersInput
+}
+
+input UserCreateNestedOneWithoutFollowingInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutFollowingInput
+  create: UserCreateWithoutFollowingInput
+}
+
+input UserCreateOrConnectWithoutFollowersInput {
+  create: UserCreateWithoutFollowersInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutFollowingInput {
+  create: UserCreateWithoutFollowingInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateWithoutFollowersInput {
+  createdAt: DateTime
+  email: String!
+  following: FollowCreateNestedManyWithoutFollowingInput
+  name: String!
+  password: String!
+  posts: PostCreateNestedManyWithoutUserInput
+  refreshToken: String
+  role: Role
+  updatedAt: DateTime
+  username: String!
+}
+
+input UserCreateWithoutFollowingInput {
+  createdAt: DateTime
+  email: String!
+  followers: FollowCreateNestedManyWithoutFollowerInput
   name: String!
   password: String!
   posts: PostCreateNestedManyWithoutUserInput
@@ -513,6 +672,8 @@ input UserCreateInput {
 input UserOrderByWithRelationInput {
   createdAt: SortOrder
   email: SortOrder
+  followers: FollowOrderByRelationAggregateInput
+  following: FollowOrderByRelationAggregateInput
   id: SortOrder
   name: SortOrder
   password: SortOrder
@@ -546,6 +707,8 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   createdAt: DateTimeFilter
   email: StringFilter
+  followers: FollowListRelationFilter
+  following: FollowListRelationFilter
   id: IntFilter
   name: StringFilter
   password: StringFilter
@@ -562,6 +725,8 @@ input UserWhereUniqueInput {
   OR: [UserWhereInput!]
   createdAt: DateTimeFilter
   email: String
+  followers: FollowListRelationFilter
+  following: FollowListRelationFilter
   id: Int
   name: StringFilter
   password: StringFilter

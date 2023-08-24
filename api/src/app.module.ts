@@ -11,6 +11,7 @@ import { UserModule } from '~/user/user.module'
 import { PostModule } from './post/post.module'
 import { PrismaService } from '~/prisma/prisma.service'
 import { AccessTokenGuard } from '~/auth/guards/accessToken.guard'
+import { FollowUserModule } from './follow-user/follow-user.module'
 import { PostHashtagModule } from './post-hashtag/post-hashtag.module'
 
 @Module({
@@ -26,6 +27,7 @@ import { PostHashtagModule } from './post-hashtag/post-hashtag.module'
     AuthModule,
     UserModule,
     PostModule,
+    FollowUserModule,
     PostHashtagModule
   ],
   controllers: [],

@@ -31,6 +31,20 @@ model User {
   posts        Post[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now())
+
+  followers Follow[] @relation("FollowerRelation")
+  following Follow[] @relation("FollowingRelation")
+}
+
+model Follow {
+  id          Int      @id @default(autoincrement())
+  follower    User     @relation("FollowerRelation", fields: [followerId], references: [id])
+  followerId  Int
+  following   User     @relation("FollowingRelation", fields: [followingId], references: [id])
+  followingId Int
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
 }
 
 enum Role {
