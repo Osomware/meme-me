@@ -20,3 +20,7 @@ export type PostRequestInput = {
     }>
   }
 }
+
+export type TargetUserIdInput = {
+  id: number
+}

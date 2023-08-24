@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { isEmpty } from 'lodash'
 import dynamic from 'next/dynamic'
+import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
 import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
@@ -8,9 +9,11 @@ import { ArrowLeft, MoreHorizontal, Settings } from 'react-feather'
 
 import useUser from '~/hooks/useUser'
 import Tab from '~/components/atoms/Tab'
+import useFollow from '~/hooks/useFollow'
 import { useStore } from '~/utils/zustand'
 import Alert from '~/components/atoms/Alert'
 import { useZustand } from '~/hooks/useZustand'
+import { queryClient } from '~/lib/queryClient'
 import HomeLayout from '~/components/templates/HomeLayout'
 import useScreenCondition from '~/hooks/useScreenCondition'
 import { profileTabs } from '~/utils/constants/profileTabs'
@@ -44,6 +47,42 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
 
   // * SCREEN SIZE CONDITION HOOKS
   const isMaxWidth = useScreenCondition('(max-width: 1380px)')
+
+  // * FOLLOW HOOKS
+  const { checkIsFollowed, handleFollow, handleUnfollow } = useFollow()
+  const followMethod = handleFollow()
+  const unFollowMethod = handleUnfollow()
+
+  const followStatuses = checkIsFollowed(userFound?.id ?? 0)
+  const isFollowed = followStatuses?.data?.checkUserFollowed ?? false
+
+  const handleFollowUnfollow = async (): Promise<void> => {
+    if (isFollowed) {
+      await unFollowMethod.mutateAsync(
+        {
+          id: userFound?.id ?? 0
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries()
+            toast.success('Unfollow')
+          }
+        }
+      )
+    } else {
+      await followMethod.mutateAsync(
+        {
+          id: userFound?.id ?? 0
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries()
+            toast.success('Follow')
+          }
+        }
+      )
+    }
+  }
 
   const handleGoBackRoute = (): void => {
     router.back()
@@ -125,12 +164,15 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
                   ) : (
                     <div className="inline-flex items-center space-x-2">
                       <Button
-                        type="button"
-                        variant="primary"
-                        rounded="md"
-                        className="font-bold text-sm px-2 py-1"
+                        type="submit"
+                        onClick={() => {
+                          void handleFollowUnfollow()
+                        }}
+                        disabled={followMethod.isLoading || unFollowMethod.isLoading}
+                        variant={!isFollowed ? 'primary' : 'primary-outline'}
+                        className="px-2 text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Follow
+                        {!isFollowed ? 'Follow' : 'Following'}
                       </Button>
                       <Button
                         type="button"
@@ -153,15 +195,15 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
                 </div>
                 <div className="flex items-center space-x-4">
                   <a href="#" className="inline-flex items-center space-x-1 hover:underline">
-                    <h4 className="font-bold">0</h4>
+                    <h4 className="font-bold">{userFound?._count?.posts ?? 0}</h4>
                     <span>posts</span>
                   </a>
                   <a href="#" className="inline-flex items-center space-x-1 hover:underline">
-                    <h4 className="font-bold">0</h4>
+                    <h4 className="font-bold">{userFound?._count?.followers ?? 0}</h4>
                     <span>followers</span>
                   </a>
                   <a href="#" className="inline-flex items-center space-x-1 hover:underline">
-                    <h4 className="font-bold">0</h4>
+                    <h4 className="font-bold">{userFound?._count?.following ?? 0}</h4>
                     <span>following</span>
                   </a>
                 </div>

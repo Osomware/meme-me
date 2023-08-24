@@ -8,6 +8,11 @@ export const USER_QUERY = gql`
       name
       role
       username
+      _count {
+        followers
+        following
+        posts
+      }
     }
   }
 `

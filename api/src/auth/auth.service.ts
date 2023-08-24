@@ -137,7 +137,15 @@ export class AuthService {
   }
 
   async findOne(args: FindFirstUserOrThrowArgs): Promise<User> {
-    return await this.prisma.user.findFirstOrThrow(args)
+    return await this.prisma.user.findFirstOrThrow({
+      ...args,
+      include: {
+        followers: true,
+        following: true,
+        posts: true,
+        _count: true
+      }
+    })
   }
 
   async getNewTokens(userId: number, rt: string): SignReturnType {
