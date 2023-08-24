@@ -6,6 +6,7 @@ import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { EnumRoleFilter } from '../prisma/enum-role-filter.input';
 import { DateTimeFilter } from '../prisma/date-time-filter.input';
 import { PostListRelationFilter } from '../post/post-list-relation-filter.input';
+import { FollowListRelationFilter } from '../follow/follow-list-relation-filter.input';
 
 @InputType()
 export class UserWhereInput {
@@ -48,4 +49,10 @@ export class UserWhereInput {
 
     @Field(() => PostListRelationFilter, {nullable:true})
     posts?: PostListRelationFilter;
+
+    @Field(() => FollowListRelationFilter, {nullable:true})
+    followers?: FollowListRelationFilter;
+
+    @Field(() => FollowListRelationFilter, {nullable:true})
+    following?: FollowListRelationFilter;
 }
