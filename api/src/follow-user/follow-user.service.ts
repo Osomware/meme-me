@@ -46,7 +46,7 @@ export class FollowUserService {
       throw new Error('You cannot unfollow yourself.')
     }
 
-    const targetUserFound = await this.prisma.user.findUnique({
+    const targetUserFound = await this.prisma.user.findMany({
       where: { id: targetUser.id }
     })
 
@@ -66,5 +66,18 @@ export class FollowUserService {
         following: true
       }
     })
+  }
+
+  async checkUserFollowed(userId: number, targetUser: TargetUserIdInput): Promise<Boolean> {
+    const followRelationship = await this.prisma.follow.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: userId,
+          followingId: targetUser.id
+        }
+      }
+    })
+
+    return !!followRelationship
   }
 }

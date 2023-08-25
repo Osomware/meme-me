@@ -1,14 +1,17 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import toast from 'react-hot-toast'
 import isEmpty from 'lodash/isEmpty'
 import { useRouter } from 'next/router'
 import { ShareTwo } from '@icon-park/react'
 import { Heart, Bookmark } from 'react-feather'
+import { queryClient } from '~/lib/queryClient'
 import React, { Dispatch, FC, useEffect } from 'react'
 import { AvatarConfig, genConfig } from 'react-nice-avatar'
 
 import Carousel from './../Carousel'
+import useFollow from '~/hooks/useFollow'
 import { IPost } from '~/utils/interface/Post'
 import Hashtag from '~/components/atoms/Hashtag'
 import { Reaction } from '~/utils/types/reaction'
@@ -21,16 +24,54 @@ const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), {
 
 type PostProps = {
   post: IPost
+  isPostAuthor: boolean
+  isFollowed: boolean
   state: {
     setIsModalOpen: Dispatch<React.SetStateAction<boolean>>
   }
 }
 
-const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element => {
-  // Destructured Props
+const Post: FC<PostProps> = (props): JSX.Element => {
+  // * Destructured Props
+  const {
+    post,
+    isPostAuthor,
+    isFollowed,
+    state: { setIsModalOpen }
+  } = props
   const { id, mediaUrls, title, user, postHashtags } = post
 
-  const isFollowed = false
+  const { handleFollow, handleUnfollow } = useFollow()
+  const followMethod = handleFollow()
+  const unFollowMethod = handleUnfollow()
+
+  const handleFollowUnfollow = async (): Promise<void> => {
+    if (isFollowed) {
+      await unFollowMethod.mutateAsync(
+        {
+          id: user?.id
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries()
+            toast.success('Unfollow')
+          }
+        }
+      )
+    } else {
+      await followMethod.mutateAsync(
+        {
+          id: user?.id
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries()
+            toast.success('Follow')
+          }
+        }
+      )
+    }
+  }
 
   const reactions = [
     {
@@ -170,15 +211,21 @@ const Post: FC<PostProps> = ({ post, state: { setIsModalOpen } }): JSX.Element =
         </div>
       </section>
       {/* Follow Button */}
-      <section className="mt-2">
-        <Button
-          type="button"
-          variant={isFollowed ? 'primary' : 'primary-outline'}
-          className="px-3.5 text-sm py-1"
-        >
-          {isFollowed ? 'Following' : 'Follow'}
-        </Button>
-      </section>
+      {!isPostAuthor && (
+        <section className="mt-2">
+          <Button
+            type="submit"
+            onClick={() => {
+              void handleFollowUnfollow()
+            }}
+            disabled={followMethod.isLoading || unFollowMethod.isLoading}
+            variant={isFollowed ? 'primary' : 'primary-outline'}
+            className="px-3.5 text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isFollowed ? 'Following' : 'Follow'}
+          </Button>
+        </section>
+      )}
     </main>
   )
 }

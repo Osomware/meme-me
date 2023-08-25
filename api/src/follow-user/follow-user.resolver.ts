@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql'
+import { Resolver, Mutation, Query, Args } from '@nestjs/graphql'
 
 import { Follow } from '@generated/follow/follow.model'
 import { FollowUserService } from './follow-user.service'
@@ -24,5 +24,13 @@ export class FollowUserResolver {
     @Args('targetUserIdInput') targetUserInput: TargetUserIdInput
   ): Promise<Follow> {
     return await this.followUserService.unFollowUser(userId, targetUserInput)
+  }
+
+  @Query(() => Boolean, { name: 'checkUserFollowed' })
+  async checkUserFollowed(
+    @CurrentUserId() userId: number,
+    @Args('targetUserIdInput') targetUserInput: TargetUserIdInput
+  ): Promise<Boolean> {
+    return await this.followUserService.checkUserFollowed(userId, targetUserInput)
   }
 }

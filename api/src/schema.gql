@@ -133,6 +133,15 @@ input FollowWhereUniqueInput {
   id: Int
 }
 
+type Followers {
+  createdAt: DateTime!
+  follower: User!
+  followerId: Int!
+  following: User!
+  followingId: Int!
+  id: ID!
+}
+
 type Hashtag {
   _count: HashtagCount!
   createdAt: DateTime!
@@ -519,6 +528,7 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  checkUserFollowed(targetUserIdInput: TargetUserIdInput!): Boolean!
   findAllPost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
   findOnePost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): Post!
   findOneUser(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): User!
@@ -600,11 +610,25 @@ input TargetUserIdInput {
 }
 
 type User {
+  _count: UserCount!
+  createdAt: DateTime!
   email: String!
+  followers: [Followers!]
+  following: [Followers!]
   id: Int!
   name: String!
-  role: String!
+  password: String!
+  posts: [Post!]
+  refreshToken: String
+  role: Role!
+  updatedAt: DateTime!
   username: String!
+}
+
+type UserCount {
+  followers: Int!
+  following: Int!
+  posts: Int!
 }
 
 input UserCreateInput {
