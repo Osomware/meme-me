@@ -5,7 +5,7 @@ const nextConfig = {
     esmExternals: false // Uploadthing
   },
   images: {
-    domains: ['blog.hubspot.com', 'images.unsplash.com', 'plus.unsplash.com']
+    domains: ['blog.hubspot.com', 'images.unsplash.com', 'plus.unsplash.com', 'uploadthing.com']
   }
 }
 

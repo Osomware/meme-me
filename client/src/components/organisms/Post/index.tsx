@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import Link from 'next/link'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import isEmpty from 'lodash/isEmpty'
@@ -168,11 +169,15 @@ const Post: FC<PostProps> = (props): JSX.Element => {
                       )
                     } else {
                       return (
-                        <img
+                        <Image
                           key={idx}
                           src={asset}
+                          width={500}
+                          height={470}
+                          placeholder="blur"
+                          className="z-50"
+                          blurDataURL={asset}
                           alt=""
-                          className="w-full h-full flex-1 object-fill"
                         />
                       )
                     }

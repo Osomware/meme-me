@@ -67,7 +67,7 @@ const useFollow = (): ReturnType => {
           }
         })
       },
-      select: (data: ResultQuery) => data
+      enabled: !isNaN(id)
     })
 
   return {
