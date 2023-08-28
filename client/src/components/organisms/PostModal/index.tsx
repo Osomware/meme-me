@@ -1,6 +1,8 @@
 import clsx from 'clsx'
 import moment from 'moment'
+import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
 import { Montserrat } from 'next/font/google'
@@ -11,7 +13,9 @@ import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 import Comment from './../Comment'
 import Carousel from './../Carousel'
 import usePost from '~/hooks/usePost'
+import useFollow from '~/hooks/useFollow'
 import Input from '~/components/atoms/Input'
+import { queryClient } from '~/lib/queryClient'
 import Hashtag from '~/components/atoms/Hashtag'
 import { Reaction } from '~/utils/types/reaction'
 import Messageicon from '~/utils/icons/MessageIcon'
@@ -42,7 +46,14 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
 
   const isMediumScreen = useScreenCondition('(max-width: 768px)')
 
-  const isFollowed = false
+  // * FOLLOW HOOKS
+  const { checkIsFollowed, handleFollow, handleUnfollow } = useFollow()
+  const followMethod = handleFollow()
+  const unFollowMethod = handleUnfollow()
+
+  const followStatuses = checkIsFollowed(userPost?.user?.id ?? 0)
+  const isFollowed = followStatuses?.data?.checkUserFollowed ?? false
+
   const replies = []
 
   const reactions = [
@@ -63,6 +74,34 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
       count: '0'
     }
   ]
+
+  const handleFollowUnfollow = async (): Promise<void> => {
+    if (isFollowed) {
+      await unFollowMethod.mutateAsync(
+        {
+          id: userPost?.user?.id ?? 0
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries()
+            toast.success('Unfollow')
+          }
+        }
+      )
+    } else {
+      await followMethod.mutateAsync(
+        {
+          id: userPost?.user?.id ?? 0
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries()
+            toast.success('Follow')
+          }
+        }
+      )
+    }
+  }
 
   return (
     <Modal
@@ -117,26 +156,37 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
               {/* Reaction Button */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-x-2">
-                  <ReactNiceAvatar
-                    className={clsx(
-                      'border-[3px] border-white rounded-full outline-4 shadow shrink-0',
-                      'w-14 h-14'
-                    )}
-                    {...myConfig}
-                  />
+                  <Link href={`/@${userPost?.user.username ?? ''}`} className="outline-primary">
+                    <ReactNiceAvatar
+                      className={clsx(
+                        'border-[3px] border-white rounded-full outline-4 shadow shrink-0',
+                        'w-14 h-14'
+                      )}
+                      {...myConfig}
+                    />
+                  </Link>
                   <div className="leading-none">
-                    <h2 className="line-clamp-1 font-bold text-base">{userPost?.user.username}</h2>
+                    <Link
+                      href={`/@${userPost?.user?.username ?? ''}`}
+                      className="line-clamp-1 font-bold text-base hover:underline"
+                    >
+                      {userPost?.user.username}
+                    </Link>
                     <span className="text-xs">
                       {userPost?.user.name} &bull; {moment(userPost?.createdAt).format('MM-DD-YY')}
                     </span>
                   </div>
                 </div>
                 <Button
-                  type="button"
-                  variant={isFollowed ? 'secondary-outline' : 'primary'}
-                  className="text-xs py-1.5 font-semibold w-[76px]"
+                  type="submit"
+                  onClick={() => {
+                    void handleFollowUnfollow()
+                  }}
+                  disabled={followMethod.isLoading || unFollowMethod.isLoading}
+                  variant={!isFollowed ? 'primary' : 'primary-outline'}
+                  className="px-2 text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isFollowed ? 'Following' : 'Follow'}
+                  {!isFollowed ? 'Follow' : 'Following'}
                 </Button>
               </div>
               <div className="flex items-center flex-wrap space-x-1 py-2">
@@ -197,7 +247,7 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
             </header>
             <main
               className={clsx(
-                'max-h-[400px] min-h-[400px] h-full px-6 py-4 border-y',
+                'min-h-[400px] h-full px-6 py-4 border-y',
                 'border-stroke-1 custom-scrollbar overflow-y-auto'
               )}
             >
