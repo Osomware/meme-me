@@ -25,12 +25,12 @@ export class FollowUserService {
       data: {
         follower: {
           connect: {
-            id: userId
+            id: targetUser.id
           }
         },
         following: {
           connect: {
-            id: targetUser.id
+            id: userId
           }
         }
       },
@@ -57,8 +57,8 @@ export class FollowUserService {
     return await this.prisma.follow.delete({
       where: {
         followerId_followingId: {
-          followerId: userId,
-          followingId: targetUser.id
+          followerId: targetUser.id,
+          followingId: userId
         }
       },
       include: {
@@ -72,8 +72,8 @@ export class FollowUserService {
     const followRelationship = await this.prisma.follow.findUnique({
       where: {
         followerId_followingId: {
-          followerId: userId,
-          followingId: targetUser.id
+          followerId: targetUser.id,
+          followingId: userId
         }
       }
     })

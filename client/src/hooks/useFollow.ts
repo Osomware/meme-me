@@ -60,12 +60,13 @@ const useFollow = (): ReturnType => {
   const checkIsFollowed = (id: number): CheckIsFollowedQueryType =>
     useQuery<ResultQuery, Error>({
       queryKey: ['follow', id],
-      queryFn: async () =>
-        await gqlClient.request(CHECK_IS_FOLLOWED, {
+      queryFn: async () => {
+        return await gqlClient.request(CHECK_IS_FOLLOWED, {
           targetUserIdInput: {
             id
           }
-        }),
+        })
+      },
       select: (data: ResultQuery) => data
     })
 
