@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import moment from 'moment'
 import Link from 'next/link'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
@@ -122,7 +123,7 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
       >
         {!isMediumScreen && (
           <section className="flex-1 bg-black flex justify-center">
-            <div className="h-full w-ful flex justify-center items-center max-w-md overflow-hidden bg-black">
+            <div className="h-full w-ful flex justify-center items-center max-w-md overflow-hidden">
               <Carousel>
                 {
                   userPost?.mediaUrls.map((asset, idx) => {
@@ -134,11 +135,15 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                       )
                     } else {
                       return (
-                        <img
+                        <Image
                           key={idx}
                           src={asset}
+                          width={500}
+                          height={470}
+                          placeholder="blur"
+                          blurDataURL={asset}
+                          className="z-50"
                           alt=""
-                          className="w-full h-full flex-1 object-fill"
                         />
                       )
                     }
