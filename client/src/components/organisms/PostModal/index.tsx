@@ -15,8 +15,10 @@ import Comment from './../Comment'
 import Carousel from './../Carousel'
 import usePost from '~/hooks/usePost'
 import useFollow from '~/hooks/useFollow'
+import { useStore } from '~/utils/zustand'
 import Input from '~/components/atoms/Input'
 import { queryClient } from '~/lib/queryClient'
+import { useZustand } from '~/hooks/useZustand'
 import Hashtag from '~/components/atoms/Hashtag'
 import { Reaction } from '~/utils/types/reaction'
 import Messageicon from '~/utils/icons/MessageIcon'
@@ -44,6 +46,11 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
   const { data: postData, isLoading: isLoadingPost } = getSinglePost(Number(postId))
   const userPost = postData?.findOnePost
   const myConfig = genConfig(userPost?.user?.email as AvatarFullConfig)
+
+  // * ZUSTAND STORE HOOKS
+  const store = useZustand(useStore, (state) => state)
+
+  const isPostAuthor = userPost?.user?.id === store?.user?.id
 
   const isMediumScreen = useScreenCondition('(max-width: 768px)')
 
@@ -182,17 +189,19 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                     </span>
                   </div>
                 </div>
-                <Button
-                  type="submit"
-                  onClick={() => {
-                    void handleFollowUnfollow()
-                  }}
-                  disabled={followMethod.isLoading || unFollowMethod.isLoading}
-                  variant={!isFollowed ? 'primary' : 'primary-outline'}
-                  className="px-2 text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {!isFollowed ? 'Follow' : 'Following'}
-                </Button>
+                {!isPostAuthor && (
+                  <Button
+                    type="submit"
+                    onClick={() => {
+                      void handleFollowUnfollow()
+                    }}
+                    disabled={followMethod.isLoading || unFollowMethod.isLoading}
+                    variant={!isFollowed ? 'primary' : 'primary-outline'}
+                    className="px-2 text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {!isFollowed ? 'Follow' : 'Following'}
+                  </Button>
+                )}
               </div>
               <div className="flex items-center flex-wrap space-x-1 py-2">
                 {convertHashtagsToLinks(userPost?.title ?? '')}
