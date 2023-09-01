@@ -38,9 +38,9 @@ model User {
 
 model Follow {
   id          Int      @id @default(autoincrement())
-  follower    User     @relation("FollowerRelation", fields: [followerId], references: [id])
+  follower    User     @relation("FollowerRelation", fields: [followerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   followerId  Int
-  following   User     @relation("FollowingRelation", fields: [followingId], references: [id])
+  following   User     @relation("FollowingRelation", fields: [followingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   followingId Int
   createdAt   DateTime @default(now())
 
