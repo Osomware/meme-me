@@ -530,6 +530,7 @@ input PostWhereUniqueInput {
 type Query {
   checkUserFollowed(targetUserIdInput: TargetUserIdInput!): Boolean!
   findAllPost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
+  findAllPostByUsername(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
   findOnePost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): Post!
   findOneUser(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): User!
   getAllPostHashtag(cursor: HashtagWhereUniqueInput, distinct: [HashtagScalarFieldEnum!], orderBy: [HashtagOrderByWithRelationInput!], skip: Int, take: Int, where: HashtagWhereInput): [PostHashtag!]!

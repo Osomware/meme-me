@@ -105,7 +105,10 @@ const Post: FC<PostProps> = (props): JSX.Element => {
           postId: id
         }
       },
-      `/@${user?.username}/posts/${id}`
+      `/@${user?.username}/posts/${id}`,
+      {
+        shallow: true
+      }
     )
   }
 

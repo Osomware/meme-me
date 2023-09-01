@@ -50,3 +50,13 @@ export const GET_ONE_POST_QUERY = gql`
     }
   }
 `
+
+export const GET_ALL_POST_BY_USERNAME_QUERY = gql`
+  query FindAllPostByUsername($where: PostWhereInput, $orderBy: [PostOrderByWithRelationInput!]) {
+    findAllPostByUsername(where: $where, orderBy: $orderBy) {
+      id
+      mediaUrls
+      createdAt
+    }
+  }
+`

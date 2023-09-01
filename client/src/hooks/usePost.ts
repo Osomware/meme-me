@@ -7,7 +7,11 @@ import { IPost } from '~/utils/interface/Post'
 import { queryClient } from '~/lib/queryClient'
 import { PostRequestInput } from '~/utils/types/input'
 import { CREATE_POST_MUTATION } from '~/graphql/mutations/post'
-import { GET_ALL_POST_QUERY, GET_ONE_POST_QUERY } from '~/graphql/queries/postsQuery'
+import {
+  GET_ALL_POST_QUERY,
+  GET_ONE_POST_QUERY,
+  GET_ALL_POST_BY_USERNAME_QUERY
+} from '~/graphql/queries/postsQuery'
 
 type PostMutationReturnType = UseMutationResult<
   PostSuccessReponse,
@@ -24,14 +28,19 @@ type PostFetchResponse = {
 type SinglePostFetchResponse = {
   findOnePost: IPost
 }
+type PostFetchByUsernameResponse = {
+  findAllPostByUsername: IPost[]
+}
 
 type PostFetchQueryType = UseQueryResult<PostFetchResponse, unknown>
+type PostFetchByUsernameQueryType = UseQueryResult<PostFetchByUsernameResponse, unknown>
 type SinglePostFetchQueryType = UseQueryResult<SinglePostFetchResponse, unknown>
 
 type ReturnType = {
   getAllPosts: () => PostFetchQueryType
   getSinglePost: (id: number) => SinglePostFetchQueryType
   handlePostMutation: () => PostMutationReturnType
+  getAllPostsByUsername: (username: string) => PostFetchByUsernameQueryType
 }
 
 const usePost = (): ReturnType => {
@@ -58,8 +67,11 @@ const usePost = (): ReturnType => {
         void router.push(`/@${username}/posts/${postId}`)
         toast.success('Successfully Posted!')
       },
-      onSettled: () => {
+      onSettled: (data) => {
         void queryClient.invalidateQueries({ queryKey: postKeys.all })
+        void queryClient.invalidateQueries({
+          queryKey: ['posts', 'profile', data?.createPost?.user?.username]
+        })
       }
     })
 
@@ -90,10 +102,32 @@ const usePost = (): ReturnType => {
       enabled: !isNaN(id)
     })
 
+  const getAllPostsByUsername = (username: string): PostFetchByUsernameQueryType =>
+    useQuery<PostFetchByUsernameResponse, Error>({
+      queryKey: ['posts', 'profile', username],
+      queryFn: async () =>
+        await gqlClient.request(GET_ALL_POST_BY_USERNAME_QUERY, {
+          where: {
+            user: {
+              is: {
+                username: {
+                  equals: username
+                }
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        }),
+      select: (data: PostFetchByUsernameResponse) => data
+    })
+
   return {
     getAllPosts,
     getSinglePost,
-    handlePostMutation
+    handlePostMutation,
+    getAllPostsByUsername
   }
 }
 
