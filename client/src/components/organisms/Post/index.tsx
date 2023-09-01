@@ -40,7 +40,7 @@ const Post: FC<PostProps> = (props): JSX.Element => {
     isFollowed,
     state: { setIsModalOpen }
   } = props
-  const { id, mediaUrls, title, user, postHashtags } = post
+  const { id, mediaFiles, title, user, postHashtags } = post
 
   const { handleFollow, handleUnfollow } = useFollow()
   const followMethod = handleFollow()
@@ -156,12 +156,12 @@ const Post: FC<PostProps> = (props): JSX.Element => {
                 )}
               >
                 <Carousel>
-                  {mediaUrls.map((asset, idx) => {
-                    if (asset.endsWith('.mp4')) {
+                  {mediaFiles?.map((asset, idx) => {
+                    if (asset.url.endsWith('.mp4')) {
                       return (
                         <video
                           key={idx}
-                          src={asset}
+                          src={asset.url}
                           autoPlay
                           muted
                           loop
@@ -174,12 +174,12 @@ const Post: FC<PostProps> = (props): JSX.Element => {
                       return (
                         <Image
                           key={idx}
-                          src={asset}
+                          src={asset.url}
                           width={500}
                           height={470}
                           placeholder="blur"
                           className="z-50"
-                          blurDataURL={asset}
+                          blurDataURL={asset.url}
                           alt=""
                         />
                       )

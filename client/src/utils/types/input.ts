@@ -1,7 +1,9 @@
 export type PostRequestInput = {
   title: string
-  mediaUrls: {
-    set: string[]
+  mediaFiles: {
+    createMany: {
+      data: MediaFiles[]
+    }
   }
   isHideLikeAndCount: boolean
   isTurnOffComment: boolean
@@ -23,4 +25,9 @@ export type PostRequestInput = {
 
 export type TargetUserIdInput = {
   id: number
+}
+
+export type MediaFiles = {
+  key: string
+  url: string
 }

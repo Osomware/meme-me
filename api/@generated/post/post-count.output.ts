@@ -6,5 +6,8 @@ import { Int } from '@nestjs/graphql';
 export class PostCount {
 
     @Field(() => Int, {nullable:false})
+    mediaFiles?: number;
+
+    @Field(() => Int, {nullable:false})
     postHashtags?: number;
 }

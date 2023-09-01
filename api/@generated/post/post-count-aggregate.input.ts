@@ -11,9 +11,6 @@ export class PostCountAggregateInput {
     title?: true;
 
     @Field(() => Boolean, {nullable:true})
-    mediaUrls?: true;
-
-    @Field(() => Boolean, {nullable:true})
     userId?: true;
 
     @Field(() => Boolean, {nullable:true})

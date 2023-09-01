@@ -12,9 +12,6 @@ export class PostCountOrderByAggregateInput {
     title?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
-    mediaUrls?: keyof typeof SortOrder;
-
-    @Field(() => SortOrder, {nullable:true})
     userId?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})

@@ -55,7 +55,7 @@ enum Role {
 model Post {
   id                 Int           @id @default(autoincrement())
   title              String?
-  mediaUrls          String[]
+  mediaFiles         MediaFile[]
   user               User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId             Int
   isHideLikeAndCount Boolean       @default(false)
@@ -63,6 +63,16 @@ model Post {
   postHashtags       PostHashtag[]
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @default(now())
+}
+
+model MediaFile {
+  id        Int      @id @default(autoincrement())
+  key       String
+  url       String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model PostHashtag {

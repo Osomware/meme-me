@@ -87,7 +87,7 @@ const Username: NextPage = (): JSX.Element => {
             >
               <div className="group-hover:brightness-75 transition ease-in-out duration-75">
                 <img
-                  src={post?.mediaUrls[0]}
+                  src={post?.mediaFiles[0].url}
                   className="w-full h-52 object-cover bg-black"
                   alt=""
                 />

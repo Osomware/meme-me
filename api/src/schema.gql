@@ -229,6 +229,84 @@ type LogoutResponse {
   loggedOut: Boolean!
 }
 
+type MediaFile {
+  createdAt: DateTime!
+  id: ID!
+  key: String!
+  post: Post!
+  postId: Int!
+  updatedAt: DateTime!
+  url: String!
+}
+
+input MediaFileCreateManyPostInput {
+  createdAt: DateTime
+  id: Int
+  key: String!
+  updatedAt: DateTime
+  url: String!
+}
+
+input MediaFileCreateManyPostInputEnvelope {
+  data: [MediaFileCreateManyPostInput!]!
+  skipDuplicates: Boolean
+}
+
+input MediaFileCreateNestedManyWithoutPostInput {
+  connect: [MediaFileWhereUniqueInput!]
+  connectOrCreate: [MediaFileCreateOrConnectWithoutPostInput!]
+  create: [MediaFileCreateWithoutPostInput!]
+  createMany: MediaFileCreateManyPostInputEnvelope
+}
+
+input MediaFileCreateOrConnectWithoutPostInput {
+  create: MediaFileCreateWithoutPostInput!
+  where: MediaFileWhereUniqueInput!
+}
+
+input MediaFileCreateWithoutPostInput {
+  createdAt: DateTime
+  key: String!
+  updatedAt: DateTime
+  url: String!
+}
+
+input MediaFileListRelationFilter {
+  every: MediaFileWhereInput
+  none: MediaFileWhereInput
+  some: MediaFileWhereInput
+}
+
+input MediaFileOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input MediaFileWhereInput {
+  AND: [MediaFileWhereInput!]
+  NOT: [MediaFileWhereInput!]
+  OR: [MediaFileWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  key: StringFilter
+  post: PostRelationFilter
+  postId: IntFilter
+  updatedAt: DateTimeFilter
+  url: StringFilter
+}
+
+input MediaFileWhereUniqueInput {
+  AND: [MediaFileWhereInput!]
+  NOT: [MediaFileWhereInput!]
+  OR: [MediaFileWhereInput!]
+  createdAt: DateTimeFilter
+  id: Int
+  key: StringFilter
+  post: PostRelationFilter
+  postId: IntFilter
+  updatedAt: DateTimeFilter
+  url: StringFilter
+}
+
 type Mutation {
   createPost(createPostInput: PostCreateWithoutUserInput!): Post!
   followUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
@@ -317,7 +395,7 @@ type Post {
   id: ID!
   isHideLikeAndCount: Boolean!
   isTurnOffComment: Boolean!
-  mediaUrls: [String!]
+  mediaFiles: [MediaFile!]
   postHashtags: [PostHashtagEntity!]
   title: String
   updatedAt: DateTime
@@ -330,7 +408,6 @@ input PostCreateManyUserInput {
   id: Int
   isHideLikeAndCount: Boolean
   isTurnOffComment: Boolean
-  mediaUrls: PostCreatemediaUrlsInput
   title: String
   updatedAt: DateTime
 }
@@ -356,14 +433,10 @@ input PostCreateWithoutUserInput {
   createdAt: DateTime
   isHideLikeAndCount: Boolean
   isTurnOffComment: Boolean
-  mediaUrls: PostCreatemediaUrlsInput
+  mediaFiles: MediaFileCreateNestedManyWithoutPostInput
   postHashtags: PostHashtagCreateNestedManyWithoutPostInput
   title: String
   updatedAt: DateTime
-}
-
-input PostCreatemediaUrlsInput {
-  set: [String!]!
 }
 
 type PostHashtag {
@@ -471,7 +544,7 @@ input PostOrderByWithRelationInput {
   id: SortOrder
   isHideLikeAndCount: SortOrder
   isTurnOffComment: SortOrder
-  mediaUrls: SortOrder
+  mediaFiles: MediaFileOrderByRelationAggregateInput
   postHashtags: PostHashtagOrderByRelationAggregateInput
   title: SortOrderInput
   updatedAt: SortOrder
@@ -489,7 +562,6 @@ enum PostScalarFieldEnum {
   id
   isHideLikeAndCount
   isTurnOffComment
-  mediaUrls
   title
   updatedAt
   userId
@@ -503,7 +575,7 @@ input PostWhereInput {
   id: IntFilter
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter
-  mediaUrls: StringNullableListFilter
+  mediaFiles: MediaFileListRelationFilter
   postHashtags: PostHashtagListRelationFilter
   title: StringNullableFilter
   updatedAt: DateTimeFilter
@@ -519,7 +591,7 @@ input PostWhereUniqueInput {
   id: Int
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter
-  mediaUrls: StringNullableListFilter
+  mediaFiles: MediaFileListRelationFilter
   postHashtags: PostHashtagListRelationFilter
   title: StringNullableFilter
   updatedAt: DateTimeFilter
@@ -596,14 +668,6 @@ input StringNullableFilter {
   not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
-}
-
-input StringNullableListFilter {
-  equals: [String!]
-  has: String
-  hasEvery: [String!]
-  hasSome: [String!]
-  isEmpty: Boolean
 }
 
 input TargetUserIdInput {

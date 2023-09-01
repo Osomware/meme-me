@@ -20,6 +20,7 @@ import useHashtag from '~/hooks/useHashtag'
 import { Emoji } from '~/utils/types/emoji'
 import { Montserrat } from 'next/font/google'
 import { useZustand } from '~/hooks/useZustand'
+import { MediaFiles } from '~/utils/types/input'
 import { useUploadThing } from '~/utils/uploadthing'
 import TagInput from '~/components/molecules/TagInput'
 import Button from '~/components/atoms/Buttons/ButtonAction'
@@ -76,8 +77,14 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
   // * UPLOAD THING HOOKS
   const { startUpload } = useUploadThing('mediaPost', {
     onClientUploadComplete: (res) => {
-      const mediaUrls = res?.map((file) => file.fileUrl)
-      setValue('mediaUrls', mediaUrls)
+      const mediaFiles = res?.map((file) => file)
+      setValue(
+        'mediaFiles',
+        mediaFiles?.map((m) => ({
+          key: m.fileKey,
+          url: m.fileUrl
+        })) as MediaFiles[]
+      )
     },
     onUploadError: () => {}
   })
@@ -102,7 +109,7 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
     setFileUrls([])
     setFiles([])
     reset({
-      mediaUrls: undefined,
+      mediaFiles: undefined,
       captions: '',
       location: ''
     })
@@ -110,12 +117,23 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
 
   const handleSubmitPost: SubmitHandler<UserPostFormValues> = async (data): Promise<void> => {
     const uploads = await startUpload(files)
+      .then(
+        (p) =>
+          p?.map((d) => ({
+            key: d.fileKey,
+            url: d.fileUrl
+          }))
+      )
+      .catch((error: any) => toast.error(error?.message))
+
     if (!isEmpty(uploads)) {
       await postMutation.mutateAsync(
         {
           title: data.captions ?? '',
-          mediaUrls: {
-            set: data?.mediaUrls ?? []
+          mediaFiles: {
+            createMany: {
+              data: uploads as MediaFiles[]
+            }
           },
           isHideLikeAndCount: isHideCountPostAndLike,
           isTurnOffComment,
@@ -140,7 +158,6 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
     } else {
       toast.error('Something went wrong!')
     }
-    reset()
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

@@ -1,7 +1,6 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
-import { PostUpdatemediaUrlsInput } from './post-updatemedia-urls.input';
 import { BoolFieldUpdateOperationsInput } from '../prisma/bool-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
 
@@ -10,9 +9,6 @@ export class PostUpdateManyMutationInput {
 
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     title?: NullableStringFieldUpdateOperationsInput;
-
-    @Field(() => PostUpdatemediaUrlsInput, {nullable:true})
-    mediaUrls?: PostUpdatemediaUrlsInput;
 
     @Field(() => BoolFieldUpdateOperationsInput, {nullable:true})
     isHideLikeAndCount?: BoolFieldUpdateOperationsInput;

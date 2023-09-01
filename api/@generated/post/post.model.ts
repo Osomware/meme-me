@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
+import { MediaFile } from '../media-file/media-file.model';
 import { User } from '../user/user.model';
 import { PostHashtag } from '../post-hashtag/post-hashtag.model';
 import { PostCount } from './post-count.output';
@@ -14,9 +15,6 @@ export class Post {
 
     @Field(() => String, {nullable:true})
     title!: string | null;
-
-    @Field(() => [String], {nullable:true})
-    mediaUrls!: Array<string>;
 
     @Field(() => Int, {nullable:false})
     userId!: number;
@@ -32,6 +30,9 @@ export class Post {
 
     @Field(() => Date, {nullable:false})
     updatedAt!: Date;
+
+    @Field(() => [MediaFile], {nullable:true})
+    mediaFiles?: Array<MediaFile>;
 
     @Field(() => User, {nullable:false})
     user?: User;

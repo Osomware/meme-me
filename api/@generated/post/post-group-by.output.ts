@@ -16,9 +16,6 @@ export class PostGroupBy {
     @Field(() => String, {nullable:true})
     title?: string;
 
-    @Field(() => [String], {nullable:true})
-    mediaUrls?: Array<string>;
-
     @Field(() => Int, {nullable:false})
     userId!: number;
 

@@ -1,7 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
-import { PostCreatemediaUrlsInput } from './post-createmedia-urls.input';
+import { MediaFileUncheckedCreateNestedManyWithoutPostInput } from '../media-file/media-file-unchecked-create-nested-many-without-post.input';
 import { PostHashtagUncheckedCreateNestedManyWithoutPostInput } from '../post-hashtag/post-hashtag-unchecked-create-nested-many-without-post.input';
 
 @InputType()
@@ -12,9 +12,6 @@ export class PostUncheckedCreateInput {
 
     @Field(() => String, {nullable:true})
     title?: string;
-
-    @Field(() => PostCreatemediaUrlsInput, {nullable:true})
-    mediaUrls?: PostCreatemediaUrlsInput;
 
     @Field(() => Int, {nullable:false})
     userId!: number;
@@ -30,6 +27,9 @@ export class PostUncheckedCreateInput {
 
     @Field(() => Date, {nullable:true})
     updatedAt?: Date | string;
+
+    @Field(() => MediaFileUncheckedCreateNestedManyWithoutPostInput, {nullable:true})
+    mediaFiles?: MediaFileUncheckedCreateNestedManyWithoutPostInput;
 
     @Field(() => PostHashtagUncheckedCreateNestedManyWithoutPostInput, {nullable:true})
     postHashtags?: PostHashtagUncheckedCreateNestedManyWithoutPostInput;

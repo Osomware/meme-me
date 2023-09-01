@@ -2,6 +2,7 @@ import { ObjectType, Field, Int, ID } from '@nestjs/graphql'
 
 import { User } from '~/user/user.entity'
 import { Hashtag } from './hashtag.entity'
+import { MediaFile } from './mediaFile.entity'
 import { PostHashtagEntity } from './post.hashtag.entity'
 
 @ObjectType()
@@ -12,8 +13,8 @@ export class Post {
   @Field(() => String, { nullable: true })
   title?: string | null
 
-  @Field(() => [String], { nullable: true })
-  mediaUrls?: Array<string>
+  @Field(() => [MediaFile], { nullable: true })
+  mediaFiles?: Array<MediaFile>
 
   @Field(() => Boolean, { nullable: false, defaultValue: false })
   isHideLikeAndCount!: boolean

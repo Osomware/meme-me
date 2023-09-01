@@ -1,6 +1,6 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
-import { PostCreatemediaUrlsInput } from './post-createmedia-urls.input';
+import { MediaFileCreateNestedManyWithoutPostInput } from '../media-file/media-file-create-nested-many-without-post.input';
 import { UserCreateNestedOneWithoutPostsInput } from '../user/user-create-nested-one-without-posts.input';
 import { PostHashtagCreateNestedManyWithoutPostInput } from '../post-hashtag/post-hashtag-create-nested-many-without-post.input';
 
@@ -9,9 +9,6 @@ export class PostCreateInput {
 
     @Field(() => String, {nullable:true})
     title?: string;
-
-    @Field(() => PostCreatemediaUrlsInput, {nullable:true})
-    mediaUrls?: PostCreatemediaUrlsInput;
 
     @Field(() => Boolean, {nullable:true})
     isHideLikeAndCount?: boolean;
@@ -24,6 +21,9 @@ export class PostCreateInput {
 
     @Field(() => Date, {nullable:true})
     updatedAt?: Date | string;
+
+    @Field(() => MediaFileCreateNestedManyWithoutPostInput, {nullable:true})
+    mediaFiles?: MediaFileCreateNestedManyWithoutPostInput;
 
     @Field(() => UserCreateNestedOneWithoutPostsInput, {nullable:false})
     user!: UserCreateNestedOneWithoutPostsInput;
