@@ -1,10 +1,10 @@
-import { useMutation, UseMutationResult, useQuery, UseQueryResult } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
+import { useQuery, useMutation, UseQueryResult, UseMutationResult } from '@tanstack/react-query'
 
 import { gqlClient } from '~/lib/gqlClient'
 import { TargetUserIdInput } from '~/utils/types/input'
 import { CHECK_IS_FOLLOWED } from '~/graphql/queries/followQuery'
 import { FOLLOW_MUTATION, UNFOLLOW_MUTATION } from '~/graphql/mutations/follow'
-import toast from 'react-hot-toast'
 
 type Response = {
   id: number
@@ -12,7 +12,7 @@ type Response = {
   followingId: number
 }
 
-type ResultQuery = {
+export type ResultQuery = {
   checkUserFollowed: boolean
 }
 
