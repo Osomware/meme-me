@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import { Post } from '@generated/post/post.model'
 import { PrismaService } from '~/prisma/prisma.service'
@@ -11,12 +11,6 @@ export class PostService {
   constructor(private prisma: PrismaService) {}
 
   async create(createPostInput: PostCreateWithoutUserInput, userId: number): Promise<Post> {
-    const { mediaUrls } = createPostInput
-
-    if (mediaUrls.set.length === 0) {
-      throw new NotFoundException('Photos/Videos is required field. Pleace re-upload!')
-    }
-
     return await this.prisma.post.create({
       data: {
         ...createPostInput,
@@ -28,7 +22,8 @@ export class PostService {
       },
       include: {
         user: true,
-        postHashtags: true
+        postHashtags: true,
+        mediaFiles: true
       }
     })
   }
@@ -42,7 +37,8 @@ export class PostService {
           include: {
             hashtag: true
           }
-        }
+        },
+        mediaFiles: true
       }
     })
   }
@@ -56,7 +52,8 @@ export class PostService {
           include: {
             hashtag: true
           }
-        }
+        },
+        mediaFiles: true
       }
     })
   }
@@ -70,7 +67,8 @@ export class PostService {
           include: {
             hashtag: true
           }
-        }
+        },
+        mediaFiles: true
       }
     })
   }

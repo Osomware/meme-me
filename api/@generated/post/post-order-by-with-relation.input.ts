@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { SortOrder } from '../prisma/sort-order.enum';
 import { SortOrderInput } from '../prisma/sort-order.input';
+import { MediaFileOrderByRelationAggregateInput } from '../media-file/media-file-order-by-relation-aggregate.input';
 import { UserOrderByWithRelationInput } from '../user/user-order-by-with-relation.input';
 import { PostHashtagOrderByRelationAggregateInput } from '../post-hashtag/post-hashtag-order-by-relation-aggregate.input';
 
@@ -13,9 +14,6 @@ export class PostOrderByWithRelationInput {
 
     @Field(() => SortOrderInput, {nullable:true})
     title?: SortOrderInput;
-
-    @Field(() => SortOrder, {nullable:true})
-    mediaUrls?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
     userId?: keyof typeof SortOrder;
@@ -31,6 +29,9 @@ export class PostOrderByWithRelationInput {
 
     @Field(() => SortOrder, {nullable:true})
     updatedAt?: keyof typeof SortOrder;
+
+    @Field(() => MediaFileOrderByRelationAggregateInput, {nullable:true})
+    mediaFiles?: MediaFileOrderByRelationAggregateInput;
 
     @Field(() => UserOrderByWithRelationInput, {nullable:true})
     user?: UserOrderByWithRelationInput;

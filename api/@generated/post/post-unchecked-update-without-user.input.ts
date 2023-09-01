@@ -2,9 +2,9 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { IntFieldUpdateOperationsInput } from '../prisma/int-field-update-operations.input';
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
-import { PostUpdatemediaUrlsInput } from './post-updatemedia-urls.input';
 import { BoolFieldUpdateOperationsInput } from '../prisma/bool-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
+import { MediaFileUncheckedUpdateManyWithoutPostNestedInput } from '../media-file/media-file-unchecked-update-many-without-post-nested.input';
 import { PostHashtagUncheckedUpdateManyWithoutPostNestedInput } from '../post-hashtag/post-hashtag-unchecked-update-many-without-post-nested.input';
 
 @InputType()
@@ -15,9 +15,6 @@ export class PostUncheckedUpdateWithoutUserInput {
 
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     title?: NullableStringFieldUpdateOperationsInput;
-
-    @Field(() => PostUpdatemediaUrlsInput, {nullable:true})
-    mediaUrls?: PostUpdatemediaUrlsInput;
 
     @Field(() => BoolFieldUpdateOperationsInput, {nullable:true})
     isHideLikeAndCount?: BoolFieldUpdateOperationsInput;
@@ -30,6 +27,9 @@ export class PostUncheckedUpdateWithoutUserInput {
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     updatedAt?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => MediaFileUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
+    mediaFiles?: MediaFileUncheckedUpdateManyWithoutPostNestedInput;
 
     @Field(() => PostHashtagUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
     postHashtags?: PostHashtagUncheckedUpdateManyWithoutPostNestedInput;

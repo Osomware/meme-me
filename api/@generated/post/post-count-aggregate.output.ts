@@ -12,9 +12,6 @@ export class PostCountAggregate {
     title!: number;
 
     @Field(() => Int, {nullable:false})
-    mediaUrls!: number;
-
-    @Field(() => Int, {nullable:false})
     userId!: number;
 
     @Field(() => Int, {nullable:false})

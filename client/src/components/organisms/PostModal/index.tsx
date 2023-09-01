@@ -133,10 +133,10 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
             <div className="h-full w-ful flex justify-center items-center max-w-md overflow-hidden">
               <Carousel>
                 {
-                  userPost?.mediaUrls.map((asset, idx) => {
-                    if (asset.endsWith('.mp4')) {
+                  userPost?.mediaFiles?.map((asset, idx) => {
+                    if (asset.url.endsWith('.mp4')) {
                       return (
-                        <video key={idx} src={asset} autoPlay muted loop className="w-full">
+                        <video key={idx} src={asset.url} autoPlay muted loop className="w-full">
                           Your browser does not support the video tag.
                         </video>
                       )
@@ -144,11 +144,11 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                       return (
                         <Image
                           key={idx}
-                          src={asset}
+                          src={asset.url}
                           width={500}
                           height={470}
                           placeholder="blur"
-                          blurDataURL={asset}
+                          blurDataURL={asset.url}
                           className="z-50"
                           alt=""
                         />

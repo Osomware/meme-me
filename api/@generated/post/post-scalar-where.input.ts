@@ -2,7 +2,6 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { IntFilter } from '../prisma/int-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
-import { StringNullableListFilter } from '../prisma/string-nullable-list-filter.input';
 import { BoolFilter } from '../prisma/bool-filter.input';
 import { DateTimeFilter } from '../prisma/date-time-filter.input';
 
@@ -23,9 +22,6 @@ export class PostScalarWhereInput {
 
     @Field(() => StringNullableFilter, {nullable:true})
     title?: StringNullableFilter;
-
-    @Field(() => StringNullableListFilter, {nullable:true})
-    mediaUrls?: StringNullableListFilter;
 
     @Field(() => IntFilter, {nullable:true})
     userId?: IntFilter;

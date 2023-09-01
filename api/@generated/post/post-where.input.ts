@@ -2,9 +2,9 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { IntFilter } from '../prisma/int-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
-import { StringNullableListFilter } from '../prisma/string-nullable-list-filter.input';
 import { BoolFilter } from '../prisma/bool-filter.input';
 import { DateTimeFilter } from '../prisma/date-time-filter.input';
+import { MediaFileListRelationFilter } from '../media-file/media-file-list-relation-filter.input';
 import { UserRelationFilter } from '../user/user-relation-filter.input';
 import { PostHashtagListRelationFilter } from '../post-hashtag/post-hashtag-list-relation-filter.input';
 
@@ -26,9 +26,6 @@ export class PostWhereInput {
     @Field(() => StringNullableFilter, {nullable:true})
     title?: StringNullableFilter;
 
-    @Field(() => StringNullableListFilter, {nullable:true})
-    mediaUrls?: StringNullableListFilter;
-
     @Field(() => IntFilter, {nullable:true})
     userId?: IntFilter;
 
@@ -43,6 +40,9 @@ export class PostWhereInput {
 
     @Field(() => DateTimeFilter, {nullable:true})
     updatedAt?: DateTimeFilter;
+
+    @Field(() => MediaFileListRelationFilter, {nullable:true})
+    mediaFiles?: MediaFileListRelationFilter;
 
     @Field(() => UserRelationFilter, {nullable:true})
     user?: UserRelationFilter;

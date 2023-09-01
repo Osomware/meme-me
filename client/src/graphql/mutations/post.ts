@@ -5,7 +5,10 @@ export const CREATE_POST_MUTATION = gql`
     createPost(createPostInput: $createPostInput) {
       id
       title
-      mediaUrls
+      mediaFiles {
+        key
+        url
+      }
       createdAt
       updatedAt
       user {

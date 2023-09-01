@@ -1,7 +1,9 @@
+import { MediaFiles } from './../types/input'
+
 export interface IPost {
   id: string
   title: string
-  mediaUrls: string[]
+  mediaFiles: MediaFiles[]
   createdAt: string
   updatedAt: string
   isHideLikeAndCount: boolean

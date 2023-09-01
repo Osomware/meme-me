@@ -7,7 +7,10 @@ export const GET_ALL_POST_QUERY = gql`
       title
       isHideLikeAndCount
       isTurnOffComment
-      mediaUrls
+      mediaFiles {
+        key
+        url
+      }
       updatedAt
       createdAt
       user {
@@ -30,7 +33,10 @@ export const GET_ONE_POST_QUERY = gql`
     findOnePost(where: $where) {
       id
       title
-      mediaUrls
+      mediaFiles {
+        key
+        url
+      }
       isHideLikeAndCount
       isTurnOffComment
       updatedAt
@@ -55,7 +61,10 @@ export const GET_ALL_POST_BY_USERNAME_QUERY = gql`
   query FindAllPostByUsername($where: PostWhereInput, $orderBy: [PostOrderByWithRelationInput!]) {
     findAllPostByUsername(where: $where, orderBy: $orderBy) {
       id
-      mediaUrls
+      mediaFiles {
+        key
+        url
+      }
       createdAt
     }
   }
