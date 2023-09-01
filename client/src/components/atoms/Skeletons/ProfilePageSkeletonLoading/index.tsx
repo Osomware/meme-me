@@ -6,7 +6,7 @@ type SkeletonProps = {
   height: string
 }
 
-const Skeleton: FC<SkeletonProps> = ({ width, height }) => {
+export const Skeleton: FC<SkeletonProps> = ({ width, height }) => {
   return <div className={clsx('bg-secondary-100/30 rounded-full', width, height)}></div>
 }
 
@@ -39,11 +39,6 @@ const ProfilePageSkeletonLoading: FC = () => {
           <Skeleton width="w-12" height="h-2" />
           <Skeleton width="w-12" height="h-2" />
         </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-3xl w-full mx-auto gap-2 px-4">
-        {Array.from({ length: 9 }).map((_, index) => (
-          <Skeleton key={index} width="w-full" height="h-52 rounded-sm mb-12" />
-        ))}
       </div>
     </div>
   )

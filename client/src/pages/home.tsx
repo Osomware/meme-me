@@ -51,7 +51,7 @@ const Home: NextPage = (): JSX.Element => {
       }}
     >
       <>
-        {dataPosts?.findAllPost.length === 0 ? (
+        {dataPosts?.findAllPost?.length === 0 ? (
           <div className="mt-3">
             <p className="py-2 text-center text-sm text-secondary-200">No Post</p>
           </div>

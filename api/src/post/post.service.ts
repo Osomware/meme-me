@@ -60,4 +60,18 @@ export class PostService {
       }
     })
   }
+
+  async findAllByUsername(args: FindManyPostArgs): Promise<Post[]> {
+    return await this.prisma.post.findMany({
+      ...args,
+      include: {
+        user: true,
+        postHashtags: {
+          include: {
+            hashtag: true
+          }
+        }
+      }
+    })
+  }
 }

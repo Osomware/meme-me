@@ -28,4 +28,9 @@ export class PostResolver {
   findOne(@Args() args: FindFirstPostOrThrowArgs): Promise<Post> {
     return this.postService.findOne(args)
   }
+
+  @Query(() => [Post], { name: 'findAllPostByUsername' })
+  findAllByUsername(@Args() args: FindManyPostArgs): Promise<Post[]> {
+    return this.postService.findAllByUsername(args)
+  }
 }
