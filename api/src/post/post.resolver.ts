@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql'
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
 
 import { PostService } from './post.service'
 import { Post } from './entities/post.entity'
@@ -32,5 +32,10 @@ export class PostResolver {
   @Query(() => [Post], { name: 'findAllPostByUsername' })
   findAllByUsername(@Args() args: FindManyPostArgs): Promise<Post[]> {
     return this.postService.findAllByUsername(args)
+  }
+
+  @Query(() => Int, { name: 'countAllPost' })
+  countllPost(): Promise<number> {
+    return this.postService.countAllPost()
   }
 }

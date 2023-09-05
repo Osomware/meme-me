@@ -72,4 +72,8 @@ export class PostService {
       }
     })
   }
+
+  async countAllPost(): Promise<number> {
+    return await this.prisma.post.count()
+  }
 }
