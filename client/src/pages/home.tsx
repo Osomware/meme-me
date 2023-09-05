@@ -1,8 +1,11 @@
 import type { NextPage } from 'next'
-import Alert from '~/components/atoms/Alert'
-import React, { FC, ReactNode } from 'react'
+import { useInView } from 'react-intersection-observer'
+import React, { FC, ReactNode, useEffect } from 'react'
 
 import usePost from '~/hooks/usePost'
+import { HashLoader } from 'react-spinners'
+import Alert from '~/components/atoms/Alert'
+import { IPost } from '~/utils/interface/Post'
 import PostList from '~/components/molecules/PostList'
 import StoryList from '~/components/molecules/StoryList'
 import HomeLayout from '~/components/templates/HomeLayout'
@@ -12,13 +15,29 @@ import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
 import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoading'
 
 const Home: NextPage = (): JSX.Element => {
+  const { ref, inView } = useInView()
+
+  // * POSTS HOOKS
   const { getAllPosts } = usePost()
-  const { data: dataPosts, isLoading: isLoadingPosts, isError } = getAllPosts()
+
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = getAllPosts()
+
+  const posts =
+    data?.pages.reduce((acc: IPost[], page: any) => {
+      const pagePosts = page.findAllPost as IPost[]
+      return [...acc, ...pagePosts]
+    }, []) ?? []
+
+  useEffect(() => {
+    if (inView && (hasNextPage as boolean)) {
+      void fetchNextPage()
+    }
+  }, [inView])
 
   // SCREEN SIZE CONDITION HOOKS
   const isMaxWidth = useScreenCondition('(max-width: 1380px)')
 
-  if (isLoadingPosts) {
+  if (isLoading) {
     return (
       <PageLayout
         {...{
@@ -50,15 +69,27 @@ const Home: NextPage = (): JSX.Element => {
         isMaxWidth
       }}
     >
-      <>
-        {dataPosts?.findAllPost?.length === 0 ? (
+      <div>
+        {posts?.length === 0 ? (
           <div className="mt-3">
             <p className="py-2 text-center text-sm text-secondary-200">No Post</p>
           </div>
         ) : (
-          <PostList posts={dataPosts?.findAllPost ?? []} />
+          <>
+            <PostList posts={posts ?? []} />
+          </>
         )}
-      </>
+      </div>
+
+      {isFetchingNextPage ? (
+        <div className="flex justify-center">
+          <HashLoader size={16} color="#586ca0" />
+        </div>
+      ) : null}
+
+      <span style={{ visibility: 'hidden' }} ref={ref}>
+        intersection observer marker
+      </span>
     </PageLayout>
   )
 }

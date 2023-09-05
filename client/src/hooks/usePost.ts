@@ -1,6 +1,13 @@
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
-import { useMutation, UseMutationResult, useQuery, UseQueryResult } from '@tanstack/react-query'
+import {
+  useQuery,
+  useMutation,
+  UseQueryResult,
+  useInfiniteQuery,
+  UseMutationResult,
+  UseInfiniteQueryResult
+} from '@tanstack/react-query'
 
 import { gqlClient } from '~/lib/gqlClient'
 import { IPost } from '~/utils/interface/Post'
@@ -10,6 +17,7 @@ import { CREATE_POST_MUTATION } from '~/graphql/mutations/post'
 import {
   GET_ALL_POST_QUERY,
   GET_ONE_POST_QUERY,
+  COUNT_ALL_POST_QUERY,
   GET_ALL_POST_BY_USERNAME_QUERY
 } from '~/graphql/queries/postsQuery'
 
@@ -23,7 +31,12 @@ type PostSuccessReponse = {
   createPost: IPost
 }
 type PostFetchResponse = {
-  findAllPost: IPost[]
+  pages: Array<{
+    pagePostCount: number
+    findAllPost: IPost[]
+  }>
+  prevOffset: number
+  postCount: number
 }
 type SinglePostFetchResponse = {
   findOnePost: IPost
@@ -32,7 +45,7 @@ type PostFetchByUsernameResponse = {
   findAllPostByUsername: IPost[]
 }
 
-type PostFetchQueryType = UseQueryResult<PostFetchResponse, unknown>
+type PostFetchQueryType = UseInfiniteQueryResult<PostFetchResponse, Error>
 type PostFetchByUsernameQueryType = UseQueryResult<PostFetchByUsernameResponse, unknown>
 type SinglePostFetchQueryType = UseQueryResult<SinglePostFetchResponse, unknown>
 
@@ -76,15 +89,33 @@ const usePost = (): ReturnType => {
     })
 
   const getAllPosts = (): PostFetchQueryType =>
-    useQuery<PostFetchResponse, Error>({
+    useInfiniteQuery<PostFetchResponse, Error>({
       queryKey: postKeys.all,
-      queryFn: async () =>
-        await gqlClient.request(GET_ALL_POST_QUERY, {
+      queryFn: async ({ pageParam = 0 }) => {
+        const skip = pageParam ?? undefined
+        const limit = 5
+        const posts: any = await gqlClient.request(GET_ALL_POST_QUERY, {
           orderBy: {
             createdAt: 'desc'
-          }
-        }),
-      select: (data: PostFetchResponse) => data
+          },
+          skip,
+          take: limit
+        })
+
+        const count: { countAllPost: number } = await gqlClient.request(COUNT_ALL_POST_QUERY)
+
+        return {
+          ...posts,
+          postCount: count?.countAllPost,
+          prevOffset: pageParam ?? 0
+        }
+      },
+      getNextPageParam: (lastPage) => {
+        if (lastPage?.prevOffset + 5 > lastPage?.postCount) {
+          return false
+        }
+        return lastPage?.prevOffset + 5
+      }
     })
 
   const getSinglePost = (id: number): SinglePostFetchQueryType =>
