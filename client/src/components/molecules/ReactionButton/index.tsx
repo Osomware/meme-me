@@ -4,7 +4,7 @@ import React, { ComponentProps, FC, ReactNode } from 'react'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 
 export type Props = {
-  count: string
+  count: number
   children: ReactNode
   direction?: string
   btnStyle?: string
@@ -23,7 +23,7 @@ const ReactionButton: FC<Props> = (props): JSX.Element => {
       <Button
         type="button"
         variant="secondary-outline"
-        className={clsx('rounded-full bg-section-1 border-stroke-2 p-3 outline-none')}
+        className={clsx('rounded-full bg-section-1 border-stroke-2 p-3 outline-none', btnStyle)}
         {...rest}
       >
         {children}

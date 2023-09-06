@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import { isEmpty } from 'lodash'
 import dynamic from 'next/dynamic'
-import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
 import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
@@ -65,7 +64,6 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
         {
           onSuccess: () => {
             void queryClient.invalidateQueries()
-            toast.success('Unfollow')
           }
         }
       )
@@ -77,7 +75,6 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
         {
           onSuccess: () => {
             void queryClient.invalidateQueries()
-            toast.success('Follow')
           }
         }
       )

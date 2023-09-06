@@ -38,7 +38,8 @@ export class PostService {
             hashtag: true
           }
         },
-        mediaFiles: true
+        mediaFiles: true,
+        _count: true
       }
     })
   }
@@ -53,7 +54,8 @@ export class PostService {
             hashtag: true
           }
         },
-        mediaFiles: true
+        mediaFiles: true,
+        _count: true
       }
     })
   }
@@ -68,7 +70,8 @@ export class PostService {
             hashtag: true
           }
         },
-        mediaFiles: true
+        mediaFiles: true,
+        _count: true
       }
     })
   }

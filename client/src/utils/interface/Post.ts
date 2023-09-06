@@ -20,4 +20,7 @@ export interface IPost {
       tag: string
     }
   }
+  _count: {
+    likes: number
+  }
 }

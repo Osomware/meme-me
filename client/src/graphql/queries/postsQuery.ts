@@ -24,6 +24,9 @@ export const GET_ALL_POST_QUERY = gql`
           tag
         }
       }
+      _count {
+        likes
+      }
     }
   }
 `
@@ -53,6 +56,9 @@ export const GET_ONE_POST_QUERY = gql`
           tag
         }
       }
+      _count {
+        likes
+      }
     }
   }
 `
@@ -66,6 +72,9 @@ export const GET_ALL_POST_BY_USERNAME_QUERY = gql`
         url
       }
       createdAt
+      _count {
+        likes
+      }
     }
   }
 `

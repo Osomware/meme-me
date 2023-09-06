@@ -31,3 +31,7 @@ export type MediaFiles = {
   key: string
   url: string
 }
+
+export type TargetPostInput = {
+  id: number
+}

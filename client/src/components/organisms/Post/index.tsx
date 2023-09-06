@@ -2,7 +2,6 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import toast from 'react-hot-toast'
 import isEmpty from 'lodash/isEmpty'
 import { useRouter } from 'next/router'
 import { ShareTwo } from '@icon-park/react'
@@ -12,6 +11,7 @@ import React, { Dispatch, FC, useEffect } from 'react'
 import { AvatarConfig, genConfig } from 'react-nice-avatar'
 
 import Carousel from './../Carousel'
+import useLike from '~/hooks/useLike'
 import useFollow from '~/hooks/useFollow'
 import { IPost } from '~/utils/interface/Post'
 import Hashtag from '~/components/atoms/Hashtag'
@@ -27,6 +27,7 @@ type PostProps = {
   post: IPost
   isPostAuthor: boolean
   isFollowed: boolean
+  isLikePost: boolean
   state: {
     setIsModalOpen: Dispatch<React.SetStateAction<boolean>>
   }
@@ -38,13 +39,20 @@ const Post: FC<PostProps> = (props): JSX.Element => {
     post,
     isPostAuthor,
     isFollowed,
+    isLikePost,
     state: { setIsModalOpen }
   } = props
-  const { id, mediaFiles, title, user, postHashtags } = post
+  const { id, mediaFiles, title, user, postHashtags, _count } = post
 
+  // * FOLLOW HOOKS
   const { handleFollow, handleUnfollow } = useFollow()
   const followMethod = handleFollow()
   const unFollowMethod = handleUnfollow()
+
+  // * LIKE HOOKS
+  const { handleLike, handleUnlike } = useLike()
+  const likeMethod = handleLike()
+  const unlikeMethod = handleUnlike()
 
   const handleFollowUnfollow = async (): Promise<void> => {
     if (isFollowed) {
@@ -54,8 +62,7 @@ const Post: FC<PostProps> = (props): JSX.Element => {
         },
         {
           onSuccess: () => {
-            void queryClient.invalidateQueries()
-            toast.success('Unfollow')
+            void queryClient.invalidateQueries(['follow', user?.id])
           }
         }
       )
@@ -66,8 +73,35 @@ const Post: FC<PostProps> = (props): JSX.Element => {
         },
         {
           onSuccess: () => {
-            void queryClient.invalidateQueries()
-            toast.success('Follow')
+            void queryClient.invalidateQueries(['follow', user?.id])
+          }
+        }
+      )
+    }
+  }
+
+  const handleLikePost = async (): Promise<void> => {
+    if (isLikePost) {
+      await unlikeMethod.mutateAsync(
+        {
+          id: Number(id)
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries(['like', Number(id)])
+            void queryClient.invalidateQueries(['posts'])
+          }
+        }
+      )
+    } else {
+      await likeMethod.mutateAsync(
+        {
+          id: Number(id)
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries(['like', Number(id)])
+            void queryClient.invalidateQueries(['posts'])
           }
         }
       )
@@ -77,19 +111,19 @@ const Post: FC<PostProps> = (props): JSX.Element => {
   const reactions = [
     {
       type: 'heart',
-      count: '0'
+      count: _count?.likes ?? 0
     },
     {
       type: 'comment',
-      count: '0'
+      count: 0
     },
     {
       type: 'bookmark',
-      count: '0'
+      count: 0
     },
     {
       type: 'share',
-      count: '0'
+      count: 0
     }
   ]
 
@@ -192,8 +226,14 @@ const Post: FC<PostProps> = (props): JSX.Element => {
                 {reactions.map((reaction, idx) => (
                   <React.Fragment key={idx}>
                     {reaction.type === Reaction.heart && (
-                      <ReactionButton count={reaction.count}>
-                        <Heart fill="#586ca0" stroke="none" />
+                      <ReactionButton
+                        count={reaction?.count}
+                        onClick={() => {
+                          void handleLikePost()
+                        }}
+                        btnStyle={isLikePost ? '!bg-rose-50 !border-rose-100' : ''}
+                      >
+                        <Heart fill={isLikePost ? '#f43f5e' : '#586ca0'} stroke="none" />
                       </ReactionButton>
                     )}
                     {reaction.type === Reaction.comment && (
