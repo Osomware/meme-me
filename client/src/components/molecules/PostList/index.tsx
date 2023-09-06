@@ -11,6 +11,8 @@ import { useZustand } from '~/hooks/useZustand'
 import { ResultQuery } from '~/hooks/useFollow'
 import PostModal from '~/components/organisms/PostModal'
 import { CHECK_IS_FOLLOWED } from '~/graphql/queries/followQuery'
+import { CHECK_IS_USER_LIKE_POST } from '~/graphql/queries/likeQuery'
+import { ResultUserLikePostQuery } from '~/hooks/useLike'
 
 type PostListProps = {
   posts: IPost[]
@@ -41,12 +43,27 @@ const PostList: FC<PostListProps> = ({ posts }): JSX.Element => {
     }))
   })
 
+  const likeStatuses = useQueries({
+    queries: posts?.map((post) => ({
+      queryKey: ['like', Number(post?.id)],
+      queryFn: async () =>
+        await gqlClient.request(CHECK_IS_USER_LIKE_POST, {
+          targetPostInput: {
+            id: Number(post?.id)
+          }
+        })
+    }))
+  })
+
   return (
     <div className="-mt-2 divide-y divide-stroke-2 py-4">
       {posts?.map((post, index) => {
         const followCheckResult = followStatuses[index]?.data as ResultQuery
+        const likeCheckResult = likeStatuses[index]?.data as ResultUserLikePostQuery
+
         const isFollowed = followCheckResult?.checkUserFollowed ?? false
         const isPostAuthor = post?.user?.id === store?.user?.id
+        const isLikePost = likeCheckResult?.checkUserLikePost ?? false
 
         return (
           <Post
@@ -55,6 +72,7 @@ const PostList: FC<PostListProps> = ({ posts }): JSX.Element => {
               post,
               isPostAuthor,
               isFollowed,
+              isLikePost,
               state: {
                 setIsModalOpen
               }

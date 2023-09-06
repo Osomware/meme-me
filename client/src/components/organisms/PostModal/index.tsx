@@ -3,7 +3,6 @@ import moment from 'moment'
 import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
 import { Montserrat } from 'next/font/google'
@@ -14,6 +13,7 @@ import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 import Comment from './../Comment'
 import Carousel from './../Carousel'
 import usePost from '~/hooks/usePost'
+import useLike from '~/hooks/useLike'
 import useFollow from '~/hooks/useFollow'
 import { useStore } from '~/utils/zustand'
 import Input from '~/components/atoms/Input'
@@ -50,6 +50,13 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
   // * ZUSTAND STORE HOOKS
   const store = useZustand(useStore, (state) => state)
 
+  // * LIKE HOOKS
+  const { checkIsUserLikePost, handleLike, handleUnlike } = useLike()
+  const likeMethod = handleLike()
+  const unlikeMethod = handleUnlike()
+  const likeStatuses = checkIsUserLikePost(Number(userPost?.id))
+
+  const isLikePost = likeStatuses?.data?.checkUserLikePost ?? false
   const isPostAuthor = userPost?.user?.id === store?.user?.id
 
   const isMediumScreen = useScreenCondition('(max-width: 768px)')
@@ -67,19 +74,19 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
   const reactions = [
     {
       type: 'heart',
-      count: '0'
+      count: userPost?._count?.likes ?? 0
     },
     {
       type: 'comment',
-      count: '0'
+      count: 0
     },
     {
       type: 'bookmark',
-      count: '0'
+      count: 0
     },
     {
       type: 'share',
-      count: '0'
+      count: 0
     }
   ]
 
@@ -92,7 +99,6 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
         {
           onSuccess: () => {
             void queryClient.invalidateQueries()
-            toast.success('Unfollow')
           }
         }
       )
@@ -104,7 +110,34 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
         {
           onSuccess: () => {
             void queryClient.invalidateQueries()
-            toast.success('Follow')
+          }
+        }
+      )
+    }
+  }
+
+  const handleLikePost = async (): Promise<void> => {
+    if (isLikePost) {
+      await unlikeMethod.mutateAsync(
+        {
+          id: Number(userPost?.id ?? 0)
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries(['like', Number(userPost?.id)])
+            void queryClient.invalidateQueries(['posts'])
+          }
+        }
+      )
+    } else {
+      await likeMethod.mutateAsync(
+        {
+          id: Number(userPost?.id ?? 0)
+        },
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries(['like', Number(userPost?.id)])
+            void queryClient.invalidateQueries(['posts'])
           }
         }
       )
@@ -220,8 +253,12 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                         count={reaction.count}
                         direction="flex-row"
                         className="p-2 rounded-full"
+                        onClick={() => {
+                          void handleLikePost()
+                        }}
+                        btnStyle={isLikePost ? '!bg-rose-50 !border-rose-100' : ''}
                       >
-                        <Heart fill="#586ca0" stroke="none" className="w-5 h-5" />
+                        <Heart fill={isLikePost ? '#f43f5e' : '#586ca0'} stroke="none" />
                       </ReactionButton>
                     )}
                     {reaction.type === Reaction.comment && (

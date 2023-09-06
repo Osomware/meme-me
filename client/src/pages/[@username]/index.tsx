@@ -100,7 +100,9 @@ const Username: NextPage = (): JSX.Element => {
               >
                 <div className="inline-flex items-center space-x-0.5">
                   <Heart className="w-4 h-4 stroke-white" fill="#fff" />
-                  <span className="text-xs font-semibold text-white">0</span>
+                  <span className="text-xs font-semibold text-white">
+                    {post?._count?.likes ?? 0}
+                  </span>
                 </div>
                 <div className="inline-flex items-center space-x-0.5">
                   <MessageCircle className="w-4 h-4 stroke-white" fill="#fff" />

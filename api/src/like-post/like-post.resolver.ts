@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql'
+import { Resolver, Mutation, Query, Args } from '@nestjs/graphql'
 
 import { LikePostService } from './like-post.service'
 import { LikePost } from './entities/like-post.entity'
@@ -23,5 +23,13 @@ export class LikePostResolver {
     @CurrentUserId() userId: number
   ): Promise<LikePost> {
     return this.likePostService.unlikePost(targetPostInput, userId)
+  }
+
+  @Query(() => Boolean, { name: 'checkUserLikePost' })
+  async checkUserLikePost(
+    @CurrentUserId() userId: number,
+    @Args('targetPostInput') targetPostInput: TargetPostInput
+  ): Promise<Boolean> {
+    return await this.likePostService.checkUserLikePost(userId, targetPostInput)
   }
 }
