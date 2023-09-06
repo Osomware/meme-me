@@ -5,6 +5,7 @@ import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-str
 import { BoolFieldUpdateOperationsInput } from '../prisma/bool-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
 import { MediaFileUncheckedUpdateManyWithoutPostNestedInput } from '../media-file/media-file-unchecked-update-many-without-post-nested.input';
+import { LikeUncheckedUpdateManyWithoutPostNestedInput } from '../like/like-unchecked-update-many-without-post-nested.input';
 
 @InputType()
 export class PostUncheckedUpdateWithoutPostHashtagsInput {
@@ -32,4 +33,7 @@ export class PostUncheckedUpdateWithoutPostHashtagsInput {
 
     @Field(() => MediaFileUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
     mediaFiles?: MediaFileUncheckedUpdateManyWithoutPostNestedInput;
+
+    @Field(() => LikeUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
+    likes?: LikeUncheckedUpdateManyWithoutPostNestedInput;
 }

@@ -18,19 +18,21 @@ generator nestgraphql {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
   /// @Validator.MinLength(5)
-  username     String   @unique
+  username     String  @unique
   /// @Validator.MinLength(3)
   name         String
   /// @Validator.MinLength(6)
   password     String
   refreshToken String?
-  role         Role     @default(USER)
+  role         Role    @default(USER)
   posts        Post[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  likes        Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   followers Follow[] @relation("FollowerRelation")
   following Follow[] @relation("FollowingRelation")
@@ -61,8 +63,10 @@ model Post {
   isHideLikeAndCount Boolean       @default(false)
   isTurnOffComment   Boolean       @default(false)
   postHashtags       PostHashtag[]
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @default(now())
+  likes              Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model MediaFile {
@@ -94,4 +98,16 @@ model Hashtag {
   postHashtags PostHashtag[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now())
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, postId])
 }

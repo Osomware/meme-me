@@ -5,6 +5,7 @@ import { SortOrderInput } from '../prisma/sort-order.input';
 import { MediaFileOrderByRelationAggregateInput } from '../media-file/media-file-order-by-relation-aggregate.input';
 import { UserOrderByWithRelationInput } from '../user/user-order-by-with-relation.input';
 import { PostHashtagOrderByRelationAggregateInput } from '../post-hashtag/post-hashtag-order-by-relation-aggregate.input';
+import { LikeOrderByRelationAggregateInput } from '../like/like-order-by-relation-aggregate.input';
 
 @InputType()
 export class PostOrderByWithRelationInput {
@@ -38,4 +39,7 @@ export class PostOrderByWithRelationInput {
 
     @Field(() => PostHashtagOrderByRelationAggregateInput, {nullable:true})
     postHashtags?: PostHashtagOrderByRelationAggregateInput;
+
+    @Field(() => LikeOrderByRelationAggregateInput, {nullable:true})
+    likes?: LikeOrderByRelationAggregateInput;
 }

@@ -10,4 +10,7 @@ export class PostCount {
 
     @Field(() => Int, {nullable:false})
     postHashtags?: number;
+
+    @Field(() => Int, {nullable:false})
+    likes?: number;
 }

@@ -9,6 +9,9 @@ export class UserCount {
     posts?: number;
 
     @Field(() => Int, {nullable:false})
+    likes?: number;
+
+    @Field(() => Int, {nullable:false})
     followers?: number;
 
     @Field(() => Int, {nullable:false})

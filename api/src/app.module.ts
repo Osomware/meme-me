@@ -10,6 +10,7 @@ import { AuthModule } from '~/auth/auth.module'
 import { UserModule } from '~/user/user.module'
 import { PostModule } from './post/post.module'
 import { PrismaService } from '~/prisma/prisma.service'
+import { LikePostModule } from './like-post/like-post.module'
 import { AccessTokenGuard } from '~/auth/guards/accessToken.guard'
 import { FollowUserModule } from './follow-user/follow-user.module'
 import { PostHashtagModule } from './post-hashtag/post-hashtag.module'
@@ -28,7 +29,8 @@ import { PostHashtagModule } from './post-hashtag/post-hashtag.module'
     UserModule,
     PostModule,
     FollowUserModule,
-    PostHashtagModule
+    PostHashtagModule,
+    LikePostModule
   ],
   controllers: [],
   providers: [PrismaService, { provide: APP_GUARD, useClass: AccessTokenGuard }]

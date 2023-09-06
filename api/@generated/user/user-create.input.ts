@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import * as Validator from 'class-validator';
 import { Role } from '../prisma/role.enum';
 import { PostCreateNestedManyWithoutUserInput } from '../post/post-create-nested-many-without-user.input';
+import { LikeCreateNestedManyWithoutUserInput } from '../like/like-create-nested-many-without-user.input';
 import { FollowCreateNestedManyWithoutFollowerInput } from '../follow/follow-create-nested-many-without-follower.input';
 import { FollowCreateNestedManyWithoutFollowingInput } from '../follow/follow-create-nested-many-without-following.input';
 
@@ -38,6 +39,9 @@ export class UserCreateInput {
 
     @Field(() => PostCreateNestedManyWithoutUserInput, {nullable:true})
     posts?: PostCreateNestedManyWithoutUserInput;
+
+    @Field(() => LikeCreateNestedManyWithoutUserInput, {nullable:true})
+    likes?: LikeCreateNestedManyWithoutUserInput;
 
     @Field(() => FollowCreateNestedManyWithoutFollowerInput, {nullable:true})
     followers?: FollowCreateNestedManyWithoutFollowerInput;

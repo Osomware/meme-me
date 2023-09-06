@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import * as Validator from 'class-validator';
 import { Role } from '../prisma/role.enum';
+import { LikeCreateNestedManyWithoutUserInput } from '../like/like-create-nested-many-without-user.input';
 import { FollowCreateNestedManyWithoutFollowerInput } from '../follow/follow-create-nested-many-without-follower.input';
 import { FollowCreateNestedManyWithoutFollowingInput } from '../follow/follow-create-nested-many-without-following.input';
 
@@ -34,6 +35,9 @@ export class UserCreateWithoutPostsInput {
 
     @Field(() => Date, {nullable:true})
     updatedAt?: Date | string;
+
+    @Field(() => LikeCreateNestedManyWithoutUserInput, {nullable:true})
+    likes?: LikeCreateNestedManyWithoutUserInput;
 
     @Field(() => FollowCreateNestedManyWithoutFollowerInput, {nullable:true})
     followers?: FollowCreateNestedManyWithoutFollowerInput;

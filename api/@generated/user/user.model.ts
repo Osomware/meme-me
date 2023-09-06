@@ -3,6 +3,7 @@ import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
 import { Role } from '../prisma/role.enum';
 import { Post } from '../post/post.model';
+import { Like } from '../like/like.model';
 import { Follow } from '../follow/follow.model';
 import { UserCount } from './user-count.output';
 
@@ -38,6 +39,9 @@ export class User {
 
     @Field(() => [Post], {nullable:true})
     posts?: Array<Post>;
+
+    @Field(() => [Like], {nullable:true})
+    likes?: Array<Like>;
 
     @Field(() => [Follow], {nullable:true})
     followers?: Array<Follow>;

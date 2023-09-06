@@ -225,6 +225,118 @@ input IntFilter {
   notIn: [Int!]
 }
 
+input LikeCreateManyPostInput {
+  createdAt: DateTime
+  id: Int
+  updatedAt: DateTime
+  userId: Int!
+}
+
+input LikeCreateManyPostInputEnvelope {
+  data: [LikeCreateManyPostInput!]!
+  skipDuplicates: Boolean
+}
+
+input LikeCreateManyUserInput {
+  createdAt: DateTime
+  id: Int
+  postId: Int!
+  updatedAt: DateTime
+}
+
+input LikeCreateManyUserInputEnvelope {
+  data: [LikeCreateManyUserInput!]!
+  skipDuplicates: Boolean
+}
+
+input LikeCreateNestedManyWithoutPostInput {
+  connect: [LikeWhereUniqueInput!]
+  connectOrCreate: [LikeCreateOrConnectWithoutPostInput!]
+  create: [LikeCreateWithoutPostInput!]
+  createMany: LikeCreateManyPostInputEnvelope
+}
+
+input LikeCreateNestedManyWithoutUserInput {
+  connect: [LikeWhereUniqueInput!]
+  connectOrCreate: [LikeCreateOrConnectWithoutUserInput!]
+  create: [LikeCreateWithoutUserInput!]
+  createMany: LikeCreateManyUserInputEnvelope
+}
+
+input LikeCreateOrConnectWithoutPostInput {
+  create: LikeCreateWithoutPostInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeCreateOrConnectWithoutUserInput {
+  create: LikeCreateWithoutUserInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeCreateWithoutPostInput {
+  createdAt: DateTime
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutLikesInput!
+}
+
+input LikeCreateWithoutUserInput {
+  createdAt: DateTime
+  post: PostCreateNestedOneWithoutLikesInput!
+  updatedAt: DateTime
+}
+
+input LikeListRelationFilter {
+  every: LikeWhereInput
+  none: LikeWhereInput
+  some: LikeWhereInput
+}
+
+input LikeOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+type LikePost {
+  createdAt: DateTime!
+  id: ID!
+  post: Post!
+  postId: Int!
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+}
+
+input LikeUserIdPostIdCompoundUniqueInput {
+  postId: Int!
+  userId: Int!
+}
+
+input LikeWhereInput {
+  AND: [LikeWhereInput!]
+  NOT: [LikeWhereInput!]
+  OR: [LikeWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  post: PostRelationFilter
+  postId: IntFilter
+  updatedAt: DateTimeFilter
+  user: UserRelationFilter
+  userId: IntFilter
+}
+
+input LikeWhereUniqueInput {
+  AND: [LikeWhereInput!]
+  NOT: [LikeWhereInput!]
+  OR: [LikeWhereInput!]
+  createdAt: DateTimeFilter
+  id: Int
+  post: PostRelationFilter
+  postId: IntFilter
+  updatedAt: DateTimeFilter
+  user: UserRelationFilter
+  userId: IntFilter
+  userId_postId: LikeUserIdPostIdCompoundUniqueInput
+}
+
 type LogoutResponse {
   loggedOut: Boolean!
 }
@@ -311,10 +423,12 @@ type Mutation {
   createPost(createPostInput: PostCreateWithoutUserInput!): Post!
   followUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
   getNewTokens: NewTokensResonse!
+  likePost(targetPostInput: TargetPostInput!): LikePost!
   logout(id: Int!): LogoutResponse!
   signin(signInInput: SignInInput!): SignResponse!
   signup(signupInput: UserCreateInput!): SignResponse!
   unfollowUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
+  unlikePost(targetPostInput: TargetPostInput!): LikePost!
 }
 
 input NestedBoolFilter {
@@ -424,15 +538,38 @@ input PostCreateNestedManyWithoutUserInput {
   createMany: PostCreateManyUserInputEnvelope
 }
 
+input PostCreateNestedOneWithoutLikesInput {
+  connect: PostWhereUniqueInput
+  connectOrCreate: PostCreateOrConnectWithoutLikesInput
+  create: PostCreateWithoutLikesInput
+}
+
+input PostCreateOrConnectWithoutLikesInput {
+  create: PostCreateWithoutLikesInput!
+  where: PostWhereUniqueInput!
+}
+
 input PostCreateOrConnectWithoutUserInput {
   create: PostCreateWithoutUserInput!
   where: PostWhereUniqueInput!
+}
+
+input PostCreateWithoutLikesInput {
+  createdAt: DateTime
+  isHideLikeAndCount: Boolean
+  isTurnOffComment: Boolean
+  mediaFiles: MediaFileCreateNestedManyWithoutPostInput
+  postHashtags: PostHashtagCreateNestedManyWithoutPostInput
+  title: String
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutPostsInput!
 }
 
 input PostCreateWithoutUserInput {
   createdAt: DateTime
   isHideLikeAndCount: Boolean
   isTurnOffComment: Boolean
+  likes: LikeCreateNestedManyWithoutPostInput
   mediaFiles: MediaFileCreateNestedManyWithoutPostInput
   postHashtags: PostHashtagCreateNestedManyWithoutPostInput
   title: String
@@ -544,6 +681,7 @@ input PostOrderByWithRelationInput {
   id: SortOrder
   isHideLikeAndCount: SortOrder
   isTurnOffComment: SortOrder
+  likes: LikeOrderByRelationAggregateInput
   mediaFiles: MediaFileOrderByRelationAggregateInput
   postHashtags: PostHashtagOrderByRelationAggregateInput
   title: SortOrderInput
@@ -575,6 +713,7 @@ input PostWhereInput {
   id: IntFilter
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter
+  likes: LikeListRelationFilter
   mediaFiles: MediaFileListRelationFilter
   postHashtags: PostHashtagListRelationFilter
   title: StringNullableFilter
@@ -591,6 +730,7 @@ input PostWhereUniqueInput {
   id: Int
   isHideLikeAndCount: BoolFilter
   isTurnOffComment: BoolFilter
+  likes: LikeListRelationFilter
   mediaFiles: MediaFileListRelationFilter
   postHashtags: PostHashtagListRelationFilter
   title: StringNullableFilter
@@ -671,6 +811,10 @@ input StringNullableFilter {
   startsWith: String
 }
 
+input TargetPostInput {
+  id: Int!
+}
+
 input TargetUserIdInput {
   id: Int!
 }
@@ -694,6 +838,7 @@ type User {
 type UserCount {
   followers: Int!
   following: Int!
+  likes: Int!
   posts: Int!
 }
 
@@ -702,6 +847,7 @@ input UserCreateInput {
   email: String!
   followers: FollowCreateNestedManyWithoutFollowerInput
   following: FollowCreateNestedManyWithoutFollowingInput
+  likes: LikeCreateNestedManyWithoutUserInput
   name: String!
   password: String!
   posts: PostCreateNestedManyWithoutUserInput
@@ -723,6 +869,18 @@ input UserCreateNestedOneWithoutFollowingInput {
   create: UserCreateWithoutFollowingInput
 }
 
+input UserCreateNestedOneWithoutLikesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutLikesInput
+  create: UserCreateWithoutLikesInput
+}
+
+input UserCreateNestedOneWithoutPostsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutPostsInput
+  create: UserCreateWithoutPostsInput
+}
+
 input UserCreateOrConnectWithoutFollowersInput {
   create: UserCreateWithoutFollowersInput!
   where: UserWhereUniqueInput!
@@ -733,10 +891,21 @@ input UserCreateOrConnectWithoutFollowingInput {
   where: UserWhereUniqueInput!
 }
 
+input UserCreateOrConnectWithoutLikesInput {
+  create: UserCreateWithoutLikesInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutPostsInput {
+  create: UserCreateWithoutPostsInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserCreateWithoutFollowersInput {
   createdAt: DateTime
   email: String!
   following: FollowCreateNestedManyWithoutFollowingInput
+  likes: LikeCreateNestedManyWithoutUserInput
   name: String!
   password: String!
   posts: PostCreateNestedManyWithoutUserInput
@@ -750,9 +919,38 @@ input UserCreateWithoutFollowingInput {
   createdAt: DateTime
   email: String!
   followers: FollowCreateNestedManyWithoutFollowerInput
+  likes: LikeCreateNestedManyWithoutUserInput
   name: String!
   password: String!
   posts: PostCreateNestedManyWithoutUserInput
+  refreshToken: String
+  role: Role
+  updatedAt: DateTime
+  username: String!
+}
+
+input UserCreateWithoutLikesInput {
+  createdAt: DateTime
+  email: String!
+  followers: FollowCreateNestedManyWithoutFollowerInput
+  following: FollowCreateNestedManyWithoutFollowingInput
+  name: String!
+  password: String!
+  posts: PostCreateNestedManyWithoutUserInput
+  refreshToken: String
+  role: Role
+  updatedAt: DateTime
+  username: String!
+}
+
+input UserCreateWithoutPostsInput {
+  createdAt: DateTime
+  email: String!
+  followers: FollowCreateNestedManyWithoutFollowerInput
+  following: FollowCreateNestedManyWithoutFollowingInput
+  likes: LikeCreateNestedManyWithoutUserInput
+  name: String!
+  password: String!
   refreshToken: String
   role: Role
   updatedAt: DateTime
@@ -765,6 +963,7 @@ input UserOrderByWithRelationInput {
   followers: FollowOrderByRelationAggregateInput
   following: FollowOrderByRelationAggregateInput
   id: SortOrder
+  likes: LikeOrderByRelationAggregateInput
   name: SortOrder
   password: SortOrder
   posts: PostOrderByRelationAggregateInput
@@ -800,6 +999,7 @@ input UserWhereInput {
   followers: FollowListRelationFilter
   following: FollowListRelationFilter
   id: IntFilter
+  likes: LikeListRelationFilter
   name: StringFilter
   password: StringFilter
   posts: PostListRelationFilter
@@ -818,6 +1018,7 @@ input UserWhereUniqueInput {
   followers: FollowListRelationFilter
   following: FollowListRelationFilter
   id: Int
+  likes: LikeListRelationFilter
   name: StringFilter
   password: StringFilter
   posts: PostListRelationFilter
