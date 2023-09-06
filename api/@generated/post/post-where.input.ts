@@ -7,6 +7,7 @@ import { DateTimeFilter } from '../prisma/date-time-filter.input';
 import { MediaFileListRelationFilter } from '../media-file/media-file-list-relation-filter.input';
 import { UserRelationFilter } from '../user/user-relation-filter.input';
 import { PostHashtagListRelationFilter } from '../post-hashtag/post-hashtag-list-relation-filter.input';
+import { LikeListRelationFilter } from '../like/like-list-relation-filter.input';
 
 @InputType()
 export class PostWhereInput {
@@ -49,4 +50,7 @@ export class PostWhereInput {
 
     @Field(() => PostHashtagListRelationFilter, {nullable:true})
     postHashtags?: PostHashtagListRelationFilter;
+
+    @Field(() => LikeListRelationFilter, {nullable:true})
+    likes?: LikeListRelationFilter;
 }

@@ -6,6 +6,7 @@ import { BoolFieldUpdateOperationsInput } from '../prisma/bool-field-update-oper
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
 import { MediaFileUncheckedUpdateManyWithoutPostNestedInput } from '../media-file/media-file-unchecked-update-many-without-post-nested.input';
 import { PostHashtagUncheckedUpdateManyWithoutPostNestedInput } from '../post-hashtag/post-hashtag-unchecked-update-many-without-post-nested.input';
+import { LikeUncheckedUpdateManyWithoutPostNestedInput } from '../like/like-unchecked-update-many-without-post-nested.input';
 
 @InputType()
 export class PostUncheckedUpdateInput {
@@ -36,4 +37,7 @@ export class PostUncheckedUpdateInput {
 
     @Field(() => PostHashtagUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
     postHashtags?: PostHashtagUncheckedUpdateManyWithoutPostNestedInput;
+
+    @Field(() => LikeUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
+    likes?: LikeUncheckedUpdateManyWithoutPostNestedInput;
 }

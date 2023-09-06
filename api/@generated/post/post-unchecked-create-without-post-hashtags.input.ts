@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
 import { MediaFileUncheckedCreateNestedManyWithoutPostInput } from '../media-file/media-file-unchecked-create-nested-many-without-post.input';
+import { LikeUncheckedCreateNestedManyWithoutPostInput } from '../like/like-unchecked-create-nested-many-without-post.input';
 
 @InputType()
 export class PostUncheckedCreateWithoutPostHashtagsInput {
@@ -29,4 +30,7 @@ export class PostUncheckedCreateWithoutPostHashtagsInput {
 
     @Field(() => MediaFileUncheckedCreateNestedManyWithoutPostInput, {nullable:true})
     mediaFiles?: MediaFileUncheckedCreateNestedManyWithoutPostInput;
+
+    @Field(() => LikeUncheckedCreateNestedManyWithoutPostInput, {nullable:true})
+    likes?: LikeUncheckedCreateNestedManyWithoutPostInput;
 }
