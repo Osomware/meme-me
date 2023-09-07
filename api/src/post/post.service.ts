@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { Post } from '@generated/post/post.model'
 import { PrismaService } from '~/prisma/prisma.service'
+import { DeletePostInput } from './dto/delete-post.input'
 import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
 import { PostCreateWithoutUserInput } from '@generated/post/post-create-without-user.input'
@@ -78,5 +79,34 @@ export class PostService {
 
   async countAllPost(): Promise<number> {
     return await this.prisma.post.count()
+  }
+
+  async delete(deletePostInput: DeletePostInput, userId: number): Promise<Post> {
+    const findUserPost = await this.prisma.post.findFirst({
+      where: {
+        id: {
+          equals: deletePostInput.id
+        },
+        userId: {
+          equals: userId
+        }
+      }
+    })
+
+    if (!findUserPost) {
+      throw new Error('You are not authorized to delete this post!')
+    }
+
+    return await this.prisma.post.delete({
+      where: {
+        id: deletePostInput.id,
+        userId
+      },
+      include: {
+        user: true,
+        likes: true,
+        _count: true
+      }
+    })
   }
 }

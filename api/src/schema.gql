@@ -23,6 +23,10 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input DeletePostInput {
+  id: Int!
+}
+
 input EnumRoleFilter {
   equals: Role
   in: [Role!]
@@ -421,6 +425,7 @@ input MediaFileWhereUniqueInput {
 
 type Mutation {
   createPost(createPostInput: PostCreateWithoutUserInput!): Post!
+  deletePost(deletePostInput: DeletePostInput!): Post!
   followUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
   getNewTokens: NewTokensResonse!
   likePost(targetPostInput: TargetPostInput!): LikePost!

@@ -3,6 +3,7 @@ import moment from 'moment'
 import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
 import { Montserrat } from 'next/font/google'
@@ -26,6 +27,7 @@ import CopyLink from '~/components/molecules/CopyLink'
 import useScreenCondition from '~/hooks/useScreenCondition'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import ReactionButton from '~/components/molecules/ReactionButton'
+import PostDropdownMenu from '~/components/molecules/PostDropdownMenu'
 import { convertHashtagsToLinks } from '~/helpers/convertHastagsToLinks'
 import PostModalSkeletonLoading from '~/components/atoms/Skeletons/PostModalSkeletonLoading'
 
@@ -42,7 +44,9 @@ type PostModalProps = {
 const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Element => {
   const router = useRouter()
 
-  const { getSinglePost } = usePost()
+  // * POST HOOKS
+  const { getSinglePost, handleDeletePostMutation } = usePost()
+  const deletePostMethod = handleDeletePostMutation()
   const { data: postData, isLoading: isLoadingPost } = getSinglePost(Number(postId))
   const userPost = postData?.findOnePost
   const myConfig = genConfig(userPost?.user?.email as AvatarFullConfig)
@@ -59,6 +63,7 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
   const isLikePost = likeStatuses?.data?.checkUserLikePost ?? false
   const isPostAuthor = userPost?.user?.id === store?.user?.id
 
+  // * SCREEN CONDITION HOOKS
   const isMediumScreen = useScreenCondition('(max-width: 768px)')
 
   // * FOLLOW HOOKS
@@ -144,6 +149,22 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
     }
   }
 
+  const handleDeletePost = async (): Promise<void> => {
+    await deletePostMethod.mutateAsync(
+      {
+        id: Number(userPost?.id)
+      },
+      {
+        onSuccess: () => {
+          void queryClient.invalidateQueries(['posts'])
+          void queryClient.invalidateQueries(['like', Number(userPost?.id)])
+          toast.success('Successfully Deleted!')
+          void router.replace(`/@${userPost?.user?.username ?? ''}`)
+        }
+      }
+    )
+  }
+
   return (
     <Modal
       open={isOpen}
@@ -162,7 +183,7 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
         )}
       >
         {!isMediumScreen && (
-          <section className="flex-1 bg-black flex justify-center">
+          <section className="relative flex-1 bg-black flex justify-center">
             <div className="h-full w-ful flex justify-center items-center max-w-md overflow-hidden">
               <Carousel>
                 {
@@ -191,6 +212,17 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                 }
               </Carousel>
             </div>
+            {isPostAuthor && (
+              <div className="absolute right-0 mx-6 my-2">
+                <PostDropdownMenu
+                  {...{
+                    actions: {
+                      handleDeletePost
+                    }
+                  }}
+                />
+              </div>
+            )}
           </section>
         )}
         {isLoadingPost ? (

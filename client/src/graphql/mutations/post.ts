@@ -19,3 +19,11 @@ export const CREATE_POST_MUTATION = gql`
     }
   }
 `
+
+export const DELETE_POST_MUTATION = gql`
+  mutation DeletePost($deletePostInput: DeletePostInput!) {
+    deletePost(deletePostInput: $deletePostInput) {
+      id
+    }
+  }
+`
