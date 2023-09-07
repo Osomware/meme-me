@@ -12,8 +12,8 @@ import {
 import { gqlClient } from '~/lib/gqlClient'
 import { IPost } from '~/utils/interface/Post'
 import { queryClient } from '~/lib/queryClient'
-import { PostRequestInput } from '~/utils/types/input'
-import { CREATE_POST_MUTATION } from '~/graphql/mutations/post'
+import { DeletePostInput, PostRequestInput } from '~/utils/types/input'
+import { CREATE_POST_MUTATION, DELETE_POST_MUTATION } from '~/graphql/mutations/post'
 import {
   GET_ALL_POST_QUERY,
   GET_ONE_POST_QUERY,
@@ -27,8 +27,19 @@ type PostMutationReturnType = UseMutationResult<
   PostRequestInput,
   unknown
 >
+type DeleteMutationReturnType = UseMutationResult<
+  DeleteSuccessReponse,
+  unknown,
+  DeletePostInput,
+  unknown
+>
 type PostSuccessReponse = {
   createPost: IPost
+}
+type DeleteSuccessReponse = {
+  deletePost: {
+    id: number
+  }
 }
 type PostFetchResponse = {
   pages: Array<{
@@ -48,12 +59,14 @@ type PostFetchByUsernameResponse = {
 type PostFetchQueryType = UseInfiniteQueryResult<PostFetchResponse, Error>
 type PostFetchByUsernameQueryType = UseQueryResult<PostFetchByUsernameResponse, unknown>
 type SinglePostFetchQueryType = UseQueryResult<SinglePostFetchResponse, unknown>
+type DeleteFetchQueryType = DeleteMutationReturnType
 
 type ReturnType = {
   getAllPosts: () => PostFetchQueryType
   getSinglePost: (id: number) => SinglePostFetchQueryType
   handlePostMutation: () => PostMutationReturnType
   getAllPostsByUsername: (username: string) => PostFetchByUsernameQueryType
+  handleDeletePostMutation: () => DeleteFetchQueryType
 }
 
 const usePost = (): ReturnType => {
@@ -154,11 +167,27 @@ const usePost = (): ReturnType => {
       select: (data: PostFetchByUsernameResponse) => data
     })
 
+  const handleDeletePostMutation = (): DeleteFetchQueryType =>
+    useMutation<DeleteSuccessReponse, Error, DeletePostInput, unknown>({
+      mutationFn: async (deletePostInput: DeletePostInput) => {
+        return await gqlClient.request(DELETE_POST_MUTATION, {
+          deletePostInput: {
+            id: deletePostInput.id
+          }
+        })
+      },
+      onError: (err: Error) => {
+        const [errorMessage] = err.message.split(/:\s/, 2)
+        toast.error(errorMessage)
+      }
+    })
+
   return {
     getAllPosts,
     getSinglePost,
     handlePostMutation,
-    getAllPostsByUsername
+    getAllPostsByUsername,
+    handleDeletePostMutation
   }
 }
 

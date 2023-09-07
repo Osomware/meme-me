@@ -10,9 +10,9 @@ import { IPost } from '~/utils/interface/Post'
 import { useZustand } from '~/hooks/useZustand'
 import { ResultQuery } from '~/hooks/useFollow'
 import PostModal from '~/components/organisms/PostModal'
+import { ResultUserLikePostQuery } from '~/hooks/useLike'
 import { CHECK_IS_FOLLOWED } from '~/graphql/queries/followQuery'
 import { CHECK_IS_USER_LIKE_POST } from '~/graphql/queries/likeQuery'
-import { ResultUserLikePostQuery } from '~/hooks/useLike'
 
 type PostListProps = {
   posts: IPost[]

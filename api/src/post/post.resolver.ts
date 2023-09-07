@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
 
 import { PostService } from './post.service'
 import { Post } from './entities/post.entity'
+import { DeletePostInput } from './dto/delete-post.input'
 import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { CurrentUserId } from '~/auth/decorators/currentUserId.decotrator'
 import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
@@ -37,5 +38,13 @@ export class PostResolver {
   @Query(() => Int, { name: 'countAllPost' })
   countllPost(): Promise<number> {
     return this.postService.countAllPost()
+  }
+
+  @Mutation(() => Post, { name: 'deletePost' })
+  async deletePost(
+    @Args('deletePostInput') deletePostInput: DeletePostInput,
+    @CurrentUserId() userId: number
+  ): Promise<Post> {
+    return this.postService.delete(deletePostInput, userId)
   }
 }

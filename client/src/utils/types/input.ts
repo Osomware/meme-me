@@ -35,3 +35,7 @@ export type MediaFiles = {
 export type TargetPostInput = {
   id: number
 }
+
+export type DeletePostInput = {
+  id: number
+}
