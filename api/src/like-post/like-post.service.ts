@@ -40,7 +40,7 @@ export class LikePostService {
     })
   }
 
-  async checkUserLikePost(userId: number, targetPostInput: TargetPostInput): Promise<Boolean> {
+  async checkUserLikePost(userId: number, targetPostInput: TargetPostInput): Promise<boolean> {
     const likePostRelationship = await this.prisma.like.findUnique({
       where: {
         userId_postId: {

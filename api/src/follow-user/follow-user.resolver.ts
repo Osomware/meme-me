@@ -30,7 +30,7 @@ export class FollowUserResolver {
   async checkUserFollowed(
     @CurrentUserId() userId: number,
     @Args('targetUserIdInput') targetUserInput: TargetUserIdInput
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     return await this.followUserService.checkUserFollowed(userId, targetUserInput)
   }
 }

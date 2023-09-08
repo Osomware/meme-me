@@ -8,6 +8,7 @@ import { MediaFileListRelationFilter } from '../media-file/media-file-list-relat
 import { UserRelationFilter } from '../user/user-relation-filter.input';
 import { PostHashtagListRelationFilter } from '../post-hashtag/post-hashtag-list-relation-filter.input';
 import { LikeListRelationFilter } from '../like/like-list-relation-filter.input';
+import { CommentListRelationFilter } from '../comment/comment-list-relation-filter.input';
 
 @InputType()
 export class PostWhereInput {
@@ -53,4 +54,7 @@ export class PostWhereInput {
 
     @Field(() => LikeListRelationFilter, {nullable:true})
     likes?: LikeListRelationFilter;
+
+    @Field(() => CommentListRelationFilter, {nullable:true})
+    comments?: CommentListRelationFilter;
 }

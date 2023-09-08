@@ -14,6 +14,7 @@ import { LikePostModule } from './like-post/like-post.module'
 import { AccessTokenGuard } from '~/auth/guards/accessToken.guard'
 import { FollowUserModule } from './follow-user/follow-user.module'
 import { PostHashtagModule } from './post-hashtag/post-hashtag.module'
+import { CommentPostModule } from './comment-post/comment-post.module'
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { PostHashtagModule } from './post-hashtag/post-hashtag.module'
     PostModule,
     FollowUserModule,
     PostHashtagModule,
-    LikePostModule
+    LikePostModule,
+    CommentPostModule
   ],
   controllers: [],
   providers: [PrismaService, { provide: APP_GUARD, useClass: AccessTokenGuard }]

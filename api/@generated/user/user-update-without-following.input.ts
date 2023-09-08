@@ -6,6 +6,7 @@ import { EnumRoleFieldUpdateOperationsInput } from '../prisma/enum-role-field-up
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
 import { PostUpdateManyWithoutUserNestedInput } from '../post/post-update-many-without-user-nested.input';
 import { LikeUpdateManyWithoutUserNestedInput } from '../like/like-update-many-without-user-nested.input';
+import { CommentUpdateManyWithoutUserNestedInput } from '../comment/comment-update-many-without-user-nested.input';
 import { FollowUpdateManyWithoutFollowerNestedInput } from '../follow/follow-update-many-without-follower-nested.input';
 
 @InputType()
@@ -40,6 +41,9 @@ export class UserUpdateWithoutFollowingInput {
 
     @Field(() => LikeUpdateManyWithoutUserNestedInput, {nullable:true})
     likes?: LikeUpdateManyWithoutUserNestedInput;
+
+    @Field(() => CommentUpdateManyWithoutUserNestedInput, {nullable:true})
+    comments?: CommentUpdateManyWithoutUserNestedInput;
 
     @Field(() => FollowUpdateManyWithoutFollowerNestedInput, {nullable:true})
     followers?: FollowUpdateManyWithoutFollowerNestedInput;

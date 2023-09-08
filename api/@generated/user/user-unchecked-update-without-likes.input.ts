@@ -6,6 +6,7 @@ import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-str
 import { EnumRoleFieldUpdateOperationsInput } from '../prisma/enum-role-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
 import { PostUncheckedUpdateManyWithoutUserNestedInput } from '../post/post-unchecked-update-many-without-user-nested.input';
+import { CommentUncheckedUpdateManyWithoutUserNestedInput } from '../comment/comment-unchecked-update-many-without-user-nested.input';
 import { FollowUncheckedUpdateManyWithoutFollowerNestedInput } from '../follow/follow-unchecked-update-many-without-follower-nested.input';
 import { FollowUncheckedUpdateManyWithoutFollowingNestedInput } from '../follow/follow-unchecked-update-many-without-following-nested.input';
 
@@ -41,6 +42,9 @@ export class UserUncheckedUpdateWithoutLikesInput {
 
     @Field(() => PostUncheckedUpdateManyWithoutUserNestedInput, {nullable:true})
     posts?: PostUncheckedUpdateManyWithoutUserNestedInput;
+
+    @Field(() => CommentUncheckedUpdateManyWithoutUserNestedInput, {nullable:true})
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput;
 
     @Field(() => FollowUncheckedUpdateManyWithoutFollowerNestedInput, {nullable:true})
     followers?: FollowUncheckedUpdateManyWithoutFollowerNestedInput;

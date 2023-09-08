@@ -29,7 +29,7 @@ export class LikePostResolver {
   async checkUserLikePost(
     @CurrentUserId() userId: number,
     @Args('targetPostInput') targetPostInput: TargetPostInput
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     return await this.likePostService.checkUserLikePost(userId, targetPostInput)
   }
 }

@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { UserCreateNestedOneWithoutPostsInput } from '../user/user-create-nested-one-without-posts.input';
 import { PostHashtagCreateNestedManyWithoutPostInput } from '../post-hashtag/post-hashtag-create-nested-many-without-post.input';
 import { LikeCreateNestedManyWithoutPostInput } from '../like/like-create-nested-many-without-post.input';
+import { CommentCreateNestedManyWithoutPostInput } from '../comment/comment-create-nested-many-without-post.input';
 
 @InputType()
 export class PostCreateWithoutMediaFilesInput {
@@ -30,4 +31,7 @@ export class PostCreateWithoutMediaFilesInput {
 
     @Field(() => LikeCreateNestedManyWithoutPostInput, {nullable:true})
     likes?: LikeCreateNestedManyWithoutPostInput;
+
+    @Field(() => CommentCreateNestedManyWithoutPostInput, {nullable:true})
+    comments?: CommentCreateNestedManyWithoutPostInput;
 }

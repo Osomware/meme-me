@@ -13,4 +13,7 @@ export class PostCount {
 
     @Field(() => Int, {nullable:false})
     likes?: number;
+
+    @Field(() => Int, {nullable:false})
+    comments?: number;
 }
