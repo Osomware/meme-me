@@ -2,12 +2,15 @@ import clsx from 'clsx'
 import moment from 'moment'
 import Link from 'next/link'
 import Image from 'next/image'
+import { isEmpty } from 'lodash'
 import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import React, { FC, ReactNode } from 'react'
 import { Montserrat } from 'next/font/google'
 import { Modal } from 'react-responsive-modal'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { AtSign, Bookmark, Heart, Smile } from 'react-feather'
 import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 
@@ -17,6 +20,7 @@ import usePost from '~/hooks/usePost'
 import useLike from '~/hooks/useLike'
 import useFollow from '~/hooks/useFollow'
 import { useStore } from '~/utils/zustand'
+import useComment from '~/hooks/useComment'
 import Input from '~/components/atoms/Input'
 import { queryClient } from '~/lib/queryClient'
 import { useZustand } from '~/hooks/useZustand'
@@ -27,6 +31,7 @@ import CopyLink from '~/components/molecules/CopyLink'
 import useScreenCondition from '~/hooks/useScreenCondition'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import ReactionButton from '~/components/molecules/ReactionButton'
+import { CommentFormValues, CommentSchema } from '~/utils/yup-schema'
 import PostDropdownMenu from '~/components/molecules/PostDropdownMenu'
 import { convertHashtagsToLinks } from '~/helpers/convertHastagsToLinks'
 import PostModalSkeletonLoading from '~/components/atoms/Skeletons/PostModalSkeletonLoading'
@@ -43,6 +48,17 @@ type PostModalProps = {
 
 const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Element => {
   const router = useRouter()
+
+  // * REACT HOOK FORM
+  const {
+    reset,
+    register,
+    handleSubmit,
+    formState: { isSubmitting, isDirty, isValid }
+  } = useForm({
+    mode: 'onTouched',
+    resolver: yupResolver(CommentSchema)
+  })
 
   // * POST HOOKS
   const { getSinglePost, handleDeletePostMutation } = usePost()
@@ -73,6 +89,10 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
 
   const followStatuses = checkIsFollowed(userPost?.user?.id ?? 0)
   const isFollowed = followStatuses?.data?.checkUserFollowed ?? false
+
+  // * COMMENT HOOKS
+  const { handleComment } = useComment()
+  const commentMethod = handleComment()
 
   const replies = []
 
@@ -160,6 +180,26 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
           void queryClient.invalidateQueries(['like', Number(userPost?.id)])
           toast.success('Successfully Deleted!')
           void router.replace(`/@${userPost?.user?.username ?? ''}`)
+        }
+      }
+    )
+  }
+
+  const handleCommentPost: SubmitHandler<CommentFormValues> = async (data): Promise<void> => {
+    if (isEmpty(data?.text?.trim())) {
+      return
+    }
+
+    await commentMethod.mutateAsync(
+      {
+        postId: Number(userPost?.id),
+        text: data?.text as string
+      },
+      {
+        onSuccess: () => {
+          reset({
+            text: ''
+          })
         }
       }
     )
@@ -340,33 +380,43 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                 <Comment />
               )}
             </main>
-            <footer className="flex items-center px-4 py-3">
-              <div className="relative w-full flex items-center">
-                <Input
-                  type="text"
-                  placeholder="Add comment..."
-                  className="placeholder:text-secondary-200 py-2 text-sm pr-16"
-                />
-                <div className="absolute flex items-center right-9 inset-y-0">
-                  <button type="button" className="outline-none active:scale-95">
-                    <AtSign className="stroke-1 w-5 h-5" />
-                  </button>
-                </div>
-                <div className="absolute flex items-center right-2 inset-y-0">
-                  <button type="button" className="outline-none active:scale-95">
-                    <Smile className="stroke-1 w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-              <button
-                type="button"
-                className={clsx(
-                  'outline-none text-secondary-100 px-2 focus:text-primary',
-                  'hover:text-primary font-medium'
-                )}
+            <footer>
+              <form
+                className="flex items-center px-4 py-3"
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onSubmit={handleSubmit(handleCommentPost)}
               >
-                Post
-              </button>
+                <div className="relative w-full flex items-center">
+                  <Input
+                    type="text"
+                    {...register('text')}
+                    disabled={isSubmitting}
+                    placeholder="Add comment..."
+                    className="placeholder:text-secondary-200 py-2 text-sm pr-16"
+                  />
+                  <div className="absolute flex items-center right-9 inset-y-0">
+                    <button type="button" className="outline-none active:scale-95">
+                      <AtSign className="stroke-1 w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="absolute flex items-center right-2 inset-y-0">
+                    <button type="button" className="outline-none active:scale-95">
+                      <Smile className="stroke-1 w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !isDirty || !isValid}
+                  className={clsx(
+                    'outline-none text-secondary-100 px-2 font-medium',
+                    isSubmitting ? 'opacity-50 text-secondary-100' : '',
+                    isSubmitting || !isDirty || !isValid ? '' : 'hover:text-primary'
+                  )}
+                >
+                  Post
+                </button>
+              </form>
             </footer>
           </section>
         )}
