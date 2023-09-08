@@ -5,6 +5,7 @@ import * as Validator from 'class-validator';
 import { Role } from '../prisma/role.enum';
 import { PostUncheckedCreateNestedManyWithoutUserInput } from '../post/post-unchecked-create-nested-many-without-user.input';
 import { LikeUncheckedCreateNestedManyWithoutUserInput } from '../like/like-unchecked-create-nested-many-without-user.input';
+import { CommentUncheckedCreateNestedManyWithoutUserInput } from '../comment/comment-unchecked-create-nested-many-without-user.input';
 import { FollowUncheckedCreateNestedManyWithoutFollowingInput } from '../follow/follow-unchecked-create-nested-many-without-following.input';
 
 @InputType()
@@ -45,6 +46,9 @@ export class UserUncheckedCreateWithoutFollowersInput {
 
     @Field(() => LikeUncheckedCreateNestedManyWithoutUserInput, {nullable:true})
     likes?: LikeUncheckedCreateNestedManyWithoutUserInput;
+
+    @Field(() => CommentUncheckedCreateNestedManyWithoutUserInput, {nullable:true})
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput;
 
     @Field(() => FollowUncheckedCreateNestedManyWithoutFollowingInput, {nullable:true})
     following?: FollowUncheckedCreateNestedManyWithoutFollowingInput;

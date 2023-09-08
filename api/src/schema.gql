@@ -7,6 +7,199 @@ input BoolFilter {
   not: NestedBoolFilter
 }
 
+type CommentCount {
+  childComments: Int!
+}
+
+input CommentCreateManyParentInput {
+  createdAt: DateTime
+  id: Int
+  postId: Int!
+  text: String!
+  updatedAt: DateTime
+  userId: Int!
+}
+
+input CommentCreateManyParentInputEnvelope {
+  data: [CommentCreateManyParentInput!]!
+  skipDuplicates: Boolean
+}
+
+input CommentCreateManyPostInput {
+  createdAt: DateTime
+  id: Int
+  parentId: Int
+  text: String!
+  updatedAt: DateTime
+  userId: Int!
+}
+
+input CommentCreateManyPostInputEnvelope {
+  data: [CommentCreateManyPostInput!]!
+  skipDuplicates: Boolean
+}
+
+input CommentCreateManyUserInput {
+  createdAt: DateTime
+  id: Int
+  parentId: Int
+  postId: Int!
+  text: String!
+  updatedAt: DateTime
+}
+
+input CommentCreateManyUserInputEnvelope {
+  data: [CommentCreateManyUserInput!]!
+  skipDuplicates: Boolean
+}
+
+input CommentCreateNestedManyWithoutParentInput {
+  connect: [CommentWhereUniqueInput!]
+  connectOrCreate: [CommentCreateOrConnectWithoutParentInput!]
+  create: [CommentCreateWithoutParentInput!]
+  createMany: CommentCreateManyParentInputEnvelope
+}
+
+input CommentCreateNestedManyWithoutPostInput {
+  connect: [CommentWhereUniqueInput!]
+  connectOrCreate: [CommentCreateOrConnectWithoutPostInput!]
+  create: [CommentCreateWithoutPostInput!]
+  createMany: CommentCreateManyPostInputEnvelope
+}
+
+input CommentCreateNestedManyWithoutUserInput {
+  connect: [CommentWhereUniqueInput!]
+  connectOrCreate: [CommentCreateOrConnectWithoutUserInput!]
+  create: [CommentCreateWithoutUserInput!]
+  createMany: CommentCreateManyUserInputEnvelope
+}
+
+input CommentCreateNestedOneWithoutChildCommentsInput {
+  connect: CommentWhereUniqueInput
+  connectOrCreate: CommentCreateOrConnectWithoutChildCommentsInput
+  create: CommentCreateWithoutChildCommentsInput
+}
+
+input CommentCreateOrConnectWithoutChildCommentsInput {
+  create: CommentCreateWithoutChildCommentsInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentCreateOrConnectWithoutParentInput {
+  create: CommentCreateWithoutParentInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentCreateOrConnectWithoutPostInput {
+  create: CommentCreateWithoutPostInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentCreateOrConnectWithoutUserInput {
+  create: CommentCreateWithoutUserInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentCreateWithoutChildCommentsInput {
+  createdAt: DateTime
+  parent: CommentCreateNestedOneWithoutChildCommentsInput
+  post: PostCreateNestedOneWithoutCommentsInput!
+  text: String!
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutCommentsInput!
+}
+
+input CommentCreateWithoutParentInput {
+  childComments: CommentCreateNestedManyWithoutParentInput
+  createdAt: DateTime
+  post: PostCreateNestedOneWithoutCommentsInput!
+  text: String!
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutCommentsInput!
+}
+
+input CommentCreateWithoutPostInput {
+  childComments: CommentCreateNestedManyWithoutParentInput
+  createdAt: DateTime
+  parent: CommentCreateNestedOneWithoutChildCommentsInput
+  text: String!
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutCommentsInput!
+}
+
+input CommentCreateWithoutUserInput {
+  childComments: CommentCreateNestedManyWithoutParentInput
+  createdAt: DateTime
+  parent: CommentCreateNestedOneWithoutChildCommentsInput
+  post: PostCreateNestedOneWithoutCommentsInput!
+  text: String!
+  updatedAt: DateTime
+}
+
+input CommentListRelationFilter {
+  every: CommentWhereInput
+  none: CommentWhereInput
+  some: CommentWhereInput
+}
+
+input CommentNullableRelationFilter {
+  is: CommentWhereInput
+  isNot: CommentWhereInput
+}
+
+input CommentOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+type CommentPost {
+  _count: CommentCount!
+  childComments: [CommentPost!]
+  createdAt: DateTime!
+  id: ID!
+  parent: CommentPost
+  parentId: Int
+  post: Post!
+  postId: Int!
+  text: String!
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+}
+
+input CommentWhereInput {
+  AND: [CommentWhereInput!]
+  NOT: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  childComments: CommentListRelationFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  parent: CommentNullableRelationFilter
+  parentId: IntNullableFilter
+  post: PostRelationFilter
+  postId: IntFilter
+  text: StringFilter
+  updatedAt: DateTimeFilter
+  user: UserRelationFilter
+  userId: IntFilter
+}
+
+input CommentWhereUniqueInput {
+  AND: [CommentWhereInput!]
+  NOT: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  childComments: CommentListRelationFilter
+  createdAt: DateTimeFilter
+  id: Int
+  parent: CommentNullableRelationFilter
+  parentId: IntNullableFilter
+  post: PostRelationFilter
+  postId: IntFilter
+  text: StringFilter
+  updatedAt: DateTimeFilter
+  user: UserRelationFilter
+  userId: IntFilter
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -229,6 +422,17 @@ input IntFilter {
   notIn: [Int!]
 }
 
+input IntNullableFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntNullableFilter
+  notIn: [Int!]
+}
+
 input LikeCreateManyPostInput {
   createdAt: DateTime
   id: Int
@@ -424,6 +628,7 @@ input MediaFileWhereUniqueInput {
 }
 
 type Mutation {
+  commentPost(commentCreateWithoutUserInput: CommentCreateWithoutUserInput!): CommentPost!
   createPost(createPostInput: PostCreateWithoutUserInput!): Post!
   deletePost(deletePostInput: DeletePostInput!): Post!
   followUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
@@ -467,6 +672,17 @@ input NestedIntFilter {
   lt: Int
   lte: Int
   not: NestedIntFilter
+  notIn: [Int!]
+}
+
+input NestedIntNullableFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntNullableFilter
   notIn: [Int!]
 }
 
@@ -524,6 +740,7 @@ type Post {
 }
 
 type PostCount {
+  comments: Int!
   likes: Int!
   mediaFiles: Int!
   postHashtags: Int!
@@ -550,10 +767,21 @@ input PostCreateNestedManyWithoutUserInput {
   createMany: PostCreateManyUserInputEnvelope
 }
 
+input PostCreateNestedOneWithoutCommentsInput {
+  connect: PostWhereUniqueInput
+  connectOrCreate: PostCreateOrConnectWithoutCommentsInput
+  create: PostCreateWithoutCommentsInput
+}
+
 input PostCreateNestedOneWithoutLikesInput {
   connect: PostWhereUniqueInput
   connectOrCreate: PostCreateOrConnectWithoutLikesInput
   create: PostCreateWithoutLikesInput
+}
+
+input PostCreateOrConnectWithoutCommentsInput {
+  create: PostCreateWithoutCommentsInput!
+  where: PostWhereUniqueInput!
 }
 
 input PostCreateOrConnectWithoutLikesInput {
@@ -566,7 +794,20 @@ input PostCreateOrConnectWithoutUserInput {
   where: PostWhereUniqueInput!
 }
 
+input PostCreateWithoutCommentsInput {
+  createdAt: DateTime
+  isHideLikeAndCount: Boolean
+  isTurnOffComment: Boolean
+  likes: LikeCreateNestedManyWithoutPostInput
+  mediaFiles: MediaFileCreateNestedManyWithoutPostInput
+  postHashtags: PostHashtagCreateNestedManyWithoutPostInput
+  title: String
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutPostsInput!
+}
+
 input PostCreateWithoutLikesInput {
+  comments: CommentCreateNestedManyWithoutPostInput
   createdAt: DateTime
   isHideLikeAndCount: Boolean
   isTurnOffComment: Boolean
@@ -578,6 +819,7 @@ input PostCreateWithoutLikesInput {
 }
 
 input PostCreateWithoutUserInput {
+  comments: CommentCreateNestedManyWithoutPostInput
   createdAt: DateTime
   isHideLikeAndCount: Boolean
   isTurnOffComment: Boolean
@@ -689,6 +931,7 @@ input PostOrderByRelationAggregateInput {
 }
 
 input PostOrderByWithRelationInput {
+  comments: CommentOrderByRelationAggregateInput
   createdAt: SortOrder
   id: SortOrder
   isHideLikeAndCount: SortOrder
@@ -721,6 +964,7 @@ input PostWhereInput {
   AND: [PostWhereInput!]
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
+  comments: CommentListRelationFilter
   createdAt: DateTimeFilter
   id: IntFilter
   isHideLikeAndCount: BoolFilter
@@ -738,6 +982,7 @@ input PostWhereUniqueInput {
   AND: [PostWhereInput!]
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
+  comments: CommentListRelationFilter
   createdAt: DateTimeFilter
   id: Int
   isHideLikeAndCount: BoolFilter
@@ -849,6 +1094,7 @@ type User {
 }
 
 type UserCount {
+  comments: Int!
   followers: Int!
   following: Int!
   likes: Int!
@@ -856,6 +1102,7 @@ type UserCount {
 }
 
 input UserCreateInput {
+  comments: CommentCreateNestedManyWithoutUserInput
   createdAt: DateTime
   email: String!
   followers: FollowCreateNestedManyWithoutFollowerInput
@@ -868,6 +1115,12 @@ input UserCreateInput {
   role: Role
   updatedAt: DateTime
   username: String!
+}
+
+input UserCreateNestedOneWithoutCommentsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutCommentsInput
+  create: UserCreateWithoutCommentsInput
 }
 
 input UserCreateNestedOneWithoutFollowersInput {
@@ -894,6 +1147,11 @@ input UserCreateNestedOneWithoutPostsInput {
   create: UserCreateWithoutPostsInput
 }
 
+input UserCreateOrConnectWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserCreateOrConnectWithoutFollowersInput {
   create: UserCreateWithoutFollowersInput!
   where: UserWhereUniqueInput!
@@ -914,7 +1172,23 @@ input UserCreateOrConnectWithoutPostsInput {
   where: UserWhereUniqueInput!
 }
 
+input UserCreateWithoutCommentsInput {
+  createdAt: DateTime
+  email: String!
+  followers: FollowCreateNestedManyWithoutFollowerInput
+  following: FollowCreateNestedManyWithoutFollowingInput
+  likes: LikeCreateNestedManyWithoutUserInput
+  name: String!
+  password: String!
+  posts: PostCreateNestedManyWithoutUserInput
+  refreshToken: String
+  role: Role
+  updatedAt: DateTime
+  username: String!
+}
+
 input UserCreateWithoutFollowersInput {
+  comments: CommentCreateNestedManyWithoutUserInput
   createdAt: DateTime
   email: String!
   following: FollowCreateNestedManyWithoutFollowingInput
@@ -929,6 +1203,7 @@ input UserCreateWithoutFollowersInput {
 }
 
 input UserCreateWithoutFollowingInput {
+  comments: CommentCreateNestedManyWithoutUserInput
   createdAt: DateTime
   email: String!
   followers: FollowCreateNestedManyWithoutFollowerInput
@@ -943,6 +1218,7 @@ input UserCreateWithoutFollowingInput {
 }
 
 input UserCreateWithoutLikesInput {
+  comments: CommentCreateNestedManyWithoutUserInput
   createdAt: DateTime
   email: String!
   followers: FollowCreateNestedManyWithoutFollowerInput
@@ -957,6 +1233,7 @@ input UserCreateWithoutLikesInput {
 }
 
 input UserCreateWithoutPostsInput {
+  comments: CommentCreateNestedManyWithoutUserInput
   createdAt: DateTime
   email: String!
   followers: FollowCreateNestedManyWithoutFollowerInput
@@ -971,6 +1248,7 @@ input UserCreateWithoutPostsInput {
 }
 
 input UserOrderByWithRelationInput {
+  comments: CommentOrderByRelationAggregateInput
   createdAt: SortOrder
   email: SortOrder
   followers: FollowOrderByRelationAggregateInput
@@ -1007,6 +1285,7 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  comments: CommentListRelationFilter
   createdAt: DateTimeFilter
   email: StringFilter
   followers: FollowListRelationFilter
@@ -1026,6 +1305,7 @@ input UserWhereUniqueInput {
   AND: [UserWhereInput!]
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  comments: CommentListRelationFilter
   createdAt: DateTimeFilter
   email: String
   followers: FollowListRelationFilter

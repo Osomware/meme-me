@@ -68,7 +68,7 @@ export class FollowUserService {
     })
   }
 
-  async checkUserFollowed(userId: number, targetUser: TargetUserIdInput): Promise<Boolean> {
+  async checkUserFollowed(userId: number, targetUser: TargetUserIdInput): Promise<boolean> {
     const followRelationship = await this.prisma.follow.findUnique({
       where: {
         followerId_followingId: {

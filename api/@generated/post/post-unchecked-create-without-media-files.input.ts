@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
 import { PostHashtagUncheckedCreateNestedManyWithoutPostInput } from '../post-hashtag/post-hashtag-unchecked-create-nested-many-without-post.input';
 import { LikeUncheckedCreateNestedManyWithoutPostInput } from '../like/like-unchecked-create-nested-many-without-post.input';
+import { CommentUncheckedCreateNestedManyWithoutPostInput } from '../comment/comment-unchecked-create-nested-many-without-post.input';
 
 @InputType()
 export class PostUncheckedCreateWithoutMediaFilesInput {
@@ -33,4 +34,7 @@ export class PostUncheckedCreateWithoutMediaFilesInput {
 
     @Field(() => LikeUncheckedCreateNestedManyWithoutPostInput, {nullable:true})
     likes?: LikeUncheckedCreateNestedManyWithoutPostInput;
+
+    @Field(() => CommentUncheckedCreateNestedManyWithoutPostInput, {nullable:true})
+    comments?: CommentUncheckedCreateNestedManyWithoutPostInput;
 }

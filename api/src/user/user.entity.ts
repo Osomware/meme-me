@@ -8,7 +8,7 @@ import { UserCount } from '@generated/user/user-count.output'
 
 @ObjectType()
 export class User {
-  @Field(() => Int!, { nullable: false })
+  @Field(() => Int, { nullable: false })
   id!: number
 
   @Field(() => String, { nullable: false })

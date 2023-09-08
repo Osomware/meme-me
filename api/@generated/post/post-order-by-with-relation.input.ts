@@ -6,6 +6,7 @@ import { MediaFileOrderByRelationAggregateInput } from '../media-file/media-file
 import { UserOrderByWithRelationInput } from '../user/user-order-by-with-relation.input';
 import { PostHashtagOrderByRelationAggregateInput } from '../post-hashtag/post-hashtag-order-by-relation-aggregate.input';
 import { LikeOrderByRelationAggregateInput } from '../like/like-order-by-relation-aggregate.input';
+import { CommentOrderByRelationAggregateInput } from '../comment/comment-order-by-relation-aggregate.input';
 
 @InputType()
 export class PostOrderByWithRelationInput {
@@ -42,4 +43,7 @@ export class PostOrderByWithRelationInput {
 
     @Field(() => LikeOrderByRelationAggregateInput, {nullable:true})
     likes?: LikeOrderByRelationAggregateInput;
+
+    @Field(() => CommentOrderByRelationAggregateInput, {nullable:true})
+    comments?: CommentOrderByRelationAggregateInput;
 }

@@ -6,6 +6,7 @@ import { MediaFile } from '../media-file/media-file.model';
 import { User } from '../user/user.model';
 import { PostHashtag } from '../post-hashtag/post-hashtag.model';
 import { Like } from '../like/like.model';
+import { Comment } from '../comment/comment.model';
 import { PostCount } from './post-count.output';
 
 @ObjectType()
@@ -43,6 +44,9 @@ export class Post {
 
     @Field(() => [Like], {nullable:true})
     likes?: Array<Like>;
+
+    @Field(() => [Comment], {nullable:true})
+    comments?: Array<Comment>;
 
     @Field(() => PostCount, {nullable:false})
     _count?: PostCount;

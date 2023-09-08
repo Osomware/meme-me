@@ -7,6 +7,7 @@ import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-up
 import { MediaFileUncheckedUpdateManyWithoutPostNestedInput } from '../media-file/media-file-unchecked-update-many-without-post-nested.input';
 import { PostHashtagUncheckedUpdateManyWithoutPostNestedInput } from '../post-hashtag/post-hashtag-unchecked-update-many-without-post-nested.input';
 import { LikeUncheckedUpdateManyWithoutPostNestedInput } from '../like/like-unchecked-update-many-without-post-nested.input';
+import { CommentUncheckedUpdateManyWithoutPostNestedInput } from '../comment/comment-unchecked-update-many-without-post-nested.input';
 
 @InputType()
 export class PostUncheckedUpdateInput {
@@ -40,4 +41,7 @@ export class PostUncheckedUpdateInput {
 
     @Field(() => LikeUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
     likes?: LikeUncheckedUpdateManyWithoutPostNestedInput;
+
+    @Field(() => CommentUncheckedUpdateManyWithoutPostNestedInput, {nullable:true})
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput;
 }

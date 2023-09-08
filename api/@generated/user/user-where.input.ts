@@ -7,6 +7,7 @@ import { EnumRoleFilter } from '../prisma/enum-role-filter.input';
 import { DateTimeFilter } from '../prisma/date-time-filter.input';
 import { PostListRelationFilter } from '../post/post-list-relation-filter.input';
 import { LikeListRelationFilter } from '../like/like-list-relation-filter.input';
+import { CommentListRelationFilter } from '../comment/comment-list-relation-filter.input';
 import { FollowListRelationFilter } from '../follow/follow-list-relation-filter.input';
 
 @InputType()
@@ -53,6 +54,9 @@ export class UserWhereInput {
 
     @Field(() => LikeListRelationFilter, {nullable:true})
     likes?: LikeListRelationFilter;
+
+    @Field(() => CommentListRelationFilter, {nullable:true})
+    comments?: CommentListRelationFilter;
 
     @Field(() => FollowListRelationFilter, {nullable:true})
     followers?: FollowListRelationFilter;
