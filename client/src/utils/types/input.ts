@@ -39,3 +39,8 @@ export type TargetPostInput = {
 export type DeletePostInput = {
   id: number
 }
+
+export type CommentCreateWithoutUserInput = {
+  postId: number
+  text: string
+}

@@ -33,3 +33,9 @@ export const UserPostSchema = yup.object().shape({
 })
 
 export type UserPostFormValues = yup.InferType<typeof UserPostSchema>
+
+export const CommentSchema = yup.object().shape({
+  text: yup.string().nullable()
+})
+
+export type CommentFormValues = yup.InferType<typeof CommentSchema>
