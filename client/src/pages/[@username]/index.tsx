@@ -106,7 +106,9 @@ const Username: NextPage = (): JSX.Element => {
                 </div>
                 <div className="inline-flex items-center space-x-0.5">
                   <MessageCircle className="w-4 h-4 stroke-white" fill="#fff" />
-                  <span className="text-xs font-semibold text-white">0</span>
+                  <span className="text-xs font-semibold text-white">
+                    {post?._count?.comments ?? 0}
+                  </span>
                 </div>
               </div>
             </button>

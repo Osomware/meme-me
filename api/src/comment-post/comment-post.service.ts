@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '~/prisma/prisma.service'
 import { CommentPost } from './entities/comment-post.entity'
+import { FindManyCommentArgs } from '@generated/comment/find-many-comment.args'
 import { CommentCreateWithoutUserInput } from '@generated/comment/comment-create-without-user.input'
 
 @Injectable()
@@ -32,5 +33,22 @@ export class CommentPostService {
         childComments: true
       }
     })
+  }
+
+  async findAllByPostId(args: FindManyCommentArgs): Promise<CommentPost[]> {
+    return await this.prisma.comment.findMany({
+      ...args,
+      include: {
+        user: true,
+        post: true,
+        childComments: true,
+        parent: true,
+        _count: true
+      }
+    })
+  }
+
+  async countAllComment(): Promise<number> {
+    return await this.prisma.comment.count()
   }
 }

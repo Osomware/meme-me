@@ -107,7 +107,7 @@ const usePost = (): ReturnType => {
       queryFn: async ({ pageParam = 0 }) => {
         const skip = pageParam ?? undefined
         const limit = 5
-        const posts: any = await gqlClient.request(GET_ALL_POST_QUERY, {
+        const posts: PostFetchResponse = await gqlClient.request(GET_ALL_POST_QUERY, {
           orderBy: {
             createdAt: 'desc'
           },

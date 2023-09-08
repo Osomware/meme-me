@@ -115,7 +115,7 @@ const Post: FC<PostProps> = (props): JSX.Element => {
     },
     {
       type: 'comment',
-      count: 0
+      count: _count?.comments ?? 0
     },
     {
       type: 'bookmark',

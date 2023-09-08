@@ -26,6 +26,7 @@ export const GET_ALL_POST_QUERY = gql`
       }
       _count {
         likes
+        comments
       }
     }
   }
@@ -58,6 +59,7 @@ export const GET_ONE_POST_QUERY = gql`
       }
       _count {
         likes
+        comments
       }
     }
   }
@@ -74,6 +76,7 @@ export const GET_ALL_POST_BY_USERNAME_QUERY = gql`
       createdAt
       _count {
         likes
+        comments
       }
     }
   }

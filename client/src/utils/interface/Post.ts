@@ -22,5 +22,6 @@ export interface IPost {
   }
   _count: {
     likes: number
+    comments: number
   }
 }
