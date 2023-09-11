@@ -151,6 +151,20 @@ input CommentOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input CommentOrderByWithRelationInput {
+  childComments: CommentOrderByRelationAggregateInput
+  createdAt: SortOrder
+  id: SortOrder
+  parent: CommentOrderByWithRelationInput
+  parentId: SortOrderInput
+  post: PostOrderByWithRelationInput
+  postId: SortOrder
+  text: SortOrder
+  updatedAt: SortOrder
+  user: UserOrderByWithRelationInput
+  userId: SortOrder
+}
+
 type CommentPost {
   _count: CommentCount!
   childComments: [CommentPost!]
@@ -164,6 +178,16 @@ type CommentPost {
   updatedAt: DateTime!
   user: User!
   userId: Int!
+}
+
+enum CommentScalarFieldEnum {
+  createdAt
+  id
+  parentId
+  postId
+  text
+  updatedAt
+  userId
 }
 
 input CommentWhereInput {
@@ -999,7 +1023,9 @@ input PostWhereUniqueInput {
 type Query {
   checkUserFollowed(targetUserIdInput: TargetUserIdInput!): Boolean!
   checkUserLikePost(targetPostInput: TargetPostInput!): Boolean!
+  countAllComment: Int!
   countAllPost: Int!
+  findAllCommentByPostId(cursor: CommentWhereUniqueInput, distinct: [CommentScalarFieldEnum!], orderBy: [CommentOrderByWithRelationInput!], skip: Int, take: Int, where: CommentWhereInput): [CommentPost!]!
   findAllPost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
   findAllPostByUsername(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
   findOnePost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): Post!
