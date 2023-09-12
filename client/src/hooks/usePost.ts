@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import {
@@ -60,9 +61,10 @@ type PostFetchQueryType = UseInfiniteQueryResult<PostFetchResponse, Error>
 type PostFetchByUsernameQueryType = UseQueryResult<PostFetchByUsernameResponse, unknown>
 type SinglePostFetchQueryType = UseQueryResult<SinglePostFetchResponse, unknown>
 type DeleteFetchQueryType = DeleteMutationReturnType
+export type PostFilter = 'All' | 'Following' | 'Newest' | 'Popular'
 
 type ReturnType = {
-  getAllPosts: () => PostFetchQueryType
+  getAllPosts: (filter: PostFilter) => PostFetchQueryType
   getSinglePost: (id: number) => SinglePostFetchQueryType
   handlePostMutation: () => PostMutationReturnType
   getAllPostsByUsername: (username: string) => PostFetchByUsernameQueryType
@@ -75,7 +77,8 @@ const usePost = (): ReturnType => {
   const postKeys = {
     all: ['posts'] as const,
     lists: () => [...postKeys.all, 'list'] as const,
-    list: (filters: string) => [...postKeys.lists(), { filters }] as const,
+    list: (filters: PostFilter) =>
+      [...postKeys.lists(), { filters: filters.toLowerCase() }] as const,
     details: () => [...postKeys.all, 'detail'] as const,
     detail: (id: number) => [...postKeys.details(), id] as const
   }
@@ -101,18 +104,20 @@ const usePost = (): ReturnType => {
       }
     })
 
-  const getAllPosts = (): PostFetchQueryType =>
+  const getAllPosts = (filter: PostFilter): PostFetchQueryType =>
     useInfiniteQuery<PostFetchResponse, Error>({
-      queryKey: postKeys.all,
+      queryKey: postKeys.list(isEmpty(filter) ? 'All' : filter),
       queryFn: async ({ pageParam = 0 }) => {
         const skip = pageParam ?? undefined
         const limit = 5
+
         const posts: PostFetchResponse = await gqlClient.request(GET_ALL_POST_QUERY, {
           orderBy: {
             createdAt: 'desc'
           },
           skip,
-          take: limit
+          take: limit,
+          filter: isEmpty(filter) ? undefined : filter
         })
 
         const count: { countAllPost: number } = await gqlClient.request(COUNT_ALL_POST_QUERY)

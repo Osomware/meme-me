@@ -3,6 +3,7 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
 import { PostService } from './post.service'
 import { Post } from './entities/post.entity'
 import { DeletePostInput } from './dto/delete-post.input'
+import { FilterPostInput } from './dto/filter-post.input'
 import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { CurrentUserId } from '~/auth/decorators/currentUserId.decotrator'
 import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
@@ -21,8 +22,21 @@ export class PostResolver {
   }
 
   @Query(() => [Post], { name: 'findAllPost' })
-  findAll(@Args() args: FindManyPostArgs): Promise<Post[]> {
-    return this.postService.findAll(args)
+  findAll(
+    @Args() args: FindManyPostArgs,
+    @Args() filterInput: FilterPostInput,
+    @CurrentUserId() userId: number
+  ): Promise<Post[]> {
+    switch (filterInput.filter) {
+      case 'Following':
+        return this.postService.filterFollowingPosts(args, userId)
+      case 'Newest':
+        return this.postService.filterNewestPosts(args)
+      case 'Popular':
+        return this.postService.filterPopularPosts(args)
+      default:
+        return this.postService.findAll(args)
+    }
   }
 
   @Query(() => Post, { name: 'findOnePost' })
