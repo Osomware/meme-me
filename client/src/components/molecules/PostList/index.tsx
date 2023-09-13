@@ -67,7 +67,7 @@ const PostList: FC<PostListProps> = ({ posts }): JSX.Element => {
 
         return (
           <Post
-            key={post.id}
+            key={index}
             {...{
               post,
               isPostAuthor,

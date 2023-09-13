@@ -1,8 +1,14 @@
 import { gql } from 'graphql-request'
 
 export const GET_ALL_POST_QUERY = gql`
-  query GetAllUserPost($orderBy: [PostOrderByWithRelationInput!], $skip: Int, $take: Int) {
-    findAllPost(orderBy: $orderBy, skip: $skip, take: $take) {
+  query GetAllUserPost(
+    $orderBy: [PostOrderByWithRelationInput!]
+    $skip: Int
+    $take: Int
+    $where: PostWhereInput
+    $filter: String
+  ) {
+    findAllPost(orderBy: $orderBy, skip: $skip, take: $take, where: $where, filter: $filter) {
       id
       title
       isHideLikeAndCount

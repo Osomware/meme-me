@@ -1,11 +1,12 @@
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import { useInView } from 'react-intersection-observer'
 import React, { FC, ReactNode, useEffect } from 'react'
 
-import usePost from '~/hooks/usePost'
 import { HashLoader } from 'react-spinners'
 import Alert from '~/components/atoms/Alert'
 import { IPost } from '~/utils/interface/Post'
+import usePost, { PostFilter } from '~/hooks/usePost'
 import PostList from '~/components/molecules/PostList'
 import StoryList from '~/components/molecules/StoryList'
 import HomeLayout from '~/components/templates/HomeLayout'
@@ -15,12 +16,17 @@ import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
 import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoading'
 
 const Home: NextPage = (): JSX.Element => {
+  const router = useRouter()
+  const filter = router?.query?.filter as string
+  const newFilter = filter?.charAt(0).toUpperCase() + filter?.slice(1)
   const { ref, inView } = useInView()
 
   // * POSTS HOOKS
   const { getAllPosts } = usePost()
 
-  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = getAllPosts()
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = getAllPosts(
+    newFilter as PostFilter
+  )
 
   const posts =
     data?.pages.reduce((acc: IPost[], page: any) => {

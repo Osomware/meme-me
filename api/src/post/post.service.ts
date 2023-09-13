@@ -109,4 +109,85 @@ export class PostService {
       }
     })
   }
+
+  // FILTERED ALL FOLLOWING POSTS
+  async filterFollowingPosts(args: FindManyPostArgs, userId: number): Promise<Post[]> {
+    const { filter, ...filteredArgs }: { [x: string]: any } = args
+    const following = await this.prisma.follow.findMany({
+      where: {
+        followerId: userId
+      },
+      select: {
+        followingId: true
+      }
+    })
+
+    const followingIds = following.map((follow) => follow.followingId)
+
+    const posts = await this.prisma.post.findMany({
+      ...filteredArgs,
+      where: {
+        userId: {
+          in: followingIds
+        }
+      },
+      include: {
+        user: true,
+        _count: true,
+        comments: true,
+        likes: true,
+        mediaFiles: true
+      }
+    })
+
+    return posts
+  }
+
+  // FILTERED ALL NEW POSTS
+  async filterNewestPosts(args: FindManyPostArgs): Promise<Post[]> {
+    const { filter, ...filteredArgs }: { [x: string]: any } = args
+    const posts = await this.prisma.post.findMany({
+      ...filteredArgs,
+      include: {
+        user: true,
+        _count: true,
+        comments: true,
+        likes: true,
+        mediaFiles: true
+      }
+    })
+
+    return posts
+  }
+
+  // FILTERED ALL POPULAR POSTS
+  async filterPopularPosts(args: FindManyPostArgs): Promise<Post[]> {
+    const { filter, ...filteredArgs }: { [x: string]: any } = args
+    const posts = await this.prisma.post.findMany({
+      ...filteredArgs,
+      include: {
+        user: true,
+        _count: {
+          select: {
+            likes: true,
+            comments: true
+          }
+        },
+        comments: true,
+        likes: true,
+        mediaFiles: true
+      }
+    })
+
+    // Sort the posts based on the sum of likes and comments counts
+    const sortedPosts = posts.sort((postA, postB) => {
+      const countA = postA._count.likes + postA._count.comments
+      const countB = postB._count.likes + postB._count.comments
+
+      // Sort in descending order
+      return countB - countA
+    })
+
+    return sortedPosts
+  }
 }
