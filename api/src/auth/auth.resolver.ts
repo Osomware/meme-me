@@ -12,8 +12,9 @@ import { LogoutReturnType, SignReturnType } from './types'
 import { NewTokensResonse } from './dto/new-tokens-reponse'
 import { RefreshTokenGuard } from './guards/refreshToken.guard'
 import { CurrentUser } from './decorators/currentUser.decorator'
-import { CurrentUserId } from './decorators/currentUserId.decotrator'
 import { UserCreateInput } from '@generated/user/user-create.input'
+import { CurrentUserId } from './decorators/currentUserId.decotrator'
+import { FindManyUserArgs } from '@generated/user/find-many-user.args'
 import { FindFirstUserOrThrowArgs } from '@generated/user/find-first-user-or-throw.args'
 
 @Resolver(() => Auth)
@@ -50,5 +51,18 @@ export class AuthResolver {
     @CurrentUser('refreshToken') refreshToken: string
   ): SignReturnType {
     return this.authService.getNewTokens(userId, refreshToken)
+  }
+
+  @Query(() => [User], { name: 'getSuggestedUsers' })
+  getSuggestedUsers(
+    @Args() args: FindManyUserArgs,
+    @CurrentUserId() userId: number
+  ): Promise<User[]> {
+    return this.authService.suggestedUsers(args, userId)
+  }
+
+  @Query(() => Int, { name: 'countAllUserExceptCurrent' })
+  countAllUserExceptCurrent(@CurrentUserId() userId: number): Promise<number> {
+    return this.authService.countAllUserExceptCurrent(userId)
   }
 }

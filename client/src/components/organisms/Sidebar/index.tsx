@@ -29,7 +29,7 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
   const [sidebarLinks, setSidebarLinks] = useState<ISidebar[]>(sidebarMenus)
   const [isUploadModal, setIsUploadModal] = useState<boolean>(false)
 
-  const store = useZustand(useStore, (state) => state)
+  const store = useZustand(useStore, (state) => state.user)
 
   const myConfig = genConfig(defaultAvatarStyle as AvatarFullConfig)
 
@@ -44,7 +44,7 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
       if (link.name === 'Profile') {
         return {
           ...link,
-          href: !isEmpty(store?.user) ? `/@${store?.user?.username ?? ''}` : ''
+          href: !isEmpty(store) ? `/@${store?.username ?? ''}` : ''
         }
       }
       return link
@@ -74,7 +74,7 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
             return (
               <li key={index} className="px-3">
                 <Link
-                  href={isUserProfile ? `/@${store?.user?.username ?? ''}` : item.href}
+                  href={isUserProfile ? `/@${store?.username ?? ''}` : item.href}
                   className={clsx(
                     'group w-full inline-flex items-center space-x-4 py-1.5 md:py-2',
                     'transition ease-in-out duration-75 outline-primary',
@@ -142,9 +142,9 @@ const Sidebar: FC<SidebarProps> = (): JSX.Element => {
                 <Disclosure.Panel className="px-8 py-4 text-sm text-gray-500">
                   <UserDetails
                     {...{
-                      avatar: defaultAvatarStyle,
-                      name: store?.user?.name ?? '',
-                      username: `@${store?.user?.username ?? ''}`
+                      avatar: store?.email ?? '',
+                      name: store?.name ?? '',
+                      username: `${store?.username ?? ''}`
                     }}
                   />
                 </Disclosure.Panel>

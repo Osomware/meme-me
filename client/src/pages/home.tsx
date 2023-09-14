@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useInView } from 'react-intersection-observer'
@@ -10,7 +11,6 @@ import usePost, { PostFilter } from '~/hooks/usePost'
 import PostList from '~/components/molecules/PostList'
 import StoryList from '~/components/molecules/StoryList'
 import HomeLayout from '~/components/templates/HomeLayout'
-import useScreenCondition from '~/hooks/useScreenCondition'
 import FeedFilterTab from '~/components/molecules/FeedFilterTab'
 import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
 import PostSkeletonLoading from '~/components/atoms/Skeletons/PostSkeletonLoading'
@@ -40,16 +40,9 @@ const Home: NextPage = (): JSX.Element => {
     }
   }, [inView])
 
-  // SCREEN SIZE CONDITION HOOKS
-  const isMaxWidth = useScreenCondition('(max-width: 1380px)')
-
   if (isLoading) {
     return (
-      <PageLayout
-        {...{
-          isMaxWidth
-        }}
-      >
+      <PageLayout>
         <PostSkeletonLoading />
       </PageLayout>
     )
@@ -57,11 +50,7 @@ const Home: NextPage = (): JSX.Element => {
 
   if (isError) {
     return (
-      <PageLayout
-        {...{
-          isMaxWidth
-        }}
-      >
+      <PageLayout>
         <div className="py-6">
           <Alert type="error" message="Something went wrong fetching data" />
         </div>
@@ -70,11 +59,7 @@ const Home: NextPage = (): JSX.Element => {
   }
 
   return (
-    <PageLayout
-      {...{
-        isMaxWidth
-      }}
-    >
+    <PageLayout>
       <div>
         {posts?.length === 0 ? (
           <div className="mt-3">
@@ -100,7 +85,7 @@ const Home: NextPage = (): JSX.Element => {
   )
 }
 
-const PageLayout: FC<{ children: ReactNode; isMaxWidth: boolean }> = ({ children, isMaxWidth }) => {
+const PageLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <HomeLayout metaTitle="Home" className="flex">
       <article className="max-w-3xl w-full mx-auto px-8 py-6">
@@ -113,11 +98,13 @@ const PageLayout: FC<{ children: ReactNode; isMaxWidth: boolean }> = ({ children
         </div>
         {children}
       </article>
-      {!isMaxWidth && (
-        <aside className="border-l border-stroke-3 h-full w-80 shrink-0 sticky top-0 mx-1">
-          <SuggestionRightBar />
-        </aside>
-      )}
+      <aside
+        className={clsx(
+          'border-l border-stroke-3 h-full w-80 shrink-0 sticky top-0 mx-1 hidden xl:block'
+        )}
+      >
+        <SuggestionRightBar />
+      </aside>
     </HomeLayout>
   )
 }
