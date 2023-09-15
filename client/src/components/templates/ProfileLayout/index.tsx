@@ -14,7 +14,6 @@ import Alert from '~/components/atoms/Alert'
 import { useZustand } from '~/hooks/useZustand'
 import { queryClient } from '~/lib/queryClient'
 import HomeLayout from '~/components/templates/HomeLayout'
-import useScreenCondition from '~/hooks/useScreenCondition'
 import { profileTabs } from '~/utils/constants/profileTabs'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import SuggestionRightBar from '~/components/organisms/SuggestionRightbar'
@@ -43,9 +42,6 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
   const myConfig = genConfig(userFound?.email as AvatarFullConfig)
 
   const isCurrentUser = userFound?.id === currentUser?.id
-
-  // * SCREEN SIZE CONDITION HOOKS
-  const isMaxWidth = useScreenCondition('(max-width: 1380px)')
 
   // * FOLLOW HOOKS
   const { checkIsFollowed, handleFollow, handleUnfollow } = useFollow()
@@ -237,11 +233,13 @@ const ProfileLayout: FC<ProfileLayoutProps> = ({ metaTitle, children }): JSX.Ele
           </section>
         </article>
       </div>
-      {!isMaxWidth && (
-        <aside className="ml-auto border-l border-stroke-3 h-full w-80 shrink-0 sticky top-0 mx-1">
-          <SuggestionRightBar />
-        </aside>
-      )}
+      <aside
+        className={clsx(
+          'border-l border-stroke-3 h-full w-80 shrink-0 sticky top-0 mx-1 hidden xl:block'
+        )}
+      >
+        <SuggestionRightBar />
+      </aside>
     </HomeLayout>
   )
 }

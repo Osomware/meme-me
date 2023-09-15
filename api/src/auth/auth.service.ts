@@ -8,6 +8,7 @@ import { SignInInput } from './dto/signin-input'
 import { PrismaService } from '~/prisma/prisma.service'
 import { LogoutReturnType, SignReturnType, Token } from './types'
 import { UserCreateInput } from '@generated/user/user-create.input'
+import { FindManyUserArgs } from '@generated/user/find-many-user.args'
 import { FindFirstUserOrThrowArgs } from '@generated/user/find-first-user-or-throw.args'
 
 type FieldValues = 'email' | 'username'
@@ -171,5 +172,41 @@ export class AuthService {
       refreshToken,
       user
     }
+  }
+
+  async suggestedUsers(args: FindManyUserArgs, userId: number): Promise<User[]> {
+    return await this.prisma.user.findMany({
+      ...args,
+      where: {
+        id: {
+          not: {
+            equals: userId
+          }
+        },
+        role: {
+          equals: 'USER'
+        }
+      },
+      include: {
+        _count: true,
+        comments: true,
+        followers: true,
+        following: true,
+        likes: true,
+        posts: true
+      }
+    })
+  }
+
+  async countAllUserExceptCurrent(userId: number): Promise<number> {
+    return await this.prisma.user.count({
+      where: {
+        id: {
+          not: {
+            equals: userId
+          }
+        }
+      }
+    })
   }
 }

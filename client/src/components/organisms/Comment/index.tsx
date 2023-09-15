@@ -42,7 +42,7 @@ const Comment: FC<CommentProps> = (props): JSX.Element => {
         </div>
       </div>
       <div className="px-10 text-xs text-secondary-100 inline-flex items-center gap-x-4">
-        <span>{moment(createdAt).format('M-D')}</span>
+        <span>{moment(createdAt).fromNow()}</span>
         <span className="hover:underline cursor-pointer hover:text-secondary-200">Reply</span>
       </div>
       {/* <div
