@@ -23,7 +23,7 @@ export const GET_ALL_COMMENTS_BY_POST_ID = gql`
 `
 
 export const COUNT_ALL_COMMENT_QUERY = gql`
-  query CountAllComment {
-    countAllComment
+  query CountAllComment($where: CommentWhereInput) {
+    countAllComment(where: $where)
   }
 `

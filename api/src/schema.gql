@@ -1023,7 +1023,7 @@ input PostWhereUniqueInput {
 type Query {
   checkUserFollowed(targetUserIdInput: TargetUserIdInput!): Boolean!
   checkUserLikePost(targetPostInput: TargetPostInput!): Boolean!
-  countAllComment: Int!
+  countAllComment(cursor: CommentWhereUniqueInput, distinct: [CommentScalarFieldEnum!], orderBy: [CommentOrderByWithRelationInput!], skip: Int, take: Int, where: CommentWhereInput): Int!
   countAllPost: Int!
   countAllUserExceptCurrent: Int!
   findAllCommentByPostId(cursor: CommentWhereUniqueInput, distinct: [CommentScalarFieldEnum!], orderBy: [CommentOrderByWithRelationInput!], skip: Int, take: Int, where: CommentWhereInput): [CommentPost!]!

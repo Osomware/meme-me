@@ -48,7 +48,7 @@ export class CommentPostService {
     })
   }
 
-  async countAllComment(): Promise<number> {
-    return await this.prisma.comment.count()
+  async countAllComment(args: FindManyCommentArgs): Promise<number> {
+    return await this.prisma.comment.count(args)
   }
 }

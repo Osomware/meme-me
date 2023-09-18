@@ -19,6 +19,7 @@ import { Reaction } from '~/utils/types/reaction'
 import MessageIcon from '~/utils/icons/MessageIcon'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import ReactionButton from '~/components/molecules/ReactionButton'
+import { formatTimeDifference } from '~/helpers/formatTimeDifference'
 import { convertHashtagsToLinks } from '~/helpers/convertHastagsToLinks'
 
 const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
@@ -172,7 +173,9 @@ const Post: FC<PostProps> = (props): JSX.Element => {
             className="group leading-none inline-flex items-center gap-x-2 text-secondary outline-primary"
           >
             <h2 className="font-bold group-hover:underline">{user?.username}</h2>
-            <span className="text-sm">{user?.name}</span>
+            <p className="text-sm">
+              {user?.name} &bull; <small>{formatTimeDifference(post?.createdAt)}</small>
+            </p>
           </Link>
           {/* User Post */}
           <div className="flex flex-col space-y-1.5">
