@@ -1,16 +1,14 @@
 import clsx from 'clsx'
-import moment from 'moment'
 import Link from 'next/link'
 import Image from 'next/image'
 import { isEmpty } from 'lodash'
 import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
-import React, { FC, ReactNode, useEffect } from 'react'
+import React, { FC, ReactNode } from 'react'
 import { Montserrat } from 'next/font/google'
 import { Modal } from 'react-responsive-modal'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useInView } from 'react-intersection-observer'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { AtSign, Bookmark, Heart, Smile } from 'react-feather'
 import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
@@ -35,6 +33,7 @@ import CommentList from '~/components/molecules/CommentList'
 import Button from '~/components/atoms/Buttons/ButtonAction'
 import ReactionButton from '~/components/molecules/ReactionButton'
 import { CommentFormValues, CommentSchema } from '~/utils/yup-schema'
+import { formatTimeDifference } from '~/helpers/formatTimeDifference'
 import PostDropdownMenu from '~/components/molecules/PostDropdownMenu'
 import { convertHashtagsToLinks } from '~/helpers/convertHastagsToLinks'
 import PostModalSkeletonLoading from '~/components/atoms/Skeletons/PostModalSkeletonLoading'
@@ -51,7 +50,6 @@ type PostModalProps = {
 
 const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Element => {
   const router = useRouter()
-  const { ref, inView } = useInView()
 
   // * REACT HOOK FORM
   const {
@@ -220,12 +218,6 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
     )
   }
 
-  useEffect(() => {
-    if (inView && (hasNextPage as boolean)) {
-      void fetchNextPage()
-    }
-  }, [inView])
-
   return (
     <Modal
       open={isOpen}
@@ -311,7 +303,8 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                       {userPost?.user.username}
                     </Link>
                     <span className="text-xs">
-                      {userPost?.user.name} &bull; {moment(userPost?.createdAt).format('MM-DD-YY')}
+                      {userPost?.user.name} &bull;{' '}
+                      {formatTimeDifference(userPost?.createdAt as string)}
                     </span>
                   </div>
                 </div>
@@ -416,9 +409,18 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                         </div>
                       ) : null}
 
-                      <span style={{ visibility: 'hidden' }} ref={ref}>
-                        intersection observer marker
-                      </span>
+                      {(hasNextPage as boolean) && (
+                        <div className="mt-4 text-left">
+                          <span
+                            onClick={() => {
+                              void fetchNextPage()
+                            }}
+                            className="text-xs flex cursor-pointer font-medium text-secondary-200 hover:underline"
+                          >
+                            View more comments
+                          </span>
+                        </div>
+                      )}
                     </>
                   )}
                 </>

@@ -93,7 +93,16 @@ const useComment = (): ReturnType => {
           }
         )
 
-        const count: { countAllComment: number } = await gqlClient.request(COUNT_ALL_COMMENT_QUERY)
+        const count: { countAllComment: number } = await gqlClient.request(
+          COUNT_ALL_COMMENT_QUERY,
+          {
+            where: {
+              postId: {
+                equals: postId
+              }
+            }
+          }
+        )
 
         return {
           ...comments,

@@ -25,7 +25,7 @@ export class CommentPostResolver {
   }
 
   @Query(() => Int, { name: 'countAllComment' })
-  countllPost(): Promise<number> {
-    return this.commentPostService.countAllComment()
+  countllPost(@Args() args: FindManyCommentArgs): Promise<number> {
+    return this.commentPostService.countAllComment(args)
   }
 }
