@@ -113,22 +113,22 @@ export class PostService {
   // FILTERED ALL FOLLOWING POSTS
   async filterFollowingPosts(args: FindManyPostArgs, userId: number): Promise<Post[]> {
     const { filter, ...filteredArgs }: { [x: string]: any } = args
-    const following = await this.prisma.follow.findMany({
+    const followers = await this.prisma.follow.findMany({
       where: {
-        followerId: userId
+        followingId: userId
       },
       select: {
-        followingId: true
+        followerId: true
       }
     })
 
-    const followingIds = following.map((follow) => follow.followingId)
+    const followerIds = followers.map((follow) => follow.followerId)
 
     const posts = await this.prisma.post.findMany({
       ...filteredArgs,
       where: {
         userId: {
-          in: followingIds
+          in: followerIds
         }
       },
       include: {
