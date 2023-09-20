@@ -173,6 +173,8 @@ const UploadPostModal: FC<UploadPostModalProps> = ({ isOpen, closeModal }): JSX.
   // * THIS WILL AUTOMATICALLY ADD THE VALUE WITH EMOJI
   const handleEmojiSelect = (emoji: Emoji): void => {
     const captions = watch('captions')
+    if (captions?.length === 200) return
+
     if (captions !== undefined) {
       setValue('captions', captions + emoji.native)
     }
