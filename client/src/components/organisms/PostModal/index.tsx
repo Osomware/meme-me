@@ -9,8 +9,8 @@ import React, { FC, ReactNode } from 'react'
 import { Montserrat } from 'next/font/google'
 import { Modal } from 'react-responsive-modal'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { AtSign, Bookmark, Heart } from 'react-feather'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { AtSign, Bookmark, Heart, Smile } from 'react-feather'
 import { AvatarFullConfig, genConfig } from 'react-nice-avatar'
 
 import Carousel from './../Carousel'
@@ -19,6 +19,7 @@ import useLike from '~/hooks/useLike'
 import useFollow from '~/hooks/useFollow'
 import { useStore } from '~/utils/zustand'
 import useComment from '~/hooks/useComment'
+import { Emoji } from '~/utils/types/emoji'
 import Spinner from '~/utils/icons/Spinner'
 import Input from '~/components/atoms/Input'
 import { queryClient } from '~/lib/queryClient'
@@ -36,6 +37,7 @@ import { CommentFormValues, CommentSchema } from '~/utils/yup-schema'
 import { formatTimeDifference } from '~/helpers/formatTimeDifference'
 import PostDropdownMenu from '~/components/molecules/PostDropdownMenu'
 import { convertHashtagsToLinks } from '~/helpers/convertHastagsToLinks'
+import EmojiPopoverPicker from '~/components/molecules/EmojiPopoverPicker'
 import PostModalSkeletonLoading from '~/components/atoms/Skeletons/PostModalSkeletonLoading'
 
 const montserrat = Montserrat({ subsets: ['latin'] })
@@ -54,6 +56,8 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
   // * REACT HOOK FORM
   const {
     reset,
+    watch,
+    setValue,
     register,
     handleSubmit,
     formState: { isSubmitting, isDirty, isValid }
@@ -216,6 +220,13 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
         }
       }
     )
+  }
+
+  const handleEmojiSelect = (emoji: Emoji): void => {
+    const text = watch('text')
+    if (text !== undefined) {
+      setValue('text', (text as string) + emoji.native)
+    }
   }
 
   return (
@@ -450,9 +461,14 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                     </button>
                   </div>
                   <div className="absolute flex items-center right-2 inset-y-0">
-                    <button type="button" className="outline-none active:scale-95">
-                      <Smile className="stroke-1 w-5 h-5" />
-                    </button>
+                    <EmojiPopoverPicker
+                      {...{
+                        handleEmojiSelect,
+                        isSubmitting: false,
+                        panelPosition: 'bottom-9 right-0',
+                        btnStyle: 'pt-1'
+                      }}
+                    />
                   </div>
                 </div>
                 <button

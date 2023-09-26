@@ -9,7 +9,7 @@ export const formatTimeDifference = (createdAt: string): string => {
   const daysDiff = currentDate.diff(createdDate, 'days')
   const hoursDiff = currentDate.diff(createdDate, 'hours')
   const minutesDiff = currentDate.diff(createdDate, 'minutes')
-  const secondsDiff = currentDate.diff(createdDate, 'seconds')
+  const secondsDiff = currentDate.diff(createdDate, 'seconds') + 1
 
   if (yearsDiff > 0) {
     return `${yearsDiff}y`

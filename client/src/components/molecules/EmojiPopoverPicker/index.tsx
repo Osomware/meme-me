@@ -16,10 +16,11 @@ type Props = {
   handleEmojiSelect: (emoji: Emoji) => void
   panelPosition?: string
   isSubmitting: boolean
+  btnStyle?: string
 } & ComponentProps<'div'>
 
 const EmojiPopoverPicker: FC<Props> = (props): JSX.Element => {
-  const { handleEmojiSelect, panelPosition, isSubmitting, ...rest } = props
+  const { handleEmojiSelect, panelPosition, isSubmitting, btnStyle, ...rest } = props
 
   return (
     <Popover as="div" className="">
@@ -31,6 +32,7 @@ const EmojiPopoverPicker: FC<Props> = (props): JSX.Element => {
               'text-slate-400 outline-none hover:text-slate-500',
               'transition duration-150 ease-in-out',
               open ? '!text-slate-500' : '',
+              btnStyle,
               isSubmitting ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
             )}
             disabled={isSubmitting}
