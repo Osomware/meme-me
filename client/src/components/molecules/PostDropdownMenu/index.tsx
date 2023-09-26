@@ -37,16 +37,19 @@ const PostDropdownMenu: FC<Props> = (props): JSX.Element => {
             'rounded bg-white focus:outline-none'
           )}
         >
-          <div className="px-1.5 py-1.5">
+          <div className="py-1.5">
             <Menu.Item>
               <button
                 type="button"
                 onClick={() => {
                   void handleOpenConfirmationModal()
                 }}
-                className="relative flex items-center justify-center w-full text-rose-500 outline-none"
+                className={clsx(
+                  'relative flex items-center justify-center w-full',
+                  'text-rose-500 outline-none hover:bg-rose-50 py-1'
+                )}
               >
-                <Trash className="absolute left-2 h-4 w-4" aria-hidden="true" />
+                <Trash className="absolute left-3 h-4 w-4" aria-hidden="true" />
                 <span className="text-center font-medium">Delete</span>
               </button>
             </Menu.Item>

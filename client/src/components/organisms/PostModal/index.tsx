@@ -415,7 +415,8 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                     <>
                       <CommentList
                         {...{
-                          comments
+                          comments,
+                          isPostAuthor
                         }}
                       />
                       {isFetchingNextPage ? (

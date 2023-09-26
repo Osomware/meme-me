@@ -13,3 +13,12 @@ export const CREATE_COMMENT_POST_MUTATION = gql`
     }
   }
 `
+
+export const DELETE_COMMENT_MUTATION = gql`
+  mutation DeleteComment($deleteCommentInput: DeleteCommentPostInput!) {
+    deleteComment(deleteCommentInput: $deleteCommentInput) {
+      id
+      text
+    }
+  }
+`
