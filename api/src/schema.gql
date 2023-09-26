@@ -240,6 +240,10 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input DeleteCommentPostInput {
+  id: Int!
+}
+
 input DeletePostInput {
   id: Int!
 }
@@ -654,6 +658,7 @@ input MediaFileWhereUniqueInput {
 type Mutation {
   commentPost(commentCreateWithoutUserInput: CommentCreateWithoutUserInput!): CommentPost!
   createPost(createPostInput: PostCreateWithoutUserInput!): Post!
+  deleteComment(deleteCommentInput: DeleteCommentPostInput!): CommentPost!
   deletePost(deletePostInput: DeletePostInput!): Post!
   followUser(targetUserIdInput: TargetUserIdInput!): FollowUser!
   getNewTokens: NewTokensResonse!

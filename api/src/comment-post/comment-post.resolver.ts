@@ -2,6 +2,7 @@ import { Resolver, Mutation, Args, Query, Int } from '@nestjs/graphql'
 
 import { CommentPostService } from './comment-post.service'
 import { CommentPost } from './entities/comment-post.entity'
+import { DeleteCommentPostInput } from './dto/delete-comment-post.input'
 import { CurrentUserId } from '~/auth/decorators/currentUserId.decotrator'
 import { FindManyCommentArgs } from '@generated/comment/find-many-comment.args'
 import { CommentCreateWithoutUserInput } from '@generated/comment/comment-create-without-user.input'
@@ -27,5 +28,13 @@ export class CommentPostResolver {
   @Query(() => Int, { name: 'countAllComment' })
   countllPost(@Args() args: FindManyCommentArgs): Promise<number> {
     return this.commentPostService.countAllComment(args)
+  }
+
+  @Mutation(() => CommentPost, { name: 'deleteComment' })
+  async deleteComment(
+    @Args('deleteCommentInput') deleteCommentInput: DeleteCommentPostInput,
+    @CurrentUserId() userId: number
+  ): Promise<CommentPost> {
+    return this.commentPostService.deleteComment(deleteCommentInput, userId)
   }
 }

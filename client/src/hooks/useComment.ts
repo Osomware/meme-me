@@ -7,8 +7,8 @@ import {
 } from '@tanstack/react-query'
 
 import { gqlClient } from '~/lib/gqlClient'
-import { CommentCreateWithoutUserInput } from '~/utils/types/input'
-import { CREATE_COMMENT_POST_MUTATION } from '~/graphql/mutations/comment'
+import { CommentCreateWithoutUserInput, DeleteCommentInput } from '~/utils/types/input'
+import { CREATE_COMMENT_POST_MUTATION, DELETE_COMMENT_MUTATION } from '~/graphql/mutations/comment'
 import {
   COUNT_ALL_COMMENT_QUERY,
   GET_ALL_COMMENTS_BY_POST_ID
@@ -39,10 +39,24 @@ type CommentFetchQueryType = UseMutationResult<
   CommentCreateWithoutUserInput,
   unknown
 >
+type DeleteMutationReturnType = UseMutationResult<
+  DeleteSuccessReponse,
+  unknown,
+  DeleteCommentInput,
+  unknown
+>
+type DeleteSuccessReponse = {
+  deleteComment: {
+    id: number
+  }
+}
 type CommentInfiniteQueryType = UseInfiniteQueryResult<CommentFetchResponse, Error>
+type DeleteFetchQueryType = DeleteMutationReturnType
+
 type ReturnType = {
   handleComment: () => CommentFetchQueryType
   getAllCommentsByPostId: (postId: number) => CommentInfiniteQueryType
+  handleDeleteCommentMutation: () => DeleteFetchQueryType
 }
 
 const useComment = (): ReturnType => {
@@ -119,9 +133,25 @@ const useComment = (): ReturnType => {
       enabled: !isNaN(postId)
     })
 
+  const handleDeleteCommentMutation = (): DeleteFetchQueryType =>
+    useMutation<DeleteSuccessReponse, Error, DeleteCommentInput, unknown>({
+      mutationFn: async (deleteCommentInput: DeleteCommentInput) => {
+        return await gqlClient.request(DELETE_COMMENT_MUTATION, {
+          deleteCommentInput: {
+            id: deleteCommentInput.id
+          }
+        })
+      },
+      onError: (err: Error) => {
+        const [errorMessage] = err.message.split(/:\s/, 2)
+        toast.error(errorMessage)
+      }
+    })
+
   return {
     handleComment,
-    getAllCommentsByPostId
+    getAllCommentsByPostId,
+    handleDeleteCommentMutation
   }
 }
 

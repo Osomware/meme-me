@@ -44,3 +44,7 @@ export type CommentCreateWithoutUserInput = {
   postId: number
   text: string
 }
+
+export type DeleteCommentInput = {
+  id: number
+}

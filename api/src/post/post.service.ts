@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common'
 import { Post } from '@generated/post/post.model'
 import { PrismaService } from '~/prisma/prisma.service'
 import { DeletePostInput } from './dto/delete-post.input'
+import { CountUsernameInput } from './dto/count-username.input'
 import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
 import { PostCreateWithoutUserInput } from '@generated/post/post-create-without-user.input'
-import { CountUsernameInput } from './dto/count-username.input'
 
 @Injectable()
 export class PostService {

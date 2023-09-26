@@ -4,11 +4,11 @@ import { PostService } from './post.service'
 import { Post } from './entities/post.entity'
 import { DeletePostInput } from './dto/delete-post.input'
 import { FilterPostInput } from './dto/filter-post.input'
+import { CountUsernameInput } from './dto/count-username.input'
 import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { CurrentUserId } from '~/auth/decorators/currentUserId.decotrator'
 import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
 import { PostCreateWithoutUserInput } from '@generated/post/post-create-without-user.input'
-import { CountUsernameInput } from './dto/count-username.input'
 
 @Resolver(() => Post)
 export class PostResolver {

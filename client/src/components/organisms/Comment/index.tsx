@@ -1,21 +1,24 @@
 import clsx from 'clsx'
 import React, { FC } from 'react'
 import dynamic from 'next/dynamic'
-import { Heart, MoreHorizontal } from 'react-feather'
+import { Heart } from 'react-feather'
 import { AvatarConfig, genConfig } from 'react-nice-avatar'
 
 import { IComment } from '~/utils/interface/Comment'
 import { formatTimeDifference } from '~/helpers/formatTimeDifference'
+import CommentDropdownMenu from '~/components/molecules/CommentDropdownMenu'
 
 const ReactNiceAvatar = dynamic(async () => await import('react-nice-avatar'), { ssr: false })
 
 export type CommentProps = {
   comment: IComment
+  isPostAuthor: boolean
 }
 
 const Comment: FC<CommentProps> = (props): JSX.Element => {
   const {
-    comment: { text, createdAt, user }
+    isPostAuthor,
+    comment: { id, text, createdAt, user }
   } = props
 
   const myConfig = genConfig(user?.email as AvatarConfig)
@@ -37,11 +40,12 @@ const Comment: FC<CommentProps> = (props): JSX.Element => {
           </div>
         </div>
         <div className="ml-auto flex flex-col items-center pl-2">
-          <div className="opacity-0 group-hover:opacity-100">
-            <button type="button" className="flex items-center">
-              <MoreHorizontal className="w-5 h-5" />
-            </button>
-          </div>
+          <CommentDropdownMenu
+            {...{
+              isPostAuthor,
+              commentId: id
+            }}
+          />
           <div className="px-2 inline-flex items-center flex-col text-secondary-200">
             <Heart className="w-4 h-4 cursor-pointer" />
             <span className="text-[10px]">0</span>
