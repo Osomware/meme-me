@@ -8,6 +8,7 @@ import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { CurrentUserId } from '~/auth/decorators/currentUserId.decotrator'
 import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
 import { PostCreateWithoutUserInput } from '@generated/post/post-create-without-user.input'
+import { CountUsernameInput } from './dto/count-username.input'
 
 @Resolver(() => Post)
 export class PostResolver {
@@ -60,5 +61,10 @@ export class PostResolver {
     @CurrentUserId() userId: number
   ): Promise<Post> {
     return this.postService.delete(deletePostInput, userId)
+  }
+
+  @Query(() => Int, { name: 'countAllPostByUsername' })
+  countAllPostByUsername(@Args() countUsernameInput: CountUsernameInput): Promise<number> {
+    return this.postService.countAllPostByUsername(countUsernameInput)
   }
 }

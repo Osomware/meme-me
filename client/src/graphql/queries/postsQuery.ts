@@ -72,8 +72,13 @@ export const GET_ONE_POST_QUERY = gql`
 `
 
 export const GET_ALL_POST_BY_USERNAME_QUERY = gql`
-  query FindAllPostByUsername($where: PostWhereInput, $orderBy: [PostOrderByWithRelationInput!]) {
-    findAllPostByUsername(where: $where, orderBy: $orderBy) {
+  query FindAllPostByUsername(
+    $where: PostWhereInput
+    $orderBy: [PostOrderByWithRelationInput!]
+    $skip: Int
+    $take: Int
+  ) {
+    findAllPostByUsername(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
       id
       mediaFiles {
         key
@@ -82,7 +87,6 @@ export const GET_ALL_POST_BY_USERNAME_QUERY = gql`
       createdAt
       _count {
         likes
-        comments
       }
     }
   }
@@ -91,5 +95,11 @@ export const GET_ALL_POST_BY_USERNAME_QUERY = gql`
 export const COUNT_ALL_POST_QUERY = gql`
   query CountAllPosts {
     countAllPost
+  }
+`
+
+export const COUNT_ALL_POST_BY_USERNAME_QUERY = gql`
+  query countAllPostByUsername($username: String) {
+    countAllPostByUsername(username: $username)
   }
 `
