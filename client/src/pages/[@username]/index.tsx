@@ -1,12 +1,15 @@
 import clsx from 'clsx'
 import { NextPage } from 'next'
 import { isEmpty } from 'lodash'
-import React, { useState } from 'react'
 import { useRouter } from 'next/router'
+import { HashLoader } from 'react-spinners'
+import React, { useEffect, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
 import { Camera, Heart, MessageCircle } from 'react-feather'
 
 import usePost from '~/hooks/usePost'
 import Alert from '~/components/atoms/Alert'
+import { IPost } from '~/utils/interface/Post'
 import PostModal from '~/components/organisms/PostModal'
 import ProfileLayout from '~/components/templates/ProfileLayout'
 import { Skeleton } from '~/components/atoms/Skeletons/ProfilePageSkeletonLoading'
@@ -15,6 +18,8 @@ const Username: NextPage = (): JSX.Element => {
   const router = useRouter()
   const { '@username': username } = router.query
   const postId = router.query?.postId
+
+  const { ref, inView } = useInView()
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
@@ -28,8 +33,23 @@ const Username: NextPage = (): JSX.Element => {
   const {
     data: userPosts,
     isError,
-    isLoading
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage
   } = getAllPostsByUsername(username?.slice(1) as string)
+
+  const posts =
+    userPosts?.pages.reduce((acc: IPost[], page: any) => {
+      const pagePosts = page.findAllPost as IPost[]
+      return [...acc, ...pagePosts]
+    }, []) ?? []
+
+  useEffect(() => {
+    if (inView && (hasNextPage as boolean)) {
+      void fetchNextPage()
+    }
+  }, [inView])
 
   if (isLoading) {
     return (
@@ -51,7 +71,7 @@ const Username: NextPage = (): JSX.Element => {
     )
   }
 
-  if (userPosts?.findAllPostByUsername?.length === 0) {
+  if (posts?.length === 0) {
     return (
       <ProfileLayout metaTitle={`${username?.toString() ?? ''}`}>
         <div className="mt-8 max-w-sm mx-auto flex flex-col items-center space-y-6">
@@ -67,7 +87,7 @@ const Username: NextPage = (): JSX.Element => {
   return (
     <ProfileLayout metaTitle={`${username?.toString() ?? ''}`}>
       <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 max-w-4xl w-full mx-auto gap-2 px-4 pb-8">
-        {userPosts?.findAllPostByUsername?.map((post, idx) => {
+        {posts?.map((post, idx) => {
           const handleViewPost = (): void => {
             void router.replace({
               pathname: router.asPath,
@@ -114,6 +134,15 @@ const Username: NextPage = (): JSX.Element => {
             </button>
           )
         })}
+        {isFetchingNextPage ? (
+          <div className="flex justify-center">
+            <HashLoader size={16} color="#586ca0" />
+          </div>
+        ) : null}
+
+        <span style={{ visibility: 'hidden' }} ref={ref}>
+          intersection observer marker
+        </span>
       </div>
 
       {/* View Sigle Post Dialog */}

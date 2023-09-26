@@ -344,7 +344,11 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                         }}
                         btnStyle={isLikePost ? '!bg-rose-50 !border-rose-100' : ''}
                       >
-                        <Heart fill={isLikePost ? '#f43f5e' : '#586ca0'} stroke="none" />
+                        <Heart
+                          className="w-5 h-5"
+                          fill={isLikePost ? '#f43f5e' : '#586ca0'}
+                          stroke="none"
+                        />
                       </ReactionButton>
                     )}
                     {reaction.type === Reaction.comment && (
@@ -353,7 +357,7 @@ const PostModal: FC<PostModalProps> = ({ isOpen, closeModal, postId }): JSX.Elem
                         direction="flex-row"
                         className="p-2 rounded-full"
                       >
-                        <Messageicon className="w-4 h-4 fill-current" />
+                        <Messageicon className="w-5 h-5 fill-current" />
                       </ReactionButton>
                     )}
                     {reaction.type === Reaction.bookmark && (

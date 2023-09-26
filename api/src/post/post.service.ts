@@ -6,6 +6,7 @@ import { DeletePostInput } from './dto/delete-post.input'
 import { FindManyPostArgs } from '@generated/post/find-many-post.args'
 import { FindFirstPostOrThrowArgs } from '@generated/post/find-first-post-or-throw.args'
 import { PostCreateWithoutUserInput } from '@generated/post/post-create-without-user.input'
+import { CountUsernameInput } from './dto/count-username.input'
 
 @Injectable()
 export class PostService {
@@ -79,6 +80,18 @@ export class PostService {
 
   async countAllPost(): Promise<number> {
     return await this.prisma.post.count()
+  }
+
+  async countAllPostByUsername(countUsernameInput: CountUsernameInput): Promise<number> {
+    return await this.prisma.post.count({
+      where: {
+        user: {
+          username: {
+            equals: countUsernameInput.username
+          }
+        }
+      }
+    })
   }
 
   async delete(deletePostInput: DeletePostInput, userId: number): Promise<Post> {

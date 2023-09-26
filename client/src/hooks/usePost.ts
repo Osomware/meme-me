@@ -19,7 +19,7 @@ import {
   GET_ALL_POST_QUERY,
   GET_ONE_POST_QUERY,
   COUNT_ALL_POST_QUERY,
-  GET_ALL_POST_BY_USERNAME_QUERY
+  COUNT_ALL_POST_BY_USERNAME_QUERY
 } from '~/graphql/queries/postsQuery'
 
 type PostMutationReturnType = UseMutationResult<
@@ -54,11 +54,16 @@ type SinglePostFetchResponse = {
   findOnePost: IPost
 }
 type PostFetchByUsernameResponse = {
-  findAllPostByUsername: IPost[]
+  pages: Array<{
+    pagePostCount: number
+    findAllPostByUsername: IPost[]
+  }>
+  prevOffset: number
+  postCount: number
 }
 
 type PostFetchQueryType = UseInfiniteQueryResult<PostFetchResponse, Error>
-type PostFetchByUsernameQueryType = UseQueryResult<PostFetchByUsernameResponse, unknown>
+type PostFetchByUsernameQueryType = UseInfiniteQueryResult<PostFetchByUsernameResponse, unknown>
 type SinglePostFetchQueryType = UseQueryResult<SinglePostFetchResponse, unknown>
 type DeleteFetchQueryType = DeleteMutationReturnType
 export type PostFilter = 'All' | 'Following' | 'Newest' | 'Popular'
@@ -152,10 +157,16 @@ const usePost = (): ReturnType => {
     })
 
   const getAllPostsByUsername = (username: string): PostFetchByUsernameQueryType =>
-    useQuery<PostFetchByUsernameResponse, Error>({
+    useInfiniteQuery<PostFetchByUsernameResponse, Error>({
       queryKey: ['posts', 'profile', username],
-      queryFn: async () =>
-        await gqlClient.request(GET_ALL_POST_BY_USERNAME_QUERY, {
+      queryFn: async ({ pageParam = 0 }) => {
+        const skip = pageParam ?? undefined
+        const limit = 15
+
+        const posts: PostFetchByUsernameResponse = await gqlClient.request(GET_ALL_POST_QUERY, {
+          orderBy: {
+            createdAt: 'desc'
+          },
           where: {
             user: {
               is: {
@@ -165,11 +176,29 @@ const usePost = (): ReturnType => {
               }
             }
           },
-          orderBy: {
-            createdAt: 'desc'
+          skip,
+          take: limit
+        })
+
+        const count: { countAllPostByUsername: number } = await gqlClient.request(
+          COUNT_ALL_POST_BY_USERNAME_QUERY,
+          {
+            username
           }
-        }),
-      select: (data: PostFetchByUsernameResponse) => data
+        )
+
+        return {
+          ...posts,
+          postCount: count?.countAllPostByUsername,
+          prevOffset: pageParam ?? 0
+        }
+      },
+      getNextPageParam: (lastPage) => {
+        if (lastPage?.prevOffset + 15 > lastPage?.postCount) {
+          return false
+        }
+        return lastPage?.prevOffset + 15
+      }
     })
 
   const handleDeletePostMutation = (): DeleteFetchQueryType =>

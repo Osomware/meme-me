@@ -1025,6 +1025,7 @@ type Query {
   checkUserLikePost(targetPostInput: TargetPostInput!): Boolean!
   countAllComment(cursor: CommentWhereUniqueInput, distinct: [CommentScalarFieldEnum!], orderBy: [CommentOrderByWithRelationInput!], skip: Int, take: Int, where: CommentWhereInput): Int!
   countAllPost: Int!
+  countAllPostByUsername(username: String): Int!
   countAllUserExceptCurrent: Int!
   findAllCommentByPostId(cursor: CommentWhereUniqueInput, distinct: [CommentScalarFieldEnum!], orderBy: [CommentOrderByWithRelationInput!], skip: Int, take: Int, where: CommentWhereInput): [CommentPost!]!
   findAllPost(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], filter: String, orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
